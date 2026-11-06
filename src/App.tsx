@@ -5,6 +5,7 @@ import { loadSettings, saveSettings, loadProgress, resetAllData } from './utils/
 import { Header } from './components/common/Header';
 import { NavigationTabs } from './components/common/NavigationTabs';
 import { Dashboard } from './components/modes/Dashboard';
+import { CurriculumMode } from './components/modes/CurriculumMode';
 import { TutorialMode } from './components/modes/TutorialMode';
 import { FlickPracticeMode } from './components/modes/FlickPracticeMode';
 import { WordPracticeMode } from './components/modes/WordPracticeMode';
@@ -19,16 +20,13 @@ export const App: React.FC = () => {
   const [progress, setProgress] = useState<UserProgress>(loadProgress);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  // Pure dark mode enforcement
   useEffect(() => {
-    document.body.classList.remove('theme-wabi', 'theme-light', 'theme-dark', 'dark');
-    document.body.classList.add(`theme-${settings.theme}`);
-    if (settings.theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [settings.theme]);
+    document.documentElement.classList.add('dark');
+    document.body.classList.add('theme-dark', 'bg-[#0B0C0E]', 'text-stone-100');
+  }, []);
 
+  // Refresh progress state whenever returning to dashboard or progress page
   useEffect(() => {
     setProgress(loadProgress());
   }, [currentMode]);
@@ -45,7 +43,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between selection:bg-red-500/20">
+    <div className="min-h-screen bg-[#0B0C0E] text-stone-100 flex flex-col justify-between selection:bg-red-500/30">
       <div>
         <Header
           currentMode={currentMode}
@@ -65,6 +63,14 @@ export const App: React.FC = () => {
             <Dashboard
               progress={progress}
               onSelectMode={setCurrentMode}
+            />
+          )}
+
+          {currentMode === 'curriculum' && (
+            <CurriculumMode
+              settings={settings}
+              completedLessonIds={progress.completedLessonIds || []}
+              onLessonFinished={() => setProgress(loadProgress())}
             />
           )}
 
@@ -94,14 +100,14 @@ export const App: React.FC = () => {
         </main>
       </div>
 
-      <footer className="w-full border-t border-stone-200/80 dark:border-stone-800/80 py-4 px-4 text-center text-xs text-stone-400 dark:text-stone-500">
+      <footer className="w-full border-t border-stone-800/80 py-4 px-4 text-center text-xs text-stone-500 bg-[#090A0D]">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 font-medium">
+          <div className="flex items-center gap-1.5 font-medium text-stone-400">
             <span>Flick Lab</span>
             <span>•</span>
             <span>日本語フリック入力の練習プラットフォーム</span>
           </div>
-          <div className="text-[11px] font-mono">
+          <div className="text-[11px] font-mono text-stone-500">
             Chạm • Vuốt 4 hướng • Thành thạo gõ tiếng Nhật
           </div>
         </div>

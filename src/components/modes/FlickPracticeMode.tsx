@@ -148,10 +148,10 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
             <button
               key={f.id}
               onClick={() => setSelectedFilter(f.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
                 isSelected
-                  ? 'bg-red-600 text-white shadow-xs'
-                  : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-100 border border-stone-200 dark:border-stone-700'
+                  ? 'bg-red-600 text-white border-red-500 shadow-md font-bold'
+                  : 'bg-[#14161D] text-stone-400 hover:text-stone-200 border-stone-800'
               }`}
             >
               {f.label}
@@ -161,22 +161,22 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
       </div>
 
       {/* Target Display & Stats */}
-      <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/80 dark:border-stone-800 shadow-xs space-y-4">
+      <div className="p-6 rounded-3xl bg-[#14161D] border border-stone-800 shadow-xl space-y-4">
         {/* Top bar with stats & hint toggle */}
-        <div className="flex items-center justify-between text-xs font-medium text-stone-500">
+        <div className="flex items-center justify-between text-xs font-medium text-stone-400">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 font-bold text-amber-600 dark:text-amber-400">
+            <div className="flex items-center gap-1 font-bold text-amber-400">
               <Zap className="w-3.5 h-3.5 fill-current" />
               <span>Combo: {comboStreak}</span>
             </div>
             <div>
               <span>Độ chính xác: </span>
-              <span className="font-bold text-stone-800 dark:text-stone-200">{accuracy}%</span>
+              <span className="font-bold text-white">{accuracy}%</span>
             </div>
             {reactionTimeMs !== null && (
               <div className="hidden sm:block">
                 <span>Tốc độ: </span>
-                <span className="font-bold text-stone-800 dark:text-stone-200">{reactionTimeMs}ms</span>
+                <span className="font-bold text-white">{reactionTimeMs}ms</span>
               </div>
             )}
           </div>
@@ -187,8 +187,8 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
               onClick={() => setShowHint(!showHint)}
               className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs transition-colors ${
                 showHint
-                  ? 'bg-stone-100 dark:bg-stone-800 border-stone-200 text-stone-700 dark:text-stone-300 font-semibold'
-                  : 'border-transparent text-stone-400'
+                  ? 'bg-stone-800 border-stone-700 text-stone-200 font-semibold'
+                  : 'border-transparent text-stone-500'
               }`}
               title="Bật/Tắt gợi ý hướng phím"
             >
@@ -199,7 +199,7 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
             <button
               type="button"
               onClick={pickNewTarget}
-              className="p-1 rounded-lg text-stone-400 hover:text-stone-600"
+              className="p-1 rounded-lg text-stone-400 hover:text-white"
               title="Đổi chữ khác"
             >
               <RotateCcw className="w-4 h-4" />
@@ -209,17 +209,17 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
 
         {/* Center Target Box */}
         <div className="flex flex-col items-center justify-center py-4 space-y-2">
-          <span className="text-xs uppercase font-mono tracking-wider text-stone-400 font-semibold">
+          <span className="text-xs uppercase font-mono tracking-wider text-stone-500 font-bold">
             Hãy gõ chữ cái này:
           </span>
 
           <div
             className={`w-32 h-32 rounded-3xl flex items-center justify-center transition-all duration-150 ${
               feedbackState === 'correct'
-                ? 'bg-emerald-500 text-white shadow-xl scale-105'
+                ? 'bg-emerald-600 text-white shadow-xl scale-105'
                 : feedbackState === 'wrong'
-                ? 'bg-red-500 text-white shadow-xl animate-shake'
-                : 'bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 border border-stone-200 dark:border-stone-700'
+                ? 'bg-red-600 text-white shadow-xl animate-shake'
+                : 'bg-[#0D0E13] text-white border border-stone-800 shadow-inner'
             }`}
           >
             <span className="text-6xl font-extrabold font-sans">
@@ -227,15 +227,15 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-stone-500 font-medium">
+          <div className="flex items-center gap-2 text-sm text-stone-400 font-medium">
             <span>Phiên âm:</span>
-            <span className="font-mono font-bold text-stone-900 dark:text-stone-100 uppercase tracking-widest">
+            <span className="font-mono font-bold text-white uppercase tracking-widest">
               {currentTarget?.romaji}
             </span>
           </div>
 
           {currentTarget?.needsModifier && (
-            <div className="text-xs text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 px-3 py-1 rounded-full border border-amber-200 dark:border-amber-900/60 font-medium animate-pulse">
+            <div className="text-xs text-amber-300 bg-amber-950/40 px-3 py-1 rounded-full border border-amber-800/80 font-medium animate-pulse">
               {!typedBuffer
                 ? `1. Gõ chữ gốc "${currentTarget.baseChar}"`
                 : `2. Nhấn phím "゛゜小" để biến âm thành "${currentTarget.char}"!`}

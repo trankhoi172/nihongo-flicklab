@@ -8,6 +8,7 @@ import {
   Timer,
   Edit3,
   BarChart3,
+  Compass,
 } from 'lucide-react';
 
 interface NavigationTabsProps {
@@ -32,8 +33,14 @@ export const NavigationTabs: React.FC<NavigationTabsProps> = ({
       icon: <LayoutDashboard className="w-4 h-4" />,
     },
     {
+      id: 'curriculum',
+      label: 'Giáo trình',
+      sub: 'カリキュラム',
+      icon: <Compass className="w-4 h-4" />,
+    },
+    {
       id: 'tutorial',
-      label: 'Học bố cục',
+      label: 'Bố cục 12 phím',
       sub: '基本ガイド',
       icon: <GraduationCap className="w-4 h-4" />,
     },
@@ -45,7 +52,7 @@ export const NavigationTabs: React.FC<NavigationTabsProps> = ({
     },
     {
       id: 'word',
-      label: 'Luyện từ vựng',
+      label: 'Từ vựng',
       sub: '単語練習',
       icon: <BookOpen className="w-4 h-4" />,
     },
@@ -70,8 +77,8 @@ export const NavigationTabs: React.FC<NavigationTabsProps> = ({
   ];
 
   return (
-    <nav className="w-full bg-stone-50 dark:bg-stone-900/60 border-b border-stone-200/80 dark:border-stone-800 overflow-x-auto no-scrollbar">
-      <div className="max-w-4xl mx-auto px-2 flex items-center justify-start sm:justify-center gap-1 sm:gap-1.5 py-1.5 min-w-max">
+    <nav className="w-full bg-[#0D0E13] border-b border-stone-800 overflow-x-auto no-scrollbar">
+      <div className="max-w-5xl mx-auto px-2 flex items-center justify-start sm:justify-center gap-1 sm:gap-1.5 py-1.5 min-w-max">
         {tabs.map((tab) => {
           const isActive = currentMode === tab.id;
           return (
@@ -80,8 +87,8 @@ export const NavigationTabs: React.FC<NavigationTabsProps> = ({
               onClick={() => onSelectMode(tab.id)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
                 isActive
-                  ? 'bg-white dark:bg-stone-800 text-red-600 dark:text-red-400 font-bold shadow-xs border border-stone-200/70 dark:border-stone-700'
-                  : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800/50'
+                  ? 'bg-stone-800/90 text-red-400 font-bold shadow-xs border border-stone-700'
+                  : 'text-stone-400 hover:text-stone-200 hover:bg-stone-850'
               }`}
             >
               {tab.icon}

@@ -60,14 +60,14 @@ export const FreeTypingMode: React.FC<FreeTypingModeProps> = ({ settings }) => {
   return (
     <div className="max-w-2xl mx-auto px-4 py-4 space-y-4 animate-in fade-in duration-200">
       {/* Sandbox Text Editor Box */}
-      <div className="p-5 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/80 dark:border-stone-800 shadow-xs space-y-3">
+      <div className="p-5 rounded-3xl bg-[#14161D] border border-stone-800 shadow-xl space-y-3">
         {/* Top Controls */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-stone-900 dark:text-stone-100">
+            <span className="text-xs font-bold text-white">
               Văn bản đang gõ (入力テキスト)
             </span>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-500">
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-stone-850 text-stone-400 border border-stone-800">
               {text.length} ký tự
             </span>
           </div>
@@ -79,8 +79,8 @@ export const FreeTypingMode: React.FC<FreeTypingModeProps> = ({ settings }) => {
               disabled={!text}
               className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                 copied
-                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
-                  : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-50'
+                  ? 'bg-emerald-950/60 text-emerald-400 border-emerald-800'
+                  : 'bg-stone-850 border-stone-800 text-stone-300 hover:bg-stone-800'
               } disabled:opacity-40`}
             >
               {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
@@ -91,7 +91,7 @@ export const FreeTypingMode: React.FC<FreeTypingModeProps> = ({ settings }) => {
               type="button"
               onClick={handleClear}
               disabled={!text}
-              className="p-1.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-400 hover:text-red-600 disabled:opacity-40"
+              className="p-1.5 rounded-xl border border-stone-800 text-stone-400 hover:text-red-400 hover:bg-stone-850 disabled:opacity-40 transition-colors"
               title="Xóa hết văn bản"
             >
               <Trash2 className="w-4 h-4" />
@@ -100,23 +100,23 @@ export const FreeTypingMode: React.FC<FreeTypingModeProps> = ({ settings }) => {
         </div>
 
         {/* Text Display Canvas */}
-        <div className="min-h-[110px] p-4 rounded-2xl bg-stone-50 dark:bg-stone-800/60 border border-stone-200/70 dark:border-stone-700/70 flex flex-col justify-between">
-          <div className="text-xl sm:text-2xl font-sans font-medium text-stone-900 dark:text-stone-100 whitespace-pre-wrap break-words tracking-wide">
+        <div className="min-h-[110px] p-4 rounded-2xl bg-[#0D0E13] border border-stone-800/80 flex flex-col justify-between">
+          <div className="text-xl sm:text-2xl font-sans font-medium text-white whitespace-pre-wrap break-words tracking-wide">
             {text ? (
               <span>
                 {text}
-                <span className="inline-block w-0.5 h-6 bg-red-600 align-middle ml-1 animate-pulse" />
+                <span className="inline-block w-0.5 h-6 bg-red-500 align-middle ml-1 animate-pulse" />
               </span>
             ) : (
-              <span className="text-stone-400 text-sm font-normal italic">
+              <span className="text-stone-500 text-sm font-normal italic">
                 Chạm vào các phím bên dưới hoặc vuốt theo 4 hướng để bắt đầu gõ tiếng Nhật...
               </span>
             )}
           </div>
 
           {text && (
-            <div className="text-xs font-mono text-stone-400 dark:text-stone-500 pt-3 border-t border-stone-200/50 dark:border-stone-700/50">
-              Romaji: <span className="text-stone-600 dark:text-stone-300">{romajiPreview}</span>
+            <div className="text-xs font-mono text-stone-500 pt-3 border-t border-stone-850">
+              Romaji: <span className="text-stone-300">{romajiPreview}</span>
             </div>
           )}
         </div>

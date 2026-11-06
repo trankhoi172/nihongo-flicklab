@@ -2,6 +2,7 @@ import type { FlickDirection } from './keyboard';
 
 export type PracticeMode = 
   | 'dashboard'
+  | 'curriculum'
   | 'tutorial'
   | 'flick'
   | 'word'
@@ -78,5 +79,6 @@ export interface UserProgress {
   lastActiveDate: string; // ISO string or YYYY-MM-DD
   rowMastery: Record<string, RowMastery>;
   completedWordIds: string[];
+  completedLessonIds: string[];
   challengeHistory: SpeedChallengeRecord[];
 }

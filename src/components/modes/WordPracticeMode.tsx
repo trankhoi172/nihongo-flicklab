@@ -60,7 +60,7 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
 
   useEffect(() => {
     pickWord();
-  }, [selectedDifficulty]);
+  }, [selectedDifficulty, pickWord]);
 
   const expectedChar = currentWord.kana[charIndex];
   const expectedInfo = expectedChar ? getKanaInfo(expectedChar) : undefined;
@@ -145,7 +145,7 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
       {/* Category & Difficulty Filters */}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-          <span className="text-xs text-stone-400 flex items-center gap-1">
+          <span className="text-xs text-stone-500 flex items-center gap-1">
             <Filter className="w-3 h-3" />
             Cấp độ:
           </span>
@@ -156,10 +156,10 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
               <button
                 key={diff}
                 onClick={() => setSelectedDifficulty(diff)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
                   isSelected
-                    ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 font-bold'
-                    : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-400 border border-stone-200 dark:border-stone-700'
+                    ? 'bg-red-600 text-white border-red-500 shadow-md font-bold'
+                    : 'bg-[#14161D] text-stone-400 hover:text-stone-200 border-stone-800'
                 }`}
               >
                 {labels[diff]}
@@ -171,7 +171,7 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
         <button
           type="button"
           onClick={() => pickWord()}
-          className="flex items-center gap-1 text-xs font-semibold text-stone-500 hover:text-stone-900 dark:hover:text-stone-100"
+          className="flex items-center gap-1 text-xs font-semibold text-stone-400 hover:text-white transition-colors"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>Đổi từ khác</span>
@@ -180,13 +180,13 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
 
       {/* Target Word Card */}
       <div
-        className={`p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/80 dark:border-stone-800 shadow-xs space-y-4 text-center transition-all ${
+        className={`p-6 rounded-3xl bg-[#14161D] border border-stone-800 shadow-xl space-y-4 text-center transition-all ${
           shakeActive ? 'animate-shake' : ''
         }`}
       >
         {/* Kanji & Category Tag */}
         <div className="flex items-center justify-between">
-          <span className="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-500">
+          <span className="text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-stone-850 text-stone-400 border border-stone-800">
             {currentWord.category}
           </span>
           {currentWord.kanji && currentWord.kanji !== currentWord.kana && (
@@ -207,13 +207,13 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
                 key={idx}
                 className={`w-14 h-16 sm:w-16 sm:h-20 rounded-2xl flex flex-col items-center justify-center transition-all ${
                   isDone
-                    ? 'bg-emerald-500 text-white shadow-md scale-100'
+                    ? 'bg-emerald-600 text-white shadow-lg scale-100 font-bold'
                     : isCurrent
-                    ? 'bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border-2 border-red-500 shadow-lg scale-105 animate-pulse'
-                    : 'bg-stone-100 dark:bg-stone-800 text-stone-400 border border-stone-200 dark:border-stone-700'
+                    ? 'bg-[#0D0E13] text-red-400 border-2 border-red-500 shadow-xl scale-105 animate-pulse'
+                    : 'bg-stone-850 text-stone-500 border border-stone-800'
                 }`}
               >
-                <span className="text-2xl sm:text-3xl font-extrabold font-sans">
+                <span className="text-2xl sm:text-3xl font-black font-sans">
                   {char}
                 </span>
                 <span className="text-[9px] uppercase font-mono tracking-wider opacity-70">
@@ -226,17 +226,17 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
 
         {/* Word Meaning in Vietnamese and English */}
         <div className="space-y-1 pt-1">
-          <div className="text-lg font-bold text-stone-900 dark:text-stone-100">
+          <div className="text-lg font-bold text-white">
             {settings.languageMeaning === 'vi' ? currentWord.meaningVi : currentWord.meaningEn}
           </div>
-          <div className="text-xs text-stone-500 font-mono">
+          <div className="text-xs text-stone-400 font-mono">
             {currentWord.romaji}
           </div>
         </div>
 
         {/* Next Hint for Active Character */}
         {expectedInfo?.needsModifier && !isCompleted && (
-          <div className="inline-block px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 text-xs font-semibold border border-amber-200 dark:border-amber-900">
+          <div className="inline-block px-3 py-1 rounded-full bg-amber-950/40 text-amber-300 text-xs font-semibold border border-amber-800/80 animate-pulse">
             {!typedBuffer
               ? `👉 Gõ âm cơ bản "${expectedInfo.baseChar}" trước`
               : `👉 Nhấn phím "゛゜小" để hoàn tất biến âm "${expectedChar}"`}
@@ -245,28 +245,28 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
 
         {/* Completion Celebration Overlay */}
         {isCompleted && completionStats && (
-          <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 space-y-3 animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-center gap-1.5 text-emerald-700 dark:text-emerald-300 font-bold text-sm">
-              <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+          <div className="p-4 rounded-2xl bg-emerald-950/40 border border-emerald-800 space-y-3 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-center gap-1.5 text-emerald-300 font-bold text-sm">
+              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
               <span>Tuyệt vời! Đã hoàn thành từ vựng!</span>
             </div>
 
             <div className="grid grid-cols-3 gap-2 text-center text-xs">
-              <div className="p-2 rounded-xl bg-white dark:bg-stone-800 border border-emerald-100 dark:border-emerald-900">
+              <div className="p-2.5 rounded-xl bg-stone-900 border border-emerald-900/60">
                 <div className="text-stone-400">Thời gian</div>
-                <div className="font-bold text-stone-800 dark:text-stone-200 text-sm mt-0.5">
+                <div className="font-bold text-white text-sm mt-0.5">
                   {completionStats.timeSec}s
                 </div>
               </div>
-              <div className="p-2 rounded-xl bg-white dark:bg-stone-800 border border-emerald-100 dark:border-emerald-900">
+              <div className="p-2.5 rounded-xl bg-stone-900 border border-emerald-900/60">
                 <div className="text-stone-400">Độ chính xác</div>
-                <div className="font-bold text-stone-800 dark:text-stone-200 text-sm mt-0.5">
+                <div className="font-bold text-white text-sm mt-0.5">
                   {completionStats.accuracy}%
                 </div>
               </div>
-              <div className="p-2 rounded-xl bg-white dark:bg-stone-800 border border-emerald-100 dark:border-emerald-900">
+              <div className="p-2.5 rounded-xl bg-stone-900 border border-emerald-900/60">
                 <div className="text-stone-400">Tốc độ CPM</div>
-                <div className="font-bold text-stone-800 dark:text-stone-200 text-sm mt-0.5">
+                <div className="font-bold text-white text-sm mt-0.5">
                   {completionStats.cpm}
                 </div>
               </div>
@@ -276,7 +276,7 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
               <button
                 type="button"
                 onClick={() => pickWord()}
-                className="flex items-center gap-1.5 px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md"
+                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all"
               >
                 <span>Từ tiếp theo</span>
                 <ChevronRight className="w-4 h-4" />

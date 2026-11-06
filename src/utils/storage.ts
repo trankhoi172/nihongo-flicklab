@@ -11,8 +11,8 @@ export const DEFAULT_SETTINGS: UserSettings = {
   soundTheme: 'click',
   showRomaji: true,
   showFlickHints: true,
-  languageMeaning: 'vi', // Vietnamese translation by default as requested
-  theme: 'wabi', // Wabi-sabi minimalist aesthetic
+  languageMeaning: 'vi',
+  theme: 'dark', // Default to pure dark theme as requested
 };
 
 export function createDefaultProgress(): UserProgress {
@@ -26,6 +26,7 @@ export function createDefaultProgress(): UserProgress {
     lastActiveDate: new Date().toISOString().slice(0, 10),
     rowMastery: {},
     completedWordIds: [],
+    completedLessonIds: [],
     challengeHistory: [],
   };
 }
@@ -34,7 +35,8 @@ export function loadSettings(): UserSettings {
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
     if (!raw) return { ...DEFAULT_SETTINGS };
-    return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    return { ...DEFAULT_SETTINGS, ...parsed, theme: 'dark' }; // Always enforce pure dark theme
   } catch {
     return { ...DEFAULT_SETTINGS };
   }
@@ -42,7 +44,7 @@ export function loadSettings(): UserSettings {
 
 export function saveSettings(settings: UserSettings): void {
   try {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...settings, theme: 'dark' }));
   } catch {}
 }
 
@@ -56,6 +58,7 @@ export function loadProgress(): UserProgress {
       ...parsed,
       rowMastery: { ...parsed.rowMastery },
       completedWordIds: [...(parsed.completedWordIds || [])],
+      completedLessonIds: [...(parsed.completedLessonIds || [])],
       challengeHistory: [...(parsed.challengeHistory || [])],
     };
 
@@ -117,6 +120,14 @@ export function recordCompletedWord(wordId: string): void {
   const p = loadProgress();
   if (!p.completedWordIds.includes(wordId)) {
     p.completedWordIds.push(wordId);
+    saveProgress(p);
+  }
+}
+
+export function recordCompletedLesson(lessonId: string): void {
+  const p = loadProgress();
+  if (!p.completedLessonIds.includes(lessonId)) {
+    p.completedLessonIds.push(lessonId);
     saveProgress(p);
   }
 }

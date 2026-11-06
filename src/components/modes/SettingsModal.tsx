@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import type { UserSettings, FlickSensitivity, SoundTheme, AppTheme, LanguageMeaning } from '../../types/settings';
-import { X, Volume2, VolumeX, Sliders, Moon, Sun, Globe, RotateCcw, Check } from 'lucide-react';
+import type { UserSettings, FlickSensitivity, SoundTheme, LanguageMeaning } from '../../types/settings';
+import { X, Volume2, VolumeX, Sliders, Globe, RotateCcw, Check } from 'lucide-react';
 import { soundEffects } from '../../utils/audio';
 
 interface SettingsModalProps {
@@ -23,7 +23,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   if (!isOpen) return null;
 
   const update = (partial: Partial<UserSettings>) => {
-    const updated = { ...settings, ...partial };
+    const updated = { ...settings, ...partial, theme: 'dark' as const };
     onUpdateSettings(updated);
   };
 
@@ -37,31 +37,27 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     soundEffects.playTap(val, settings.soundVolume);
   };
 
-  const handleThemeChange = (val: AppTheme) => {
-    update({ theme: val });
-  };
-
   const handleLanguageChange = (val: LanguageMeaning) => {
     update({ languageMeaning: val });
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-xs animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
       <div
-        className="w-full max-w-lg bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 dark:border-stone-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="w-full max-w-lg bg-[#14161D] rounded-3xl border border-stone-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100 dark:border-stone-800">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-stone-800/80 bg-[#101217]">
           <div className="flex items-center gap-2">
-            <Sliders className="w-5 h-5 text-red-600 dark:text-red-400" />
-            <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100">
+            <Sliders className="w-5 h-5 text-red-500" />
+            <h2 className="text-lg font-bold text-white">
               Cài đặt (設定)
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            className="p-1.5 rounded-full text-stone-400 hover:text-white hover:bg-stone-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -71,13 +67,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         <div className="p-6 space-y-6 overflow-y-auto">
           {/* Flick Sensitivity */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-stone-900 dark:text-stone-100 flex items-center justify-between">
+            <label className="text-sm font-semibold text-white flex items-center justify-between">
               <span>Độ nhạy vuốt (Flick Sensitivity)</span>
-              <span className="text-xs font-mono text-stone-500 uppercase">
+              <span className="text-xs font-mono text-red-400 uppercase font-bold">
                 {settings.flickSensitivity}
               </span>
             </label>
-            <p className="text-xs text-stone-500">
+            <p className="text-xs text-stone-400">
               Khoảng cách ngón tay di chuyển để kích hoạt thao tác vuốt 4 hướng.
             </p>
             <div className="grid grid-cols-3 gap-2 pt-1">
@@ -95,8 +91,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     onClick={() => handleSensitivityChange(level)}
                     className={`py-2 px-2 rounded-xl text-xs font-medium border text-center transition-all ${
                       isSelected
-                        ? 'bg-red-50 dark:bg-red-950/40 border-red-500 text-red-600 dark:text-red-400 font-bold'
-                        : 'border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300'
+                        ? 'bg-red-950/60 border-red-500 text-red-400 font-bold shadow-md'
+                        : 'border-stone-800 hover:bg-stone-800 text-stone-400'
                     }`}
                   >
                     {labels[level]}
@@ -107,14 +103,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
 
           {/* Sound & Haptic Feedback */}
-          <div className="space-y-3 pt-2 border-t border-stone-100 dark:border-stone-800">
+          <div className="space-y-3 pt-2 border-t border-stone-800/80">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-sm font-semibold text-stone-900 dark:text-stone-100 block">
-                  Âm thanh & Phản hồi (Sound & Audio)
+                <span className="text-sm font-semibold text-white block">
+                  Âm thanh & Phản hồi gõ phím
                 </span>
-                <span className="text-xs text-stone-500">
-                  Âm gõ phím cơ học và thông báo kết quả tức thì
+                <span className="text-xs text-stone-400">
+                  Âm phím cơ học và hiệu ứng chuông thông báo kết quả tức thì
                 </span>
               </div>
               <button
@@ -125,8 +121,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 }}
                 className={`p-2 rounded-xl border transition-colors ${
                   settings.soundEnabled
-                    ? 'bg-red-50 dark:bg-red-950/40 border-red-500 text-red-600 dark:text-red-400'
-                    : 'bg-stone-100 dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-400'
+                    ? 'bg-red-950/60 border-red-500 text-red-400'
+                    : 'bg-stone-850 border-stone-800 text-stone-500'
                 }`}
               >
                 {settings.soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
@@ -136,7 +132,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             {settings.soundEnabled && (
               <div className="space-y-3 pl-1">
                 <div className="flex items-center gap-3">
-                  <span className="text-xs text-stone-500 w-16">Âm lượng:</span>
+                  <span className="text-xs text-stone-400 w-16">Âm lượng:</span>
                   <input
                     type="range"
                     min="0.1"
@@ -146,7 +142,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     onChange={(e) => update({ soundVolume: parseFloat(e.target.value) })}
                     className="flex-1 accent-red-600"
                   />
-                  <span className="text-xs font-mono text-stone-500 w-8 text-right">
+                  <span className="text-xs font-mono text-stone-400 w-8 text-right">
                     {Math.round(settings.soundVolume * 100)}%
                   </span>
                 </div>
@@ -166,8 +162,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         onClick={() => handleSoundThemeChange(themeName)}
                         className={`py-1.5 px-2 rounded-lg text-xs font-medium border text-center transition-all ${
                           isSelected
-                            ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 font-bold border-transparent'
-                            : 'border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300'
+                            ? 'bg-stone-800 text-white font-bold border-stone-600'
+                            : 'border-stone-800 text-stone-400 hover:bg-stone-850'
                         }`}
                       >
                         {names[themeName]}
@@ -180,17 +176,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
 
           {/* Visual Guides */}
-          <div className="space-y-3 pt-2 border-t border-stone-100 dark:border-stone-800">
-            <span className="text-sm font-semibold text-stone-900 dark:text-stone-100 block">
+          <div className="space-y-3 pt-2 border-t border-stone-800/80">
+            <span className="text-sm font-semibold text-white block">
               Trợ giúp thị giác (Visual Guides)
             </span>
 
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs font-medium text-stone-800 dark:text-stone-200 block">
+                <span className="text-xs font-medium text-stone-200 block">
                   Hiển thị Romaji (Phiên âm chữ cái Latinh)
                 </span>
-                <span className="text-[11px] text-stone-400">
+                <span className="text-[11px] text-stone-500">
                   Hữu ích cho người mới làm quen mặt chữ
                 </span>
               </div>
@@ -204,10 +200,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs font-medium text-stone-800 dark:text-stone-200 block">
+                <span className="text-xs font-medium text-stone-200 block">
                   Hiển thị 4 chữ vệ tinh trên mặt phím
                 </span>
-                <span className="text-[11px] text-stone-400">
+                <span className="text-[11px] text-stone-500">
                   Hiển thị ký tự trái/trên/phải/dưới ngay trên mỗi ô phím
                 </span>
               </div>
@@ -220,65 +216,27 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           </div>
 
-          {/* Theme & Meaning Language */}
-          <div className="space-y-3 pt-2 border-t border-stone-100 dark:border-stone-800">
-            <span className="text-sm font-semibold text-stone-900 dark:text-stone-100 block">
-              Giao diện & Ngôn ngữ giải nghĩa
+          {/* Meaning Language */}
+          <div className="space-y-3 pt-2 border-t border-stone-800/80">
+            <span className="text-sm font-semibold text-white block">
+              Ngôn ngữ giải nghĩa từ vựng
             </span>
-
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => handleThemeChange('wabi')}
-                className={`py-2 px-2 rounded-xl text-xs font-medium border flex items-center justify-center gap-1.5 transition-all ${
-                  settings.theme === 'wabi'
-                    ? 'border-amber-600 bg-amber-50/70 text-amber-900 font-bold'
-                    : 'border-stone-200 text-stone-600 hover:bg-stone-50'
-                }`}
-              >
-                <span>📜 Wabi-sabi</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleThemeChange('light')}
-                className={`py-2 px-2 rounded-xl text-xs font-medium border flex items-center justify-center gap-1.5 transition-all ${
-                  settings.theme === 'light'
-                    ? 'border-red-500 bg-red-50 text-red-700 font-bold'
-                    : 'border-stone-200 text-stone-600 hover:bg-stone-50'
-                }`}
-              >
-                <Sun className="w-3.5 h-3.5" />
-                <span>Sáng (Light)</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleThemeChange('dark')}
-                className={`py-2 px-2 rounded-xl text-xs font-medium border flex items-center justify-center gap-1.5 transition-all ${
-                  settings.theme === 'dark'
-                    ? 'border-stone-600 bg-stone-800 text-stone-100 font-bold'
-                    : 'border-stone-200 text-stone-600 hover:bg-stone-50'
-                }`}
-              >
-                <Moon className="w-3.5 h-3.5" />
-                <span>Tối (Dark)</span>
-              </button>
-            </div>
 
             <div className="flex items-center justify-between pt-1">
               <div className="flex items-center gap-1.5">
-                <Globe className="w-4 h-4 text-stone-400" />
-                <span className="text-xs text-stone-700 dark:text-stone-300">
-                  Dịch nghĩa từ vựng:
+                <Globe className="w-4 h-4 text-stone-500" />
+                <span className="text-xs text-stone-300">
+                  Dịch nghĩa từ vựng sang:
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => handleLanguageChange('vi')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold ${
                     settings.languageMeaning === 'vi'
                       ? 'bg-red-600 text-white'
-                      : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
+                      : 'bg-stone-850 text-stone-400'
                   }`}
                 >
                   Tiếng Việt
@@ -286,10 +244,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <button
                   type="button"
                   onClick={() => handleLanguageChange('en')}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold ${
                     settings.languageMeaning === 'en'
                       ? 'bg-red-600 text-white'
-                      : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
+                      : 'bg-stone-850 text-stone-400'
                   }`}
                 >
                   English
@@ -299,26 +257,26 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
 
           {/* Reset Progress */}
-          <div className="pt-2 border-t border-stone-100 dark:border-stone-800">
+          <div className="pt-2 border-t border-stone-800/80">
             {!showConfirmReset ? (
               <button
                 type="button"
                 onClick={() => setShowConfirmReset(true)}
-                className="w-full py-2.5 text-xs text-stone-500 hover:text-red-600 flex items-center justify-center gap-1.5 transition-colors"
+                className="w-full py-2.5 text-xs text-stone-500 hover:text-red-400 flex items-center justify-center gap-1.5 transition-colors"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Đặt lại toàn bộ dữ liệu tiến trình</span>
               </button>
             ) : (
-              <div className="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-xl space-y-2">
-                <p className="text-xs text-red-700 dark:text-red-300 font-medium">
-                  Bạn có chắc muốn xóa sạch chuỗi ngày, kỷ lục tốc độ và kết quả luyện tập?
+              <div className="p-3 bg-red-950/40 border border-red-900 rounded-xl space-y-2">
+                <p className="text-xs text-red-300 font-medium">
+                  Bạn có chắc muốn xóa sạch chuỗi ngày, bài học đã hoàn thành và kết quả luyện tập?
                 </p>
                 <div className="flex items-center justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setShowConfirmReset(false)}
-                    className="px-3 py-1 text-xs rounded-lg bg-stone-200 text-stone-700"
+                    className="px-3 py-1 text-xs rounded-lg bg-stone-800 text-stone-300"
                   >
                     Hủy
                   </button>
@@ -340,11 +298,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 border-t border-stone-100 dark:border-stone-800 bg-stone-50 dark:bg-stone-900/50 flex justify-end">
+        <div className="px-6 py-3 border-t border-stone-800/80 bg-[#101217] flex justify-end">
           <button
             type="button"
             onClick={onClose}
-            className="flex items-center gap-1 px-4 py-2 rounded-xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-bold hover:bg-stone-800 transition-colors"
+            className="flex items-center gap-1 px-4 py-2 rounded-xl bg-stone-100 text-stone-900 text-xs font-bold hover:bg-white transition-colors"
           >
             <Check className="w-3.5 h-3.5" />
             <span>Hoàn tất (閉じる)</span>

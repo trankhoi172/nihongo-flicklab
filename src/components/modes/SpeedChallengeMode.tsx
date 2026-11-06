@@ -226,16 +226,16 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
     <div className="max-w-2xl mx-auto px-4 py-4 space-y-4 animate-in fade-in duration-200">
       {/* Configuration Header */}
       {gameState === 'idle' && (
-        <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/80 dark:border-stone-800 shadow-xs space-y-5 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 mx-auto flex items-center justify-center">
+        <div className="p-6 rounded-3xl bg-[#14161D] border border-stone-800 shadow-xl space-y-5 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-amber-950/40 border border-amber-850 text-amber-400 mx-auto flex items-center justify-center">
             <Timer className="w-7 h-7" />
           </div>
 
           <div>
-            <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">
+            <h2 className="text-xl font-bold text-white">
               Thử thách tốc độ (タイムアタック)
             </h2>
-            <p className="text-xs text-stone-500 mt-1">
+            <p className="text-xs text-stone-400 mt-1">
               Kiểm tra tốc độ gõ phím Nhật Bản, tính CPM và thăng hạng danh hiệu.
             </p>
           </div>
@@ -252,8 +252,8 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
                     onClick={() => setSelectedDuration(sec as 30 | 60)}
                     className={`py-2 rounded-xl text-xs font-bold border transition-all text-center ${
                       selectedDuration === sec
-                        ? 'bg-red-600 text-white border-red-600 shadow-xs'
-                        : 'border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300'
+                        ? 'bg-red-600 text-white border-red-500 shadow-md'
+                        : 'border-stone-800 text-stone-400 hover:bg-stone-850'
                     }`}
                   >
                     {sec} Giây
@@ -275,8 +275,8 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
                     onClick={() => setSelectedType(m.id as 'kana' | 'word')}
                     className={`py-2 rounded-xl text-xs font-bold border transition-all text-center ${
                       selectedType === m.id
-                        ? 'bg-red-600 text-white border-red-600 shadow-xs'
-                        : 'border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-300'
+                        ? 'bg-red-600 text-white border-red-500 shadow-md'
+                        : 'border-stone-800 text-stone-400 hover:bg-stone-850'
                     }`}
                   >
                     {m.label}
@@ -289,7 +289,7 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
           <div className="pt-2">
             <button
               onClick={startChallenge}
-              className="inline-flex items-center gap-2 px-8 py-3 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-sm shadow-xl shadow-red-900/30 hover:scale-105 active:scale-95 transition-all"
+              className="inline-flex items-center gap-2 px-8 py-3 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-sm shadow-xl shadow-red-950/80 hover:scale-105 active:scale-95 transition-all"
             >
               <Play className="w-4 h-4 fill-white" />
               <span>Bắt đầu đếm ngược</span>
@@ -300,12 +300,12 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
 
       {/* Active Game Session */}
       {gameState === 'running' && (
-        <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/80 dark:border-stone-800 shadow-xs space-y-4">
-          <div className="flex items-center justify-between text-xs font-semibold text-stone-500">
+        <div className="p-6 rounded-3xl bg-[#14161D] border border-stone-800 shadow-xl space-y-4">
+          <div className="flex items-center justify-between text-xs font-semibold text-stone-400">
             <div className="flex items-center gap-2">
               <span
                 className={`font-mono text-xl font-black ${
-                  timeLeft <= 5 ? 'text-red-600 animate-ping' : 'text-stone-900 dark:text-stone-100'
+                  timeLeft <= 5 ? 'text-red-400 animate-ping' : 'text-white'
                 }`}
               >
                 ⏱️ {timeLeft}s
@@ -313,11 +313,11 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1 text-amber-600">
+              <div className="flex items-center gap-1 text-amber-400">
                 <Zap className="w-4 h-4 fill-current" />
                 <span>Combo: {currentCombo}</span>
               </div>
-              <div className="text-stone-800 dark:text-stone-200 font-bold">
+              <div className="text-white font-bold">
                 {currentCpm} CPM
               </div>
             </div>
@@ -325,8 +325,8 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
 
           <div className="flex flex-col items-center justify-center py-2 space-y-2">
             {selectedType === 'kana' ? (
-              <div className="w-28 h-28 rounded-3xl bg-stone-100 dark:bg-stone-800 flex items-center justify-center border border-stone-200 dark:border-stone-700 shadow-inner">
-                <span className="text-5xl font-black text-stone-900 dark:text-stone-100">
+              <div className="w-28 h-28 rounded-3xl bg-[#0D0E13] flex items-center justify-center border border-stone-800 shadow-inner">
+                <span className="text-5xl font-black text-white">
                   {currentKana}
                 </span>
               </div>
@@ -338,17 +338,17 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
                       key={i}
                       className={`w-12 h-14 rounded-xl flex items-center justify-center text-2xl font-bold ${
                         i < wordCharIndex
-                          ? 'bg-emerald-500 text-white'
+                          ? 'bg-emerald-600 text-white'
                           : i === wordCharIndex
-                          ? 'bg-red-50 text-red-600 border-2 border-red-500'
-                          : 'bg-stone-100 dark:bg-stone-800 text-stone-400'
+                          ? 'bg-[#0D0E13] text-red-400 border-2 border-red-500'
+                          : 'bg-stone-850 text-stone-500'
                       }`}
                     >
                       {c}
                     </span>
                   ))}
                 </div>
-                <div className="text-xs text-stone-500 text-center">
+                <div className="text-xs text-stone-400 text-center">
                   {VOCABULARY_LIST[currentWordIndex].meaningVi}
                 </div>
               </div>
@@ -359,19 +359,19 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
 
       {/* Finished Results Screen */}
       {gameState === 'finished' && resultRecord && (
-        <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200/80 dark:border-stone-800 shadow-xs space-y-5 text-center animate-in zoom-in-95 duration-200">
+        <div className="p-6 rounded-3xl bg-[#14161D] border border-stone-800 shadow-xl space-y-5 text-center animate-in zoom-in-95 duration-200">
           {isNewRecord && (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 text-amber-700 dark:text-amber-300 text-xs font-bold animate-bounce">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-950/60 border border-amber-800 text-amber-300 text-xs font-bold animate-bounce">
               <Trophy className="w-3.5 h-3.5" />
               <span>KỶ LỤC TỐC ĐỘ MỚI!</span>
             </div>
           )}
 
           <div>
-            <div className="text-5xl font-black text-red-600 dark:text-red-400 my-1 font-serif">
+            <div className="text-5xl font-black text-red-500 my-1 font-serif">
               Hạng {resultRecord.rank}
             </div>
-            <h3 className="text-lg font-bold text-stone-900 dark:text-stone-100">
+            <h3 className="text-lg font-bold text-white">
               {resultRecord.rank === 'S'
                 ? 'Đẳng cấp Bậc Thầy (達人)'
                 : resultRecord.rank === 'A'
@@ -383,27 +383,27 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
           </div>
 
           <div className="grid grid-cols-4 gap-2 text-center text-xs">
-            <div className="p-3 rounded-2xl bg-stone-50 dark:bg-stone-800 border border-stone-200/80 dark:border-stone-700/80">
+            <div className="p-3 rounded-2xl bg-stone-850 border border-stone-800">
               <div className="text-stone-400">Tốc độ</div>
-              <div className="text-lg font-bold text-stone-900 dark:text-stone-100 mt-1">
-                {resultRecord.cpm} <span className="text-[10px] font-normal">CPM</span>
+              <div className="text-lg font-bold text-white mt-1">
+                {resultRecord.cpm} <span className="text-[10px] font-normal text-stone-400">CPM</span>
               </div>
             </div>
-            <div className="p-3 rounded-2xl bg-stone-50 dark:bg-stone-800 border border-stone-200/80 dark:border-stone-700/80">
+            <div className="p-3 rounded-2xl bg-stone-850 border border-stone-800">
               <div className="text-stone-400">Chính xác</div>
-              <div className="text-lg font-bold text-stone-900 dark:text-stone-100 mt-1">
+              <div className="text-lg font-bold text-white mt-1">
                 {resultRecord.accuracy}%
               </div>
             </div>
-            <div className="p-3 rounded-2xl bg-stone-50 dark:bg-stone-800 border border-stone-200/80 dark:border-stone-700/80">
+            <div className="p-3 rounded-2xl bg-stone-850 border border-stone-800">
               <div className="text-stone-400">Đã gõ</div>
-              <div className="text-lg font-bold text-stone-900 dark:text-stone-100 mt-1">
+              <div className="text-lg font-bold text-white mt-1">
                 {resultRecord.totalChars}
               </div>
             </div>
-            <div className="p-3 rounded-2xl bg-stone-50 dark:bg-stone-800 border border-stone-200/80 dark:border-stone-700/80">
+            <div className="p-3 rounded-2xl bg-stone-850 border border-stone-800">
               <div className="text-stone-400">Combo đỉnh</div>
-              <div className="text-lg font-bold text-amber-600 mt-1">
+              <div className="text-lg font-bold text-amber-400 mt-1">
                 {maxCombo}
               </div>
             </div>
@@ -412,14 +412,14 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
           <div className="pt-2 flex justify-center gap-3">
             <button
               onClick={startChallenge}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-bold shadow-md hover:scale-105 transition-transform"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-stone-100 text-stone-900 text-xs font-bold shadow-md hover:bg-white transition-all"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Thử lại lần nữa</span>
             </button>
             <button
               onClick={() => setGameState('idle')}
-              className="px-4 py-2.5 rounded-2xl border border-stone-200 dark:border-stone-700 text-stone-600 text-xs font-semibold"
+              className="px-4 py-2.5 rounded-2xl border border-stone-800 text-stone-300 text-xs font-semibold hover:bg-stone-850"
             >
               Đổi cài đặt
             </button>

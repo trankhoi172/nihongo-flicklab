@@ -17,33 +17,33 @@ export const Header: React.FC<HeaderProps> = ({
   onSelectMode,
 }) => {
   return (
-    <header className="w-full border-b border-stone-200/80 dark:border-stone-800 bg-white/80 dark:bg-stone-900/80 backdrop-blur-md sticky top-0 z-30 transition-colors">
-      <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+    <header className="w-full border-b border-stone-800/80 bg-[#0B0C0E]/90 backdrop-blur-md sticky top-0 z-30 transition-colors">
+      <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
         <button
           onClick={() => onSelectMode('dashboard')}
           className="flex items-center gap-2.5 text-left group"
         >
-          <div className="w-8 h-8 rounded-lg bg-red-600 dark:bg-red-500 text-white flex items-center justify-center font-bold text-base shadow-sm group-hover:scale-105 transition-transform">
+          <div className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center font-bold text-base shadow-lg shadow-red-950/60 group-hover:scale-105 transition-transform">
             <span>あ</span>
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-bold text-stone-900 dark:text-stone-100 text-base tracking-tight">
+              <span className="font-extrabold text-white text-base tracking-tight">
                 Flick Lab
               </span>
-              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-stone-100 dark:bg-stone-800 text-stone-500 font-medium">
+              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-stone-800 text-stone-300 font-semibold border border-stone-700/60">
                 日本語
               </span>
             </div>
-            <p className="text-[11px] text-stone-500 dark:text-stone-400 hidden sm:block leading-none mt-0.5">
-              Luyện gõ bàn phím 12 phím Kana
+            <p className="text-[11px] text-stone-400 hidden sm:block leading-none mt-0.5 font-medium">
+              Luyện gõ bàn phím 12 phím Kana chuẩn Nhật
             </p>
           </div>
         </button>
 
         <div className="flex items-center gap-2 sm:gap-3">
           <div
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60 text-amber-700 dark:text-amber-300 text-xs font-semibold"
+            className="flex items-center gap-1 px-3 py-1 rounded-full bg-amber-950/40 border border-amber-800/60 text-amber-300 text-xs font-bold"
             title="Chuỗi ngày luyện tập liên tục"
           >
             <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500 animate-pulse" />
@@ -51,7 +51,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           <div
-            className="hidden md:flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 text-xs font-medium"
+            className="hidden md:flex items-center gap-1 px-3 py-1 rounded-full bg-stone-850 text-stone-300 border border-stone-800 text-xs font-medium"
             title="Tổng ký tự đã gõ"
           >
             <Keyboard className="w-3.5 h-3.5 text-stone-400" />
@@ -60,7 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           <button
             onClick={onOpenSettings}
-            className="p-2 rounded-xl text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            className="p-2 rounded-xl text-stone-300 hover:text-white hover:bg-stone-800 border border-transparent hover:border-stone-700 transition-all"
             title="Cài đặt (Settings)"
             aria-label="Cài đặt"
           >
