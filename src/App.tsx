@@ -10,6 +10,7 @@ import { TutorialMode } from './components/modes/TutorialMode';
 import { FlickPracticeMode } from './components/modes/FlickPracticeMode';
 import { WordPracticeMode } from './components/modes/WordPracticeMode';
 import { SpeedChallengeMode } from './components/modes/SpeedChallengeMode';
+import { MinigameMode } from './components/modes/MinigameMode';
 import { FreeTypingMode } from './components/modes/FreeTypingMode';
 import { ProgressMode } from './components/modes/ProgressMode';
 import { SettingsModal } from './components/modes/SettingsModal';
@@ -88,6 +89,10 @@ export const App: React.FC = () => {
 
           {currentMode === 'challenge' && (
             <SpeedChallengeMode settings={settings} />
+          )}
+
+          {currentMode === 'minigame' && (
+            <MinigameMode settings={settings} />
           )}
 
           {currentMode === 'free' && (

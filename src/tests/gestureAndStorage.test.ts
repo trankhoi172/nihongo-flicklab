@@ -6,6 +6,7 @@ import {
   recordKanaPractice,
   recordCompletedWord,
   recordSpeedChallenge,
+  recordMinigameScore,
   resetAllData,
   DEFAULT_SETTINGS,
 } from '../utils/storage';
@@ -136,6 +137,37 @@ describe('LocalStorage & Progress Tracking', () => {
     const p2 = loadProgress();
     expect(p2.bestCPM).toBe(165);
     expect(p2.challengeHistory).toHaveLength(2);
+  });
+
+  it('should record minigame scores and track high score and max combo correctly', () => {
+    const res1 = recordMinigameScore(1500, 8);
+    expect(res1.isNewHighScore).toBe(true);
+    expect(res1.highScore).toBe(1500);
+
+    const p1 = loadProgress();
+    expect(p1.minigameHighScore).toBe(1500);
+    expect(p1.minigameMaxCombo).toBe(8);
+    expect(p1.minigameGamesPlayed).toBe(1);
+
+    // Lower score does not overwrite high score, but higher combo is updated
+    const res2 = recordMinigameScore(1200, 12);
+    expect(res2.isNewHighScore).toBe(false);
+    expect(res2.highScore).toBe(1500);
+
+    const p2 = loadProgress();
+    expect(p2.minigameHighScore).toBe(1500);
+    expect(p2.minigameMaxCombo).toBe(12);
+    expect(p2.minigameGamesPlayed).toBe(2);
+
+    // Higher score beats high score
+    const res3 = recordMinigameScore(3800, 15);
+    expect(res3.isNewHighScore).toBe(true);
+    expect(res3.highScore).toBe(3800);
+
+    const p3 = loadProgress();
+    expect(p3.minigameHighScore).toBe(3800);
+    expect(p3.minigameMaxCombo).toBe(15);
+    expect(p3.minigameGamesPlayed).toBe(3);
   });
 
   it('should reset all data on resetAllData() call', () => {

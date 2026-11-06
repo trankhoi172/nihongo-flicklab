@@ -179,6 +179,80 @@ class SoundEffects {
     } catch {}
   }
 
+  public playLaserPop(volume = 0.5): void {
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1400, now);
+      osc.frequency.exponentialRampToValueAtTime(350, now + 0.08);
+
+      gain.gain.setValueAtTime(volume * 0.4, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.09);
+    } catch {}
+  }
+
+  public playCombo(comboCount: number, volume = 0.5): void {
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      const baseFreq = Math.min(1200, 440 + comboCount * 45);
+      const notes = [baseFreq, baseFreq * 1.25];
+
+      notes.forEach((f, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, now + idx * 0.035);
+
+        const startTime = now + idx * 0.035;
+        gain.gain.setValueAtTime(volume * 0.35, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.12);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + 0.13);
+      });
+    } catch {}
+  }
+
+  public playLifeLost(volume = 0.5): void {
+    const ctx = this.getContext();
+    if (!ctx) return;
+
+    try {
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(150, now);
+      osc.frequency.exponentialRampToValueAtTime(60, now + 0.2);
+
+      gain.gain.setValueAtTime(volume * 0.45, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.22);
+    } catch {}
+  }
+
   public playTick(volume = 0.5): void {
     const ctx = this.getContext();
     if (!ctx) return;

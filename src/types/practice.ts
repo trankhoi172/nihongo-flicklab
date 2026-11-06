@@ -7,6 +7,7 @@ export type PracticeMode =
   | 'flick'
   | 'word'
   | 'challenge'
+  | 'minigame'
   | 'free'
   | 'progress';
 
@@ -81,4 +82,7 @@ export interface UserProgress {
   completedWordIds: string[];
   completedLessonIds: string[];
   challengeHistory: SpeedChallengeRecord[];
+  minigameHighScore?: number;
+  minigameMaxCombo?: number;
+  minigameGamesPlayed?: number;
 }

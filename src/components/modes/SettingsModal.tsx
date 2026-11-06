@@ -64,7 +64,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         {/* Body content */}
-        <div className="p-6 space-y-6 overflow-y-auto">
+        <div className="p-6 space-y-6 overflow-y-auto no-scrollbar overscroll-contain">
           {/* Flick Sensitivity */}
           <div className="space-y-2">
             <label className="text-sm font-semibold text-white flex items-center justify-between">

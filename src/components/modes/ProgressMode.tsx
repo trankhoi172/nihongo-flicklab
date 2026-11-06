@@ -3,7 +3,7 @@ import type { UserProgress } from '../../types/practice';
 import { KEYBOARD_LAYOUT } from '../../constants/keyboardLayout';
 import { VOCABULARY_LIST } from '../../constants/vocabulary';
 import { CURRICULUM_MODULES } from '../../constants/curriculum';
-import { Flame, Zap, Trophy, BookOpen, Target, CheckCircle2 } from 'lucide-react';
+import { Flame, Zap, Trophy, BookOpen, Target, CheckCircle2, Gamepad2 } from 'lucide-react';
 
 interface ProgressModeProps {
   progress: UserProgress;
@@ -185,6 +185,32 @@ export const ProgressMode: React.FC<ProgressModeProps> = ({ progress }) => {
           />
         </div>
       </div>
+
+      {/* Minigame Achievement Card */}
+      {((progress.minigameGamesPlayed || 0) > 0 || (progress.minigameHighScore || 0) > 0) && (
+        <div className="p-6 rounded-3xl bg-[#14161D] border border-stone-800 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center shrink-0">
+              <Gamepad2 className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="text-sm font-bold text-white flex items-center gap-2">
+                <span>Thành tích Mưa Chữ Kana (Minigame)</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">Arcade</span>
+              </div>
+              <p className="text-xs text-stone-400 mt-0.5">
+                Đã chơi {progress.minigameGamesPlayed || 0} trận • Chuỗi Combo tối đa: 🔥 {progress.minigameMaxCombo || 0}
+              </p>
+            </div>
+          </div>
+          <div className="sm:text-right">
+            <div className="text-[10px] text-stone-500 uppercase font-mono">Điểm cao nhất</div>
+            <div className="text-2xl font-black text-amber-300">
+              {(progress.minigameHighScore || 0).toLocaleString()} <span className="text-xs text-stone-500">PTS</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Speed Challenge History */}
       {progress.challengeHistory && progress.challengeHistory.length > 0 && (

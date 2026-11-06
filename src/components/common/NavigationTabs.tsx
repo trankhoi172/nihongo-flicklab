@@ -9,6 +9,7 @@ import {
   Edit3,
   BarChart3,
   Compass,
+  Gamepad2,
 } from 'lucide-react';
 
 interface NavigationTabsProps {
@@ -61,6 +62,12 @@ export const NavigationTabs: React.FC<NavigationTabsProps> = ({
       label: 'Thử thách',
       sub: 'タイムアタック',
       icon: <Timer className="w-4 h-4" />,
+    },
+    {
+      id: 'minigame',
+      label: 'Minigame',
+      sub: '雨の降下',
+      icon: <Gamepad2 className="w-4 h-4" />,
     },
     {
       id: 'free',

@@ -28,6 +28,9 @@ export function createDefaultProgress(): UserProgress {
     completedWordIds: [],
     completedLessonIds: [],
     challengeHistory: [],
+    minigameHighScore: 0,
+    minigameMaxCombo: 0,
+    minigameGamesPlayed: 0,
   };
 }
 
@@ -143,6 +146,21 @@ export function recordSpeedChallenge(record: SpeedChallengeRecord): void {
     p.bestCPM = record.cpm;
   }
   saveProgress(p);
+}
+
+export function recordMinigameScore(score: number, maxCombo: number): { isNewHighScore: boolean; highScore: number } {
+  const p = loadProgress();
+  p.totalSessions += 1;
+  p.minigameGamesPlayed = (p.minigameGamesPlayed || 0) + 1;
+  p.minigameMaxCombo = Math.max(p.minigameMaxCombo || 0, maxCombo);
+
+  const prevHigh = p.minigameHighScore || 0;
+  const isNewHighScore = score > prevHigh;
+  if (isNewHighScore) {
+    p.minigameHighScore = score;
+  }
+  saveProgress(p);
+  return { isNewHighScore, highScore: p.minigameHighScore || score };
 }
 
 export function resetAllData(): void {

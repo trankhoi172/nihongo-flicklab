@@ -13,6 +13,7 @@ import {
   Trophy,
   Zap,
   CheckCircle2,
+  Gamepad2,
 } from 'lucide-react';
 
 interface DashboardProps {
@@ -75,6 +76,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ progress, onSelectMode }) 
       icon: <Timer className="w-5 h-5 text-rose-400" />,
       color: 'bg-rose-950/40 border-rose-800/80',
       badge: progress.bestCPM > 0 ? `Kỷ lục: ${progress.bestCPM} CPM` : undefined,
+    },
+    {
+      id: 'minigame',
+      title: 'Mưa chữ Kana (Minigame)',
+      japanese: '雨の降下ゲーム',
+      desc: 'Bắn hạ các ký tự và từ vựng đang rơi trước khi chạm tia đỏ, duy trì combo rực rỡ và lập kỷ lục!',
+      icon: <Gamepad2 className="w-5 h-5 text-amber-400" />,
+      color: 'bg-amber-950/40 border-amber-800/80',
+      badge: (progress.minigameHighScore || 0) > 0 ? `Kỷ lục: ${progress.minigameHighScore} PTS` : 'Mới ✨',
     },
     {
       id: 'free',
