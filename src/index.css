@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-jp: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Meiryo", "Noto Sans JP", sans-serif;
+  }
+
+  body {
+    font-family: var(--font-jp);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    touch-action: manipulation;
+  }
+}
+
+/* Wabi-sabi Paper Theme */
+body.theme-wabi {
+  background-color: #FAF8F5;
+  color: #262422;
+}
+
+/* Modern Light Theme */
+body.theme-light {
+  background-color: #F8FAFC;
+  color: #0F172A;
+}
+
+/* Deep Sumi Dark Theme */
+body.theme-dark {
+  background-color: #121316;
+  color: #F1F5F9;
+}
+
+/* Hide scrollbar for neat horizontal pills */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Gentle shake animation for mistakes */
+@keyframes softShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+.animate-shake {
+  animation: softShake 0.35s ease-in-out;
+}
