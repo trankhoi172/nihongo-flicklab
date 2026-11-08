@@ -86,25 +86,25 @@ export const FlickFlower: React.FC<FlickFlowerProps> = ({
 
   return (
     <div className="absolute inset-0 pointer-events-none z-50 flex items-center justify-center">
-      {/* 1. Floating Overhead HUD Bubble (Always visible above thumb) */}
-      <div className="absolute -top-14 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-stone-900 border border-stone-700 text-white shadow-2xl z-50 whitespace-nowrap animate-in fade-in zoom-in-90 duration-75">
-        <span className="text-red-500 font-bold text-xs">
+      {/* 1. Floating Overhead HUD Bubble (Minimal frosted glass callout) */}
+      <div className="absolute -top-14 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1c1d22]/95 backdrop-blur-2xl border border-white/[0.12] text-white shadow-xl z-50 whitespace-nowrap animate-in fade-in zoom-in-95 duration-75">
+        <span className="text-neutral-300 font-medium text-xs">
           {activeDirection === 'left' && '← Trái'}
           {activeDirection === 'up' && '↑ Lên'}
           {activeDirection === 'right' && '→ Phải'}
           {activeDirection === 'down' && '↓ Dưới'}
           {activeDirection === 'center' && '● Chạm'}
         </span>
-        <span className="w-1 h-1 rounded-full bg-stone-600" />
-        <span className="font-extrabold text-base text-white">{activeChar}</span>
+        <span className="w-1 h-1 rounded-full bg-white/20" />
+        <span className="font-bold text-base text-white">{activeChar}</span>
         {showRomaji && activeRomaji && activeRomaji.length <= 4 && (
-          <span className="text-[10px] text-stone-400 font-mono uppercase">
+          <span className="text-[10px] text-neutral-400 font-mono uppercase">
             ({activeRomaji})
           </span>
         )}
       </div>
 
-      {/* 2. Radial Cross Flower Petals */}
+      {/* 2. Liquid Glass Cross Flower Petals */}
       <div className="relative w-full h-full flex items-center justify-center">
         {petals.map((petal) => {
           const isActive = activeDirection === petal.dir;
@@ -115,7 +115,7 @@ export const FlickFlower: React.FC<FlickFlowerProps> = ({
               key={petal.dir}
               style={{
                 transform: `translate(calc(-50% + ${petal.offsetX}px), calc(-50% + ${petal.offsetY}px)) scale(${
-                  isActive ? 1.15 : 0.95
+                  isActive ? 1.12 : 0.96
                 })`,
                 left: '50%',
                 top: '50%',
@@ -124,8 +124,8 @@ export const FlickFlower: React.FC<FlickFlowerProps> = ({
                 petal.dir === 'center' ? 'z-30 w-13 h-13' : 'z-20 w-12 h-12'
               } ${
                 isActive
-                  ? 'bg-red-600 text-white shadow-xl shadow-red-950/80 ring-2 ring-red-400 font-bold'
-                  : 'bg-stone-900/98 text-stone-200 border border-stone-700/80 shadow-lg backdrop-blur-md opacity-95'
+                  ? 'bg-white text-black shadow-xl ring-1 ring-white/80 font-bold'
+                  : 'bg-[#222329]/95 text-neutral-200 border border-white/[0.08] shadow-md backdrop-blur-2xl'
               }`}
             >
               {/* Kana Character */}
@@ -136,8 +136,8 @@ export const FlickFlower: React.FC<FlickFlowerProps> = ({
                     : isPunctuation
                     ? 'text-lg font-bold'
                     : isActive
-                    ? 'text-2xl font-black'
-                    : 'text-xl font-bold'
+                    ? 'text-2xl font-bold'
+                    : 'text-xl font-medium'
                 }`}
               >
                 {petal.char}
@@ -146,7 +146,7 @@ export const FlickFlower: React.FC<FlickFlowerProps> = ({
               {/* Direction label or vowel identifier */}
               <span
                 className={`text-[8px] uppercase tracking-wider font-mono mt-0.5 leading-none ${
-                  isActive ? 'text-red-100 font-bold' : 'text-stone-400'
+                  isActive ? 'text-black/70 font-semibold' : 'text-neutral-400'
                 }`}
               >
                 {petal.label}

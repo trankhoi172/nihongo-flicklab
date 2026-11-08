@@ -11,7 +11,7 @@ interface FlickKeyboardProps {
   targetKeyId?: string;
   targetDirection?: FlickDirection;
   onCharInput: (char: string) => void;
-  onModifier: () => void;
+  onModifier: (direction?: FlickDirection) => void;
   onBackspace: () => void;
   onSpace: () => void;
   onEnter: () => void;
@@ -50,7 +50,7 @@ export const FlickKeyboard: React.FC<FlickKeyboardProps> = ({
 
   const handleKeyCommit = (payload: KeyboardEventPayload) => {
     if (payload.isModifier) {
-      onModifier();
+      onModifier(payload.direction);
     } else {
       onCharInput(payload.char);
     }
@@ -79,7 +79,7 @@ export const FlickKeyboard: React.FC<FlickKeyboardProps> = ({
 
   return (
     <div
-      className={`w-full max-w-sm sm:max-w-md mx-auto p-3 sm:p-4 rounded-3xl bg-[#121319] border border-stone-800 shadow-2xl transition-colors select-none overflow-visible relative z-20 ${className}`}
+      className={`w-full max-w-sm sm:max-w-md mx-auto p-3 sm:p-4 rounded-3xl bg-[#18191f]/85 backdrop-blur-2xl border border-white/[0.08] shadow-2xl transition-all select-none overflow-visible relative z-20 ${className}`}
       style={{ touchAction: 'none' }}
     >
       {/* 4x3 Grid of 12 Kana Keys (overflow-visible so active key petals float freely) */}
@@ -111,14 +111,14 @@ export const FlickKeyboard: React.FC<FlickKeyboardProps> = ({
         <button
           type="button"
           onClick={handleToggleKatakana}
-          className="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl bg-stone-850 hover:bg-stone-800 text-stone-300 border border-stone-800 shadow-[0_2px_0_rgba(0,0,0,0.3)] active:translate-y-[1px] active:shadow-none transition-all"
+          className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-white/[0.06] hover:bg-white/[0.1] text-neutral-200 border border-white/[0.06] shadow-[0_1px_2px_rgba(0,0,0,0.25)] active:scale-95 transition-all"
           title="Hiragana / Katakana toggle"
         >
-          <span className="text-xs sm:text-sm font-bold flex items-center gap-1">
-            <Sparkles className="w-3 h-3 text-red-500" />
+          <span className="text-xs sm:text-sm font-semibold flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-neutral-400" />
             {isKatakana ? 'カナ' : 'かな'}
           </span>
-          <span className="text-[9px] text-stone-500 font-mono uppercase mt-0.5">
+          <span className="text-[9px] text-neutral-400 font-mono uppercase mt-0.5">
             {isKatakana ? 'Kata' : 'Hira'}
           </span>
         </button>
@@ -126,31 +126,31 @@ export const FlickKeyboard: React.FC<FlickKeyboardProps> = ({
         <button
           type="button"
           onClick={handleSpace}
-          className="flex flex-col items-center justify-center py-2.5 px-2 rounded-xl bg-stone-850 hover:bg-stone-800 text-stone-300 border border-stone-800 shadow-[0_2px_0_rgba(0,0,0,0.3)] active:translate-y-[1px] active:shadow-none transition-all"
+          className="flex flex-col items-center justify-center py-2.5 px-2 rounded-2xl bg-white/[0.06] hover:bg-white/[0.1] text-neutral-200 border border-white/[0.06] shadow-[0_1px_2px_rgba(0,0,0,0.25)] active:scale-95 transition-all"
           title="Space"
         >
           <span className="text-xs sm:text-sm font-semibold">空白</span>
-          <span className="text-[9px] text-stone-500 font-mono uppercase mt-0.5">Space</span>
+          <span className="text-[9px] text-neutral-400 font-mono uppercase mt-0.5">Space</span>
         </button>
 
         <button
           type="button"
           onClick={handleBackspace}
-          className="flex flex-col items-center justify-center py-2.5 px-2 rounded-xl bg-stone-850 hover:bg-stone-800 text-red-400 border border-stone-800 shadow-[0_2px_0_rgba(0,0,0,0.3)] active:translate-y-[1px] active:shadow-none transition-all"
+          className="flex flex-col items-center justify-center py-2.5 px-2 rounded-2xl bg-white/[0.06] hover:bg-white/[0.1] text-neutral-200 border border-white/[0.06] shadow-[0_1px_2px_rgba(0,0,0,0.25)] active:scale-95 transition-all"
           title="Backspace"
         >
           <Delete className="w-4 h-4" />
-          <span className="text-[9px] text-stone-500 font-mono uppercase mt-0.5">BS</span>
+          <span className="text-[9px] text-neutral-400 font-mono uppercase mt-0.5">BS</span>
         </button>
 
         <button
           type="button"
           onClick={handleEnter}
-          className="flex flex-col items-center justify-center py-2.5 px-2 rounded-xl bg-red-600 hover:bg-red-500 text-white shadow-[0_2px_0_rgba(0,0,0,0.4)] active:translate-y-[1px] active:shadow-none transition-all"
+          className="flex flex-col items-center justify-center py-2.5 px-2 rounded-2xl bg-white text-black hover:bg-neutral-200 border border-white/20 shadow-sm font-bold active:scale-95 transition-all"
           title="Enter / Confirm"
         >
           <CornerDownLeft className="w-4 h-4" />
-          <span className="text-[9px] text-red-100 font-mono uppercase mt-0.5">
+          <span className="text-[9px] font-mono uppercase mt-0.5 font-bold">
             確定
           </span>
         </button>

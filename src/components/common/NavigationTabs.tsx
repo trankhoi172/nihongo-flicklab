@@ -84,7 +84,7 @@ export const NavigationTabs: React.FC<NavigationTabsProps> = ({
   ];
 
   return (
-    <nav className="w-full bg-[#0D0E13] border-b border-stone-800 overflow-x-auto no-scrollbar">
+    <nav className="w-full bg-[#0e0f12] border-b border-white/[0.08] overflow-x-auto no-scrollbar">
       <div className="max-w-5xl mx-auto px-2 flex items-center justify-start sm:justify-center gap-1 sm:gap-1.5 py-1.5 min-w-max">
         {tabs.map((tab) => {
           const isActive = currentMode === tab.id;
@@ -92,16 +92,16 @@ export const NavigationTabs: React.FC<NavigationTabsProps> = ({
             <button
               key={tab.id}
               onClick={() => onSelectMode(tab.id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs transition-all ${
                 isActive
-                  ? 'bg-stone-800/90 text-red-400 font-bold shadow-xs border border-stone-700'
-                  : 'text-stone-400 hover:text-stone-200 hover:bg-stone-850'
+                  ? 'bg-white text-black font-bold shadow-xs'
+                  : 'text-neutral-400 hover:text-white hover:bg-white/[0.05] font-medium'
               }`}
             >
               {tab.icon}
               <div className="flex flex-col items-start leading-tight">
                 <span>{tab.label}</span>
-                <span className="text-[9px] opacity-60 font-normal hidden md:inline">
+                <span className={`text-[9px] font-normal hidden md:inline ${isActive ? 'text-black/70' : 'opacity-60'}`}>
                   {tab.sub}
                 </span>
               </div>

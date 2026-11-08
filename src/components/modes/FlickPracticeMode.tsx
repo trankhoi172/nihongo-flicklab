@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import type { KanaRowId, KanaTarget } from '../../types/practice';
 import type { UserSettings } from '../../types/settings';
+import type { FlickDirection } from '../../types/keyboard';
 import { FlickKeyboard } from '../keyboard/FlickKeyboard';
-import { getPracticeTargets, getModifiedChar } from '../../utils/kanaHelper';
+import { getPracticeTargets, applyModifier, isReachableInCycle } from '../../utils/kanaHelper';
 import { recordKanaPractice } from '../../utils/storage';
 import { soundEffects } from '../../utils/audio';
 import { Zap, Eye, EyeOff, RotateCcw } from 'lucide-react';
@@ -122,15 +123,18 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
     }
   };
 
-  const handleModifier = () => {
+  const handleModifier = (direction?: FlickDirection) => {
     if (!currentTarget || !typedBuffer) {
       return;
     }
 
-    const modified = getModifiedChar(typedBuffer);
+    const modified = applyModifier(typedBuffer, direction);
     if (modified === currentTarget.char) {
       setTypedBuffer(modified);
       handleCorrect();
+    } else if (isReachableInCycle(modified, currentTarget.char)) {
+      setTypedBuffer(modified);
+      if (settings.soundEnabled) soundEffects.playTap(settings.soundTheme, settings.soundVolume);
     } else {
       handleWrong();
     }
@@ -139,7 +143,7 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
   const accuracy = totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 100;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-4 space-y-4 animate-in fade-in duration-200">
+    <div className="max-w-xl mx-auto px-3 sm:px-4 py-2 space-y-3 animate-in fade-in duration-150">
       {/* Row Filter Pills */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
         {ROW_FILTERS.map((f) => {
@@ -150,8 +154,8 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
               onClick={() => setSelectedFilter(f.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
                 isSelected
-                  ? 'bg-red-600 text-white border-red-500 shadow-md font-bold'
-                  : 'bg-[#14161D] text-stone-400 hover:text-stone-200 border-stone-800'
+                  ? 'bg-white text-black border-white shadow-xs font-bold'
+                  : 'bg-white/[0.04] text-neutral-400 hover:text-white border-white/[0.06]'
               }`}
             >
               {f.label}
@@ -161,12 +165,12 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
       </div>
 
       {/* Target Display & Stats */}
-      <div className="p-6 rounded-3xl bg-[#14161D] border border-stone-800 shadow-xl space-y-4">
+      <div className="p-5 rounded-3xl bg-[#15161c]/90 border border-white/[0.08] shadow-xl space-y-3">
         {/* Top bar with stats & hint toggle */}
-        <div className="flex items-center justify-between text-xs font-medium text-stone-400">
+        <div className="flex items-center justify-between text-xs font-medium text-neutral-400">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 font-bold text-amber-400">
-              <Zap className="w-3.5 h-3.5 fill-current" />
+            <div className="flex items-center gap-1 font-bold text-white">
+              <Zap className="w-3.5 h-3.5 text-white" />
               <span>Combo: {comboStreak}</span>
             </div>
             <div>
@@ -187,8 +191,8 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
               onClick={() => setShowHint(!showHint)}
               className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs transition-colors ${
                 showHint
-                  ? 'bg-stone-800 border-stone-700 text-stone-200 font-semibold'
-                  : 'border-transparent text-stone-500'
+                  ? 'bg-white text-black border-white font-bold'
+                  : 'border-white/[0.08] text-neutral-400 bg-white/[0.04]'
               }`}
               title="Bật/Tắt gợi ý hướng phím"
             >
@@ -199,7 +203,7 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
             <button
               type="button"
               onClick={pickNewTarget}
-              className="p-1 rounded-lg text-stone-400 hover:text-white"
+              className="p-1 rounded-lg text-neutral-400 hover:text-white"
               title="Đổi chữ khác"
             >
               <RotateCcw className="w-4 h-4" />
@@ -208,26 +212,26 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
         </div>
 
         {/* Center Target Box */}
-        <div className="flex flex-col items-center justify-center py-4 space-y-2">
-          <span className="text-xs uppercase font-mono tracking-wider text-stone-500 font-bold">
-            Hãy gõ chữ cái này:
+        <div className="flex flex-col items-center justify-center py-2 space-y-2">
+          <span className="text-[11px] uppercase font-mono tracking-wider text-neutral-500 font-semibold">
+            Hãy gõ ký tự:
           </span>
 
           <div
-            className={`w-32 h-32 rounded-3xl flex items-center justify-center transition-all duration-150 ${
+            className={`w-28 h-28 rounded-3xl flex items-center justify-center transition-all duration-150 ${
               feedbackState === 'correct'
-                ? 'bg-emerald-600 text-white shadow-xl scale-105'
+                ? 'bg-white text-black font-extrabold shadow-xl scale-105'
                 : feedbackState === 'wrong'
-                ? 'bg-red-600 text-white shadow-xl animate-shake'
-                : 'bg-[#0D0E13] text-white border border-stone-800 shadow-inner'
+                ? 'bg-neutral-800 text-rose-400 border border-rose-500 animate-shake'
+                : 'bg-[#101115] text-white border border-white/[0.08] shadow-inner'
             }`}
           >
-            <span className="text-6xl font-extrabold font-sans">
+            <span className="text-5xl font-black font-sans">
               {currentTarget?.char || 'あ'}
             </span>
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-stone-400 font-medium">
+          <div className="flex items-center gap-2 text-xs text-neutral-400 font-medium">
             <span>Phiên âm:</span>
             <span className="font-mono font-bold text-white uppercase tracking-widest">
               {currentTarget?.romaji}
@@ -235,17 +239,17 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
           </div>
 
           {currentTarget?.needsModifier && (
-            <div className="text-xs text-amber-300 bg-amber-950/40 px-3 py-1 rounded-full border border-amber-800/80 font-medium animate-pulse">
+            <div className="text-xs text-neutral-200 bg-white/[0.06] px-3 py-1 rounded-full border border-white/[0.1] font-medium">
               {!typedBuffer
                 ? `1. Gõ chữ gốc "${currentTarget.baseChar}"`
-                : `2. Nhấn phím "゛゜小" để biến âm thành "${currentTarget.char}"!`}
+                : `2. Đã gõ "${typedBuffer}" ➔ Nhấn "゛゜小" để thành "${currentTarget.char}"!`}
             </div>
           )}
         </div>
       </div>
 
-      {/* On-Screen Keyboard */}
-      <div className="pt-1">
+      {/* Locked On-Screen Keyboard */}
+      <div className="pt-1 sticky bottom-2 z-20">
         <FlickKeyboard
           settings={settings}
           targetKeyId={showHint ? (typedBuffer ? 'mod' : currentTarget?.keyId) : undefined}

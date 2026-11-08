@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { CURRICULUM_MODULES } from '../../constants/curriculum';
 import type { UserSettings } from '../../types/settings';
+import type { FlickDirection } from '../../types/keyboard';
 import { FlickKeyboard } from '../keyboard/FlickKeyboard';
-import { getKanaInfo, getModifiedChar } from '../../utils/kanaHelper';
+import { getKanaInfo, applyModifier, isReachableInCycle } from '../../utils/kanaHelper';
 import { recordCompletedLesson } from '../../utils/storage';
 import { soundEffects } from '../../utils/audio';
 import confetti from 'canvas-confetti';
@@ -108,14 +109,21 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
     }
   };
 
-  const handleModifier = () => {
+  const handleModifier = (direction?: FlickDirection) => {
     if (isLessonComplete || !currentExpectedChar || !typedBuffer) return;
 
-    const modified = getModifiedChar(typedBuffer);
+    const modified = applyModifier(typedBuffer, direction);
     if (modified === currentExpectedChar) {
       if (settings.soundEnabled) soundEffects.playSuccess(settings.soundVolume);
       setFeedback({ isCorrect: true, message: `Chính xác! (${modified})` });
       advanceTarget();
+    } else if (isReachableInCycle(modified, currentExpectedChar)) {
+      setTypedBuffer(modified);
+      if (settings.soundEnabled) soundEffects.playTap(settings.soundTheme, settings.soundVolume);
+      setFeedback({
+        isCorrect: true,
+        message: `Đang biến âm (${modified}) ➔ Nhấn tiếp [゛゜小] để thành "${currentExpectedChar}"`,
+      });
     } else {
       handleMistake();
     }
@@ -167,9 +175,9 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
         </div>
 
         {/* Global Progress Bar */}
-        <div className="w-full h-2.5 rounded-full bg-stone-800/80 overflow-hidden">
+        <div className="w-full h-2 rounded-full bg-white/[0.08] overflow-hidden">
           <div
-            className="h-full bg-linear-to-r from-red-600 to-rose-500 rounded-full transition-all duration-500"
+            className="h-full bg-white rounded-full transition-all duration-500"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
@@ -190,15 +198,15 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
                 }}
                 className={`px-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 border ${
                   isSelected
-                    ? 'bg-red-600 text-white border-red-500 shadow-lg shadow-red-950/50 font-bold'
-                    : 'bg-[#181A22] text-stone-400 hover:text-stone-200 border-stone-800 hover:bg-stone-800'
+                    ? 'bg-white text-black border-white shadow-xs font-bold'
+                    : 'bg-white/[0.04] text-neutral-400 hover:text-white border-white/[0.08] hover:bg-white/[0.08]'
                 }`}
               >
                 <span>Học phần {mod.moduleNumber}</span>
                 {isAllCompleted ? (
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                 ) : (
-                  <span className="text-[10px] opacity-70">
+                  <span className={`text-[10px] ${isSelected ? 'text-black/70' : 'opacity-70'}`}>
                     {completedInModule}/{mod.lessons.length}
                   </span>
                 )}
@@ -372,8 +380,8 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
             </div>
           </div>
 
-          {/* On-Screen Keyboard */}
-          <div className="pt-1">
+          {/* Locked On-Screen Keyboard */}
+          <div className="pt-1 sticky bottom-2 z-20">
             <FlickKeyboard
               settings={settings}
               targetKeyId={

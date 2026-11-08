@@ -113,10 +113,10 @@ export const TutorialMode: React.FC<TutorialModeProps> = ({ settings }) => {
             <button
               key={k.id}
               onClick={() => handleSelectRow(idx)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 border ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shrink-0 border ${
                 isSelected
-                  ? 'bg-red-600 text-white border-red-500 shadow-md font-bold'
-                  : 'bg-[#14161D] text-stone-400 hover:text-stone-200 border-stone-800'
+                  ? 'bg-white text-black border-white shadow-xs font-bold'
+                  : 'bg-white/[0.04] text-neutral-400 hover:text-white border-white/[0.06]'
               }`}
             >
               {k.rowName}
@@ -287,14 +287,17 @@ export const TutorialMode: React.FC<TutorialModeProps> = ({ settings }) => {
         )}
       </div>
 
-      {/* On-Screen Keyboard */}
-      <div className="pt-1">
+      {/* Locked On-Screen Keyboard */}
+      <div className="pt-1 sticky bottom-2 z-20">
         <FlickKeyboard
           settings={settings}
           targetKeyId={currentKey.id}
           targetDirection={targetDir}
           onCharInput={handleInput}
-          onModifier={() => handleInput('゛゜小')}
+          onModifier={(dir) => {
+            const mapped = currentKey.hiragana[dir || 'center'] || '゛゜小';
+            handleInput(mapped);
+          }}
           onBackspace={() => {}}
           onSpace={() => {}}
           onEnter={() => {}}

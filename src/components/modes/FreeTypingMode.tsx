@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type { UserSettings } from '../../types/settings';
+import type { FlickDirection } from '../../types/keyboard';
 import { FlickKeyboard } from '../keyboard/FlickKeyboard';
-import { getModifiedChar, getKanaInfo } from '../../utils/kanaHelper';
+import { applyModifier, getKanaInfo } from '../../utils/kanaHelper';
 import { Copy, Trash2, Check } from 'lucide-react';
 import { soundEffects } from '../../utils/audio';
 
@@ -13,15 +14,23 @@ export const FreeTypingMode: React.FC<FreeTypingModeProps> = ({ settings }) => {
   const [text, setText] = useState<string>('こんにちは');
   const [isKatakana, setIsKatakana] = useState(false);
   const [copied, setCopied] = useState(false);
+  const textContainerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom of the fixed canvas when text grows
+  useEffect(() => {
+    if (textContainerRef.current) {
+      textContainerRef.current.scrollTop = textContainerRef.current.scrollHeight;
+    }
+  }, [text]);
 
   const handleCharInput = (char: string) => {
     setText((prev) => prev + char);
   };
 
-  const handleModifier = () => {
+  const handleModifier = (direction?: FlickDirection) => {
     if (text.length === 0) return;
     const lastChar = text[text.length - 1];
-    const modified = getModifiedChar(lastChar);
+    const modified = applyModifier(lastChar, direction);
     if (modified !== lastChar) {
       setText((prev) => prev.slice(0, -1) + modified);
     }
@@ -58,16 +67,16 @@ export const FreeTypingMode: React.FC<FreeTypingModeProps> = ({ settings }) => {
     .join(' ');
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-4 space-y-4 animate-in fade-in duration-200">
+    <div className="max-w-xl mx-auto px-3 sm:px-4 py-2 space-y-3 animate-in fade-in duration-150">
       {/* Sandbox Text Editor Box */}
-      <div className="p-5 rounded-3xl bg-[#14161D] border border-stone-800 shadow-xl space-y-3">
+      <div className="p-4 sm:p-5 rounded-3xl bg-[#15161c]/90 border border-white/[0.08] shadow-xl space-y-3">
         {/* Top Controls */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-white">
+            <span className="text-xs font-semibold text-white">
               Văn bản đang gõ (入力テキスト)
             </span>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-stone-850 text-stone-400 border border-stone-800">
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-white/[0.06] text-neutral-400 border border-white/[0.08]">
               {text.length} ký tự
             </span>
           </div>
@@ -79,8 +88,8 @@ export const FreeTypingMode: React.FC<FreeTypingModeProps> = ({ settings }) => {
               disabled={!text}
               className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                 copied
-                  ? 'bg-emerald-950/60 text-emerald-400 border-emerald-800'
-                  : 'bg-stone-850 border-stone-800 text-stone-300 hover:bg-stone-800'
+                  ? 'bg-white text-black border-white'
+                  : 'bg-white/[0.05] border-white/[0.08] text-neutral-300 hover:text-white hover:bg-white/[0.1]'
               } disabled:opacity-40`}
             >
               {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
@@ -91,7 +100,7 @@ export const FreeTypingMode: React.FC<FreeTypingModeProps> = ({ settings }) => {
               type="button"
               onClick={handleClear}
               disabled={!text}
-              className="p-1.5 rounded-xl border border-stone-800 text-stone-400 hover:text-red-400 hover:bg-stone-850 disabled:opacity-40 transition-colors"
+              className="p-1.5 rounded-xl border border-white/[0.08] text-neutral-400 hover:text-white hover:bg-white/[0.08] disabled:opacity-40 transition-colors"
               title="Xóa hết văn bản"
             >
               <Trash2 className="w-4 h-4" />
@@ -99,31 +108,34 @@ export const FreeTypingMode: React.FC<FreeTypingModeProps> = ({ settings }) => {
           </div>
         </div>
 
-        {/* Text Display Canvas */}
-        <div className="min-h-[110px] p-4 rounded-2xl bg-[#0D0E13] border border-stone-800/80 flex flex-col justify-between">
-          <div className="text-xl sm:text-2xl font-sans font-medium text-white whitespace-pre-wrap break-words tracking-wide">
+        {/* Fixed Height Text Display Canvas with Auto-Scroll (Locks keyboard position) */}
+        <div className="h-[120px] sm:h-[140px] p-4 rounded-2xl bg-[#101115] border border-white/[0.08] flex flex-col justify-between overflow-hidden">
+          <div
+            ref={textContainerRef}
+            className="flex-1 overflow-y-auto custom-scrollbar text-xl sm:text-2xl font-sans font-medium text-white whitespace-pre-wrap break-words tracking-wide pr-1"
+          >
             {text ? (
               <span>
                 {text}
-                <span className="inline-block w-0.5 h-6 bg-red-500 align-middle ml-1 animate-pulse" />
+                <span className="inline-block w-0.5 h-5 bg-white align-middle ml-0.5 animate-pulse" />
               </span>
             ) : (
-              <span className="text-stone-500 text-sm font-normal italic">
+              <span className="text-neutral-500 text-sm font-normal italic">
                 Chạm vào các phím bên dưới hoặc vuốt theo 4 hướng để bắt đầu gõ tiếng Nhật...
               </span>
             )}
           </div>
 
           {text && (
-            <div className="text-xs font-mono text-stone-500 pt-3 border-t border-stone-850">
-              Romaji: <span className="text-stone-300">{romajiPreview}</span>
+            <div className="text-xs font-mono text-neutral-400 pt-2 border-t border-white/[0.06] shrink-0 truncate">
+              Romaji: <span className="text-neutral-200">{romajiPreview}</span>
             </div>
           )}
         </div>
       </div>
 
-      {/* On-Screen Keyboard */}
-      <div className="pt-1">
+      {/* Locked On-Screen Keyboard */}
+      <div className="pt-1 sticky bottom-2 z-20">
         <FlickKeyboard
           settings={settings}
           isKatakana={isKatakana}

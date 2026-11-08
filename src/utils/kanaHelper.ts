@@ -20,6 +20,78 @@ export function getModifiedChar(currentChar: string): string {
   return cycle[0];
 }
 
+// Directional maps for Dakuten (left), Handakuten (right), and Small kana (up)
+const DAKUTEN_MAP: Record<string, string> = {
+  'か': 'が', 'き': 'ぎ', 'く': 'ぐ', 'け': 'げ', 'こ': 'ご',
+  'さ': 'ざ', 'し': 'じ', 'す': 'ず', 'せ': 'ぜ', 'そ': 'ぞ',
+  'た': 'だ', 'ち': 'ぢ', 'つ': 'づ', 'て': 'で', 'と': 'ど',
+  'は': 'ば', 'ひ': 'び', 'ふ': 'ぶ', 'へ': 'べ', 'ほ': 'ぼ',
+  'ぱ': 'ば', 'ぴ': 'び', 'ぷ': 'ぶ', 'ぺ': 'べ', 'ぽ': 'ぼ',
+  'っ': 'づ', 'う': 'ゔ',
+  'カ': 'ガ', 'キ': 'ギ', 'ク': 'グ', 'ケ': 'ゲ', 'コ': 'ゴ',
+  'サ': 'ザ', 'シ': 'ジ', 'ス': 'ズ', 'セ': 'ゼ', 'ソ': 'ゾ',
+  'タ': 'ダ', 'チ': 'ヂ', 'ツ': 'ヅ', 'テ': 'デ', 'ト': 'ド',
+  'ハ': 'バ', 'ヒ': 'ビ', 'フ': 'ブ', 'ヘ': 'ベ', 'ホ': 'ボ',
+  'パ': 'バ', 'ピ': 'ビ', 'プ': 'ブ', 'ペ': 'ベ', 'ポ': 'ボ',
+  'ッ': 'ヅ', 'ウ': 'ヴ',
+};
+
+const HANDAKUTEN_MAP: Record<string, string> = {
+  'は': 'ぱ', 'ひ': 'ぴ', 'ふ': 'ぷ', 'へ': 'ぺ', 'ほ': 'ぽ',
+  'ば': 'ぱ', 'び': 'ぴ', 'ぶ': 'ぷ', 'べ': 'ぺ', 'ぼ': 'ぽ',
+  'ハ': 'パ', 'ヒ': 'ピ', 'フ': 'プ', 'ヘ': 'ペ', 'ホ': 'ポ',
+  'バ': 'パ', 'ビ': 'ピ', 'ブ': 'プ', 'ベ': 'ペ', 'ボ': 'ポ',
+};
+
+const SMALL_KANA_MAP: Record<string, string> = {
+  'あ': 'ぁ', 'い': 'ぃ', 'う': 'ぅ', 'え': 'ぇ', 'お': 'ぉ',
+  'つ': 'っ',
+  'や': 'ゃ', 'ゆ': 'ゅ', 'よ': 'ょ',
+  'わ': 'ゎ',
+  'ア': 'ァ', 'イ': 'ィ', 'ウ': 'ゥ', 'エ': 'ェ', 'オ': 'ォ',
+  'ツ': 'ッ',
+  'ヤ': 'ャ', 'ユ': 'ュ', 'ヨ': 'ョ',
+  'ワ': 'ヮ',
+};
+
+export function applyModifier(currentChar: string, direction?: FlickDirection): string {
+  if (!currentChar) return currentChar;
+
+  if (direction === 'left' && DAKUTEN_MAP[currentChar]) {
+    return DAKUTEN_MAP[currentChar];
+  }
+  if (direction === 'right' && HANDAKUTEN_MAP[currentChar]) {
+    return HANDAKUTEN_MAP[currentChar];
+  }
+  if (direction === 'up' && SMALL_KANA_MAP[currentChar]) {
+    return SMALL_KANA_MAP[currentChar];
+  }
+
+  return getModifiedChar(currentChar);
+}
+
+export function isReachableInCycle(currentChar: string, targetChar: string): boolean {
+  if (!currentChar || !targetChar) return false;
+  if (currentChar === targetChar) return true;
+
+  // Direct check in directional maps
+  if (DAKUTEN_MAP[currentChar] === targetChar) return true;
+  if (HANDAKUTEN_MAP[currentChar] === targetChar) return true;
+  if (SMALL_KANA_MAP[currentChar] === targetChar) return true;
+
+  // Check in cycle chain
+  let curr = currentChar;
+  const visited = new Set<string>();
+  while (curr && !visited.has(curr)) {
+    visited.add(curr);
+    const cycle = MODIFIER_CYCLES[curr];
+    if (!cycle || cycle.length === 0) break;
+    curr = cycle[0];
+    if (curr === targetChar) return true;
+  }
+  return false;
+}
+
 export interface KanaInfo {
   char: string;
   keyId: string;

@@ -4,6 +4,8 @@ import { VOCABULARY_LIST } from '../constants/vocabulary';
 import {
   getKanaInfo,
   getModifiedChar,
+  applyModifier,
+  isReachableInCycle,
   toHiragana,
   toKatakana,
   getPracticeTargets,
@@ -103,6 +105,38 @@ describe('Modifier Transformations (Dakuten / Handakuten / Small Kana)', () => {
     expect(getModifiedChar('や')).toBe('ゃ');
     expect(getModifiedChar('ゆ')).toBe('ゅ');
     expect(getModifiedChar('よ')).toBe('ょ');
+  });
+
+  it('should support directional modifier transformations with applyModifier', () => {
+    // Dakuten flick (left)
+    expect(applyModifier('は', 'left')).toBe('ば');
+    expect(applyModifier('か', 'left')).toBe('が');
+    expect(applyModifier('さ', 'left')).toBe('ざ');
+
+    // Handakuten flick (right)
+    expect(applyModifier('は', 'right')).toBe('ぱ');
+    expect(applyModifier('ば', 'right')).toBe('ぱ');
+    expect(applyModifier('ひ', 'right')).toBe('ぴ');
+
+    // Small kana flick (up)
+    expect(applyModifier('つ', 'up')).toBe('っ');
+    expect(applyModifier('や', 'up')).toBe('ゃ');
+
+    // Center/tap fallback to cycle
+    expect(applyModifier('は', 'center')).toBe('ば');
+    expect(applyModifier('ば', 'center')).toBe('ぱ');
+    expect(applyModifier('ぱ', 'center')).toBe('は');
+  });
+
+  it('should identify reachable characters in modifier cycles', () => {
+    expect(isReachableInCycle('は', 'ば')).toBe(true);
+    expect(isReachableInCycle('は', 'ぱ')).toBe(true);
+    expect(isReachableInCycle('ば', 'ぱ')).toBe(true);
+    expect(isReachableInCycle('つ', 'っ')).toBe(true);
+    expect(isReachableInCycle('つ', 'づ')).toBe(true);
+
+    expect(isReachableInCycle('か', 'ぱ')).toBe(false);
+    expect(isReachableInCycle('あ', 'ば')).toBe(false);
   });
 });
 

@@ -117,16 +117,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ progress, onSelectMode }) 
           <div className="pt-2 flex flex-wrap items-center gap-3">
             <button
               onClick={() => onSelectMode('curriculum')}
-              className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-sm shadow-xl shadow-red-950/80 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white hover:bg-neutral-200 text-black font-extrabold text-sm shadow-md active:scale-95 transition-all"
             >
               <span>Vào học giáo trình chuẩn</span>
               <ArrowRight className="w-4 h-4" />
             </button>
             <button
               onClick={() => onSelectMode('flick')}
-              className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-stone-800 hover:bg-stone-750 text-stone-200 font-semibold text-sm border border-stone-700 hover:scale-[1.02] transition-all"
+              className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-white/[0.06] hover:bg-white/[0.1] text-neutral-200 font-semibold text-sm border border-white/[0.08] active:scale-95 transition-all"
             >
-              <Zap className="w-4 h-4 text-amber-400" />
+              <Zap className="w-4 h-4 text-white" />
               <span>Luyện phản xạ nhanh</span>
             </button>
           </div>

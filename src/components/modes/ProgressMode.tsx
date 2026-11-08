@@ -86,9 +86,9 @@ export const ProgressMode: React.FC<ProgressModeProps> = ({ progress }) => {
           </span>
         </div>
 
-        <div className="w-full h-3 rounded-full bg-stone-850 overflow-hidden">
+        <div className="w-full h-2.5 rounded-full bg-white/[0.08] overflow-hidden">
           <div
-            className="h-full bg-linear-to-r from-red-600 to-rose-500 rounded-full transition-all duration-500"
+            className="h-full bg-white rounded-full transition-all duration-500"
             style={{ width: `${(lessonsLearned / totalLessons) * 100}%` }}
           />
         </div>

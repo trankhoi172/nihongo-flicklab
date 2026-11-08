@@ -64,13 +64,13 @@ export const KeyButton: React.FC<KeyButtonProps> = ({
       {...handlers}
       className={`relative select-none touch-none cursor-pointer flex flex-col items-center justify-center rounded-2xl transition-all duration-75 min-h-[64px] sm:min-h-[72px] md:min-h-[78px] ${
         isPressing
-          ? 'z-50 bg-stone-700/90 shadow-inner scale-[0.98]'
+          ? 'z-50 bg-white/[0.2] shadow-inner scale-[0.98]'
           : isModifier || isPunctuation
-          ? 'z-10 bg-stone-850/80 hover:bg-stone-800 text-stone-300 shadow-[0_2px_0_rgba(0,0,0,0.4)] border border-stone-800'
-          : 'z-10 bg-stone-800/90 hover:bg-stone-750 text-stone-100 shadow-[0_3px_0_rgba(0,0,0,0.5)] border border-stone-700/60'
+          ? 'z-10 bg-white/[0.05] hover:bg-white/[0.08] text-neutral-300 shadow-[0_1px_2px_rgba(0,0,0,0.25)] border border-white/[0.06] backdrop-blur-md'
+          : 'z-10 bg-white/[0.09] hover:bg-white/[0.13] text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] border border-white/[0.08] backdrop-blur-md'
       } ${
         isHighlighted
-          ? 'ring-2 ring-red-500 ring-offset-2 ring-offset-stone-950 animate-pulse'
+          ? 'ring-2 ring-white/80 ring-offset-2 ring-offset-[#0B0C0E]'
           : ''
       }`}
       role="button"
@@ -82,10 +82,10 @@ export const KeyButton: React.FC<KeyButtonProps> = ({
         <div className={`transition-opacity duration-75 ${isPressing ? 'opacity-0' : 'opacity-100'}`}>
           {/* Top (U-vowel) */}
           <span
-            className={`absolute top-1 left-1/2 -translate-x-1/2 text-[11px] font-medium leading-none ${
+            className={`absolute top-1 left-1/2 -translate-x-1/2 text-[11px] font-normal leading-none ${
               targetDirection === 'up' && isHighlighted
-                ? 'text-red-400 font-bold'
-                : 'text-stone-500'
+                ? 'text-white font-bold'
+                : 'text-neutral-400'
             }`}
           >
             {map.up}
@@ -93,10 +93,10 @@ export const KeyButton: React.FC<KeyButtonProps> = ({
 
           {/* Left (I-vowel) */}
           <span
-            className={`absolute left-1.5 top-1/2 -translate-y-1/2 text-[11px] font-medium leading-none ${
+            className={`absolute left-1.5 top-1/2 -translate-y-1/2 text-[11px] font-normal leading-none ${
               targetDirection === 'left' && isHighlighted
-                ? 'text-red-400 font-bold'
-                : 'text-stone-500'
+                ? 'text-white font-bold'
+                : 'text-neutral-400'
             }`}
           >
             {map.left}
@@ -104,10 +104,10 @@ export const KeyButton: React.FC<KeyButtonProps> = ({
 
           {/* Right (E-vowel) */}
           <span
-            className={`absolute right-1.5 top-1/2 -translate-y-1/2 text-[11px] font-medium leading-none ${
+            className={`absolute right-1.5 top-1/2 -translate-y-1/2 text-[11px] font-normal leading-none ${
               targetDirection === 'right' && isHighlighted
-                ? 'text-red-400 font-bold'
-                : 'text-stone-500'
+                ? 'text-white font-bold'
+                : 'text-neutral-400'
             }`}
           >
             {map.right}
@@ -115,10 +115,10 @@ export const KeyButton: React.FC<KeyButtonProps> = ({
 
           {/* Bottom (O-vowel) */}
           <span
-            className={`absolute bottom-1 left-1/2 -translate-x-1/2 text-[11px] font-medium leading-none ${
+            className={`absolute bottom-1 left-1/2 -translate-x-1/2 text-[11px] font-normal leading-none ${
               targetDirection === 'down' && isHighlighted
-                ? 'text-red-400 font-bold'
-                : 'text-stone-500'
+                ? 'text-white font-bold'
+                : 'text-neutral-400'
             }`}
           >
             {map.down}
@@ -129,7 +129,7 @@ export const KeyButton: React.FC<KeyButtonProps> = ({
       {/* Target Direction Arrow Indicator */}
       {isHighlighted && targetDirection && targetDirection !== 'center' && !isPressing && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 font-bold text-lg animate-bounce">
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-lg">
             {targetDirection === 'left' && '←'}
             {targetDirection === 'up' && '↑'}
             {targetDirection === 'right' && '→'}
@@ -141,15 +141,15 @@ export const KeyButton: React.FC<KeyButtonProps> = ({
       {/* Center Kana Character (Hidden while pressing so FlickFlower center petal takes over) */}
       <div className={`flex flex-col items-center justify-center transition-opacity duration-75 ${isPressing ? 'opacity-0' : 'opacity-100'}`}>
         <span
-          className={`font-semibold tracking-tight leading-none ${
+          className={`font-medium tracking-tight leading-none ${
             isModifier
-              ? 'text-sm sm:text-base font-bold text-stone-300'
+              ? 'text-sm sm:text-base font-medium text-neutral-300'
               : isPunctuation
-              ? 'text-xl sm:text-2xl font-bold text-stone-200'
-              : 'text-2xl sm:text-3xl font-bold text-white'
+              ? 'text-xl sm:text-2xl font-medium text-neutral-200'
+              : 'text-2xl sm:text-3xl font-medium text-white'
           } ${
             isHighlighted && targetDirection === 'center'
-              ? 'text-red-400'
+              ? 'text-white font-bold underline decoration-white decoration-2'
               : ''
           }`}
         >
@@ -158,7 +158,7 @@ export const KeyButton: React.FC<KeyButtonProps> = ({
 
         {/* Subtitle / Romaji */}
         {showRomaji && !isModifier && !isPunctuation && (
-          <span className="text-[10px] text-stone-500 uppercase tracking-widest font-mono mt-0.5 leading-none">
+          <span className="text-[10px] text-neutral-400 uppercase tracking-widest font-mono mt-0.5 leading-none">
             {keyDef.romaji.center}
           </span>
         )}

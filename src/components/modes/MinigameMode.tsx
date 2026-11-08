@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import type { UserSettings } from '../../types/settings';
+import type { FlickDirection } from '../../types/keyboard';
 import { FlickKeyboard } from '../keyboard/FlickKeyboard';
 import { soundEffects } from '../../utils/audio';
-import { getModifiedChar } from '../../utils/kanaHelper';
+import { applyModifier } from '../../utils/kanaHelper';
 import { recordMinigameScore, loadProgress } from '../../utils/storage';
 import { VOCABULARY_LIST } from '../../constants/vocabulary';
 import confetti from 'canvas-confetti';
@@ -387,9 +388,9 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
     }
   };
 
-  const handleModifier = () => {
+  const handleModifier = (direction?: FlickDirection) => {
     if (gameState !== 'playing' || !lastTypedBaseRef.current) return;
-    const modified = getModifiedChar(lastTypedBaseRef.current);
+    const modified = applyModifier(lastTypedBaseRef.current, direction);
     lastTypedBaseRef.current = modified;
     handleKeyPress(modified);
   };
@@ -403,57 +404,57 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-3 py-2 space-y-3 animate-in fade-in duration-150">
+    <div className="max-w-xl mx-auto px-3 sm:px-4 py-2 space-y-3 animate-in fade-in duration-150">
       {/* Game Mode Header */}
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center font-bold">
+          <div className="w-8 h-8 rounded-xl bg-white/[0.08] text-white border border-white/[0.1] flex items-center justify-center font-bold">
             <Sparkles className="w-4 h-4" />
           </div>
           <div>
             <h1 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
               <span>Mưa Chữ Kana (雨の降下)</span>
-              <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-red-950 text-red-300 border border-red-800/80">
+              <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-white/[0.08] text-neutral-300 border border-white/[0.1]">
                 Minigame
               </span>
             </h1>
-            <p className="text-[11px] text-stone-400">
+            <p className="text-[11px] text-neutral-400">
               Gõ đúng ký tự rơi trước khi chạm tia đỏ để bảo vệ thành trì!
             </p>
           </div>
         </div>
 
         {/* High Score Banner */}
-        <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#14161D] border border-stone-800 text-xs font-mono">
-          <Trophy className="w-3.5 h-3.5 text-amber-400" />
-          <span className="text-stone-400 text-[10px]">KỶ LỤC:</span>
-          <span className="font-bold text-amber-300">{highScore}</span>
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#14151a] border border-white/[0.08] text-xs font-mono">
+          <Trophy className="w-3.5 h-3.5 text-neutral-300" />
+          <span className="text-neutral-400 text-[10px]">KỶ LỤC:</span>
+          <span className="font-bold text-white">{highScore}</span>
         </div>
       </div>
 
       {/* Main Playfield Arena */}
       <div
-        className={`relative w-full h-[260px] sm:h-[290px] rounded-3xl bg-[#0D0E12] border border-stone-800/90 overflow-hidden shadow-2xl transition-all ${
-          screenShake ? 'animate-shake border-red-500 shadow-red-950/50' : ''
+        className={`relative w-full h-[290px] sm:h-[320px] rounded-3xl bg-[#101115] border border-white/[0.08] overflow-hidden shadow-2xl transition-all ${
+          screenShake ? 'animate-shake border-rose-500' : ''
         }`}
       >
         {/* Background Subtle Ambience / Grid */}
-        <div className="absolute inset-0 bg-[radial-gradient(#1f2430_1px,transparent_1px)] [background-size:16px_16px] opacity-40 pointer-events-none" />
-        <div className="absolute -right-6 -bottom-6 text-9xl font-serif text-white/[0.02] select-none pointer-events-none">
+        <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.03] pointer-events-none" />
+        <div className="absolute -right-4 -bottom-4 text-9xl font-serif text-white/[0.02] select-none pointer-events-none">
           雨
         </div>
 
         {/* HUD Top Bar inside Canvas */}
         <div className="absolute top-2 left-3 right-3 z-20 flex items-center justify-between text-xs">
           {/* Hearts / Lives */}
-          <div className="flex items-center gap-1 bg-[#14161D]/80 backdrop-blur-sm px-2.5 py-1 rounded-full border border-stone-800">
+          <div className="flex items-center gap-1 bg-[#14151a]/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/[0.08]">
             {[1, 2, 3].map((heartIndex) => (
               <Heart
                 key={heartIndex}
-                className={`w-4 h-4 transition-all duration-300 ${
+                className={`w-3.5 h-3.5 transition-all duration-300 ${
                   heartIndex <= lives
-                    ? 'text-red-500 fill-red-500 scale-100'
-                    : 'text-stone-700 fill-stone-800 scale-90'
+                    ? 'text-rose-500 fill-rose-500 scale-100'
+                    : 'text-neutral-700 fill-neutral-800 scale-90'
                 }`}
               />
             ))}
@@ -462,13 +463,13 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
           {/* Current Score & Combo */}
           <div className="flex items-center gap-2">
             {combo > 1 && (
-              <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-bold animate-pulse">
-                <Flame className="w-3 h-3 text-amber-400 fill-amber-400" />
+              <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/[0.1] text-white border border-white/[0.15] text-[11px] font-semibold">
+                <Flame className="w-3 h-3 text-white fill-white" />
                 <span>COMBO x{combo}</span>
               </div>
             )}
-            <div className="bg-[#14161D]/80 backdrop-blur-sm px-3 py-1 rounded-full border border-stone-800 font-mono font-bold text-white text-xs">
-              {score.toLocaleString()} <span className="text-[10px] text-stone-400">PTS</span>
+            <div className="bg-[#14151a]/90 backdrop-blur-md px-3 py-1 rounded-full border border-white/[0.08] font-mono font-bold text-white text-xs">
+              {score.toLocaleString()} <span className="text-[10px] text-neutral-400 font-normal">PTS</span>
             </div>
           </div>
 
@@ -476,7 +477,7 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
           {gameState === 'playing' && (
             <button
               onClick={() => setGameState('paused')}
-              className="p-1.5 rounded-full bg-[#14161D]/80 hover:bg-stone-800 text-stone-300 border border-stone-800 transition-colors"
+              className="p-1.5 rounded-full bg-[#14151a]/90 hover:bg-neutral-800 text-neutral-300 border border-white/[0.08] transition-colors"
               title="Tạm dừng"
             >
               <Pause className="w-3.5 h-3.5" />
@@ -493,7 +494,7 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
           >
             <span
               style={{ color: f.color }}
-              className="drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] px-2 py-0.5 rounded-md bg-black/60 border border-white/10"
+              className="px-2 py-0.5 rounded-md bg-black/80 border border-white/10"
             >
               {f.text}
             </span>
@@ -514,12 +515,12 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
                 }}
                 className="absolute z-10 transition-transform duration-75 flex flex-col items-center pointer-events-none select-none"
               >
-                {/* Glow Bubble */}
+                {/* Bubble */}
                 <div
-                  className={`relative flex items-center justify-center rounded-2xl border px-3 py-1.5 shadow-lg backdrop-blur-xs transition-all ${
+                  className={`relative flex items-center justify-center rounded-2xl border px-3 py-1.5 shadow-lg backdrop-blur-md transition-all ${
                     isWord
-                      ? 'bg-purple-950/80 border-purple-500/80 shadow-purple-900/40 text-purple-100'
-                      : 'bg-stone-900/90 border-stone-700/80 shadow-black/80 text-white'
+                      ? 'bg-neutral-900/95 border-white/20 text-white'
+                      : 'bg-[#18191f]/95 border-white/[0.12] text-white'
                   }`}
                 >
                   {isWord && item.fullWord ? (
@@ -532,10 +533,10 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
                             key={charIdx}
                             className={`${
                               isTyped
-                                ? 'text-emerald-400 line-through opacity-60'
+                                ? 'text-neutral-500 line-through opacity-60'
                                 : isCurrent
-                                ? 'text-amber-300 underline decoration-amber-400 decoration-2 font-extrabold scale-110'
-                                : 'text-stone-200'
+                                ? 'text-white underline decoration-white decoration-2 font-black scale-105'
+                                : 'text-neutral-300'
                             }`}
                           >
                             {char}
@@ -552,7 +553,7 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
 
                 {/* Sub Romaji Hint */}
                 {settings.showRomaji && (
-                  <span className="text-[10px] font-mono text-stone-400 bg-black/70 px-1.5 py-0.2 rounded mt-0.5 leading-tight">
+                  <span className="text-[10px] font-mono text-neutral-400 bg-black/80 px-1.5 py-0.2 rounded mt-0.5 leading-tight">
                     {item.romaji}
                   </span>
                 )}
@@ -562,30 +563,30 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
 
         {/* Defense Laser Danger Line */}
         <div className="absolute bottom-[2%] left-0 right-0 z-20 flex flex-col items-center pointer-events-none">
-          <div className="w-full h-0.5 bg-red-500/80 shadow-[0_0_12px_rgba(239,68,68,0.9)] animate-pulse" />
-          <div className="flex items-center gap-1 text-[9px] uppercase tracking-wider text-red-400 font-mono mt-0.5 opacity-70">
+          <div className="w-full h-0.5 bg-rose-500/80" />
+          <div className="flex items-center gap-1 text-[9px] uppercase tracking-wider text-rose-400/80 font-mono mt-0.5">
             <span>Tia phòng tuyến (境界線)</span>
           </div>
         </div>
 
         {/* OVERLAYS: Menu, Paused, GameOver */}
         {gameState === 'menu' && (
-          <div className="absolute inset-0 z-40 bg-[#0B0C0E]/95 backdrop-blur-md p-5 flex flex-col justify-between">
+          <div className="absolute inset-0 z-40 bg-[#0e0f13]/95 backdrop-blur-md p-3.5 sm:p-5 flex flex-col justify-between overflow-y-auto custom-scrollbar">
             <div>
-              <div className="flex items-center gap-1.5 text-xs text-amber-400 font-semibold mb-1">
-                <Sparkles className="w-4 h-4" />
+              <div className="flex items-center gap-1.5 text-xs text-neutral-300 font-semibold mb-1">
+                <Sparkles className="w-3.5 h-3.5 text-white" />
                 <span>Rèn luyện phản xạ ngón tay tức thì</span>
               </div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-white">
+              <h2 className="text-lg sm:text-xl font-bold text-white">
                 Chọn chế độ mưa Kana
               </h2>
-              <p className="text-xs text-stone-400 mt-1">
-                Các chữ tiếng Nhật sẽ rơi từ trên xuống. Bạn chỉ cần gõ đúng ký tự bằng bàn phím 12 phím để kích hoạt tia triệt tiêu!
+              <p className="text-xs text-neutral-400 mt-0.5 line-clamp-2 sm:line-clamp-none">
+                Các chữ tiếng Nhật sẽ rơi từ trên xuống. Bạn chỉ cần gõ đúng ký tự bằng bàn phím 12 phím để triệt tiêu!
               </p>
             </div>
 
             {/* Difficulty Selector */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 my-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 my-1.5 sm:my-2">
               {[
                 { id: 'easy', name: 'Tập sự', sub: 'A & Ka', desc: '10 chữ cơ bản' },
                 { id: 'normal', name: 'Chiến binh', sub: 'Toàn bộ 46 chữ', desc: 'Hàng あ ~ わ' },
@@ -595,30 +596,36 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
                 <button
                   key={d.id}
                   onClick={() => setDifficulty(d.id as GameDifficulty)}
-                  className={`p-2.5 rounded-2xl border text-left transition-all ${
+                  className={`p-2 sm:p-2.5 rounded-xl border text-left transition-all ${
                     difficulty === d.id
-                      ? 'bg-red-950/60 border-red-500 text-white shadow-lg shadow-red-950/40 ring-1 ring-red-500/50'
-                      : 'bg-[#14161D] border-stone-800 text-stone-400 hover:border-stone-700'
+                      ? 'bg-white text-black border-white shadow-xs font-bold'
+                      : 'bg-white/[0.04] border-white/[0.08] text-neutral-400 hover:text-white'
                   }`}
                 >
-                  <div className="text-xs font-bold text-stone-200">{d.name}</div>
-                  <div className="text-[10px] text-red-400 font-semibold leading-tight">{d.sub}</div>
-                  <div className="text-[9px] text-stone-500 mt-0.5 leading-none">{d.desc}</div>
+                  <div className={`text-xs font-bold ${difficulty === d.id ? 'text-black' : 'text-neutral-200'}`}>
+                    {d.name}
+                  </div>
+                  <div className={`text-[10px] font-medium leading-tight ${difficulty === d.id ? 'text-black/80' : 'text-neutral-400'}`}>
+                    {d.sub}
+                  </div>
+                  <div className={`text-[9px] mt-0.5 leading-none hidden sm:block ${difficulty === d.id ? 'text-black/60' : 'text-neutral-500'}`}>
+                    {d.desc}
+                  </div>
                 </button>
               ))}
             </div>
 
-            {/* Start Button */}
-            <div className="flex items-center justify-between pt-1">
-              <div className="text-[11px] text-stone-500 flex items-center gap-1">
+            {/* Start Button - Always fully visible on mobile */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-2 border-t border-white/[0.08] mt-auto shrink-0">
+              <div className="text-[11px] text-neutral-400 flex items-center gap-1">
                 <HelpCircle className="w-3.5 h-3.5" />
                 <span>3 lượt chơi ❤️ | Combo tăng điểm</span>
               </div>
               <button
                 onClick={() => startGame(difficulty)}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-sm shadow-xl shadow-red-950/80 active:scale-95 transition-all"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-white hover:bg-neutral-200 text-black font-extrabold text-sm shadow-md active:scale-95 transition-all"
               >
-                <Play className="w-4 h-4 fill-white" />
+                <Play className="w-4 h-4 fill-current" />
                 <span>Bắt đầu chơi (開始)</span>
               </button>
             </div>
@@ -628,27 +635,27 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
         {gameState === 'paused' && (
           <div className="absolute inset-0 z-40 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-6 space-y-4">
             <h3 className="text-xl font-bold text-white">Đang tạm dừng (一時停止)</h3>
-            <p className="text-xs text-stone-400 text-center max-w-xs">
+            <p className="text-xs text-neutral-400 text-center max-w-xs">
               Thư giãn ngón tay trước khi tiếp tục chuỗi combo rực rỡ!
             </p>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setGameState('playing')}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 text-white font-bold text-xs shadow-lg active:scale-95 transition-all"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-black font-bold text-xs shadow-md active:scale-95 transition-all"
               >
-                <Play className="w-4 h-4 fill-white" />
+                <Play className="w-4 h-4 fill-current" />
                 <span>Tiếp tục</span>
               </button>
               <button
                 onClick={() => startGame(difficulty)}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-stone-800 text-stone-300 hover:text-white text-xs font-semibold"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/[0.08] text-neutral-300 hover:text-white border border-white/[0.08] text-xs font-semibold"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>Chơi lại</span>
               </button>
               <button
                 onClick={() => setGameState('menu')}
-                className="px-4 py-2.5 rounded-xl bg-stone-850 text-stone-400 hover:text-stone-200 text-xs font-semibold"
+                className="px-4 py-2.5 rounded-xl bg-white/[0.05] text-neutral-400 hover:text-neutral-200 border border-white/[0.06] text-xs font-semibold"
               >
                 Về menu
               </button>
@@ -657,17 +664,17 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
         )}
 
         {gameState === 'gameover' && (
-          <div className="absolute inset-0 z-40 bg-[#0B0C0E]/95 backdrop-blur-md p-5 flex flex-col justify-between animate-in zoom-in-95 duration-200">
+          <div className="absolute inset-0 z-40 bg-[#0e0f13]/95 backdrop-blur-md p-3.5 sm:p-5 flex flex-col justify-between overflow-y-auto custom-scrollbar animate-in zoom-in-95 duration-150">
             <div className="text-center space-y-1">
-              <div className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-red-950/80 border border-red-800 text-red-300 text-[11px] font-bold">
+              <div className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-white/[0.08] border border-white/[0.1] text-white text-[11px] font-bold">
                 Trận đấu kết thúc (ゲームオーバー)
               </div>
               <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
-                {score.toLocaleString()} <span className="text-sm text-stone-400">PTS</span>
+                {score.toLocaleString()} <span className="text-sm text-neutral-400">PTS</span>
               </h3>
               {isNewHigh && (
-                <div className="inline-flex items-center gap-1 text-xs text-amber-400 font-bold animate-bounce">
-                  <Sparkles className="w-3.5 h-3.5" />
+                <div className="inline-flex items-center gap-1 text-xs text-white font-bold">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                   <span>KỶ LỤC MỚI ĐÃ ĐƯỢC XÁC LẬP! 🎉</span>
                 </div>
               )}
@@ -677,40 +684,40 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
             {(() => {
               const rank = getRank(score);
               return (
-                <div className="flex items-center justify-around py-3 px-4 rounded-2xl bg-[#14161D] border border-stone-800">
+                <div className="flex items-center justify-around py-2.5 px-3 rounded-2xl bg-white/[0.04] border border-white/[0.08]">
                   <div className="text-center">
-                    <div className="text-[10px] text-stone-500 uppercase font-mono">Xếp hạng</div>
-                    <div className={`text-2xl font-black px-3 py-0.5 rounded-xl border mt-0.5 ${rank.color}`}>
+                    <div className="text-[10px] text-neutral-500 uppercase font-mono">Xếp hạng</div>
+                    <div className="text-xl font-bold px-2.5 py-0.5 rounded-lg border border-white/20 mt-0.5 text-white">
                       {rank.label}
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-[10px] text-stone-500 uppercase font-mono">Danh hiệu</div>
-                    <div className="text-xs font-bold text-stone-200 mt-1">{rank.title}</div>
+                    <div className="text-[10px] text-neutral-500 uppercase font-mono">Danh hiệu</div>
+                    <div className="text-xs font-bold text-neutral-200 mt-1">{rank.title}</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-[10px] text-stone-500 uppercase font-mono">Max Combo</div>
-                    <div className="text-lg font-bold text-amber-400 mt-0.5">🔥 {maxCombo}</div>
+                    <div className="text-[10px] text-neutral-500 uppercase font-mono">Max Combo</div>
+                    <div className="text-base font-bold text-white mt-0.5">🔥 {maxCombo}</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-[10px] text-stone-500 uppercase font-mono">Đã diệt</div>
-                    <div className="text-lg font-bold text-emerald-400 mt-0.5">⚡ {clearedCount}</div>
+                    <div className="text-[10px] text-neutral-500 uppercase font-mono">Đã diệt</div>
+                    <div className="text-base font-bold text-white mt-0.5">⚡ {clearedCount}</div>
                   </div>
                 </div>
               );
             })()}
 
             {/* Actions */}
-            <div className="flex items-center justify-between pt-1">
+            <div className="flex items-center justify-between pt-1 border-t border-white/[0.06] mt-auto shrink-0">
               <button
                 onClick={() => setGameState('menu')}
-                className="px-4 py-2 rounded-xl bg-stone-800 text-stone-300 text-xs font-semibold hover:bg-stone-750"
+                className="px-4 py-2 rounded-xl bg-white/[0.06] text-neutral-300 text-xs font-semibold hover:bg-white/[0.1] border border-white/[0.06]"
               >
                 Đổi chế độ
               </button>
               <button
                 onClick={() => startGame(difficulty)}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-sm shadow-xl shadow-red-950/80 active:scale-95 transition-all"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-white hover:bg-neutral-200 text-black font-extrabold text-sm shadow-md active:scale-95 transition-all"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>Chơi lại ngay (再挑戦)</span>
@@ -720,8 +727,8 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
         )}
       </div>
 
-      {/* 12-Key Flick Virtual Keyboard */}
-      <div className="pt-1">
+      {/* Locked 12-Key Flick Virtual Keyboard */}
+      <div className="pt-1 sticky bottom-2 z-20">
         <FlickKeyboard
           settings={settings}
           onCharInput={handleKeyPress}
