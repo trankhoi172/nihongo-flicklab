@@ -15,6 +15,7 @@ import {
   Pause,
   Sparkles,
   Flame,
+  Zap,
   HelpCircle,
 } from 'lucide-react';
 
@@ -354,7 +355,7 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
         ...prev.slice(-4),
         {
           id: floatId,
-          text: `+${earned}${newCombo > 2 ? ` 🔥x${newCombo}` : ''}`,
+          text: `+${earned}${newCombo > 2 ? ` (x${newCombo})` : ''}`,
           x: item.x,
           y: Math.max(10, item.y),
           color: newCombo >= 5 ? '#F59E0B' : '#10B981',
@@ -617,9 +618,11 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
 
             {/* Start Button - Always fully visible on mobile */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-2 border-t border-white/[0.08] mt-auto shrink-0">
-              <div className="text-[11px] text-neutral-400 flex items-center gap-1">
-                <HelpCircle className="w-3.5 h-3.5" />
-                <span>3 lượt chơi ❤️ | Combo tăng điểm</span>
+              <div className="text-[11px] text-neutral-400 flex items-center gap-1.5">
+                <HelpCircle className="w-3.5 h-3.5 text-neutral-500" />
+                <span className="inline-flex items-center gap-1">
+                  3 lượt chơi <Heart className="w-3 h-3 text-rose-500 fill-rose-500 inline" /> • Combo tăng điểm
+                </span>
               </div>
               <button
                 onClick={() => startGame(difficulty)}
@@ -673,9 +676,9 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
                 {score.toLocaleString()} <span className="text-sm text-neutral-400">PTS</span>
               </h3>
               {isNewHigh && (
-                <div className="inline-flex items-center gap-1 text-xs text-white font-bold">
+                <div className="inline-flex items-center gap-1.5 text-xs text-amber-300 font-bold">
                   <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  <span>KỶ LỤC MỚI ĐÃ ĐƯỢC XÁC LẬP! 🎉</span>
+                  <span>KỶ LỤC MỚI ĐÃ ĐƯỢC XÁC LẬP!</span>
                 </div>
               )}
             </div>
@@ -697,11 +700,17 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
                   </div>
                   <div className="text-center">
                     <div className="text-[10px] text-neutral-500 uppercase font-mono">Max Combo</div>
-                    <div className="text-base font-bold text-white mt-0.5">🔥 {maxCombo}</div>
+                    <div className="text-base font-bold text-white mt-0.5 flex items-center justify-center gap-1">
+                      <Flame className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                      <span>{maxCombo}</span>
+                    </div>
                   </div>
                   <div className="text-center">
                     <div className="text-[10px] text-neutral-500 uppercase font-mono">Đã diệt</div>
-                    <div className="text-base font-bold text-white mt-0.5">⚡ {clearedCount}</div>
+                    <div className="text-base font-bold text-white mt-0.5 flex items-center justify-center gap-1">
+                      <Zap className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                      <span>{clearedCount}</span>
+                    </div>
                   </div>
                 </div>
               );

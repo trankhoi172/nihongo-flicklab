@@ -8,7 +8,7 @@ import { getPracticeTargets, applyModifier, isReachableInCycle, getKanaInfo } fr
 import { recordSpeedChallenge, loadProgress } from '../../utils/storage';
 import { soundEffects } from '../../utils/audio';
 import confetti from 'canvas-confetti';
-import { Timer, Zap, Trophy, Play, RotateCcw } from 'lucide-react';
+import { Timer, Zap, Trophy, Play, RotateCcw, ArrowRight } from 'lucide-react';
 
 interface SpeedChallengeModeProps {
   settings: UserSettings;
@@ -347,7 +347,7 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.08] border border-white/[0.12] text-xs text-neutral-200">
                     <span className="text-neutral-400">Đã gõ:</span>
                     <span className="font-bold text-white text-sm">{typedBuffer}</span>
-                    <span className="text-neutral-500">➔</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-neutral-400" />
                     <span className="text-white font-semibold">Nhấn phím [゛゜小]</span>
                   </div>
                 ) : getKanaInfo(currentKana)?.needsModifier ? (
@@ -382,7 +382,7 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
                   <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/[0.08] border border-white/[0.1] text-[11px] text-neutral-200 mt-1">
                     <span className="text-neutral-400">Đã gõ:</span>
                     <span className="font-bold text-white">{typedBuffer}</span>
-                    <span className="text-neutral-500">➔</span>
+                    <ArrowRight className="w-3 h-3 text-neutral-400" />
                     <span className="text-white font-semibold">Nhấn [゛゜小]</span>
                   </div>
                 )}

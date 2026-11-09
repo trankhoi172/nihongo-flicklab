@@ -198,8 +198,14 @@ export const ProgressMode: React.FC<ProgressModeProps> = ({ progress }) => {
                 <span>Thành tích Mưa Chữ Kana (Minigame)</span>
                 <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800">Arcade</span>
               </div>
-              <p className="text-xs text-stone-400 mt-0.5">
-                Đã chơi {progress.minigameGamesPlayed || 0} trận • Chuỗi Combo tối đa: 🔥 {progress.minigameMaxCombo || 0}
+              <p className="text-xs text-stone-400 mt-0.5 flex items-center gap-1">
+                <span>Đã chơi {progress.minigameGamesPlayed || 0} trận</span>
+                <span>•</span>
+                <span className="inline-flex items-center gap-1">
+                  <span>Combo tối đa:</span>
+                  <Flame className="w-3.5 h-3.5 text-amber-400 fill-amber-400 inline" />
+                  <strong className="text-white">{progress.minigameMaxCombo || 0}</strong>
+                </span>
               </p>
             </div>
           </div>

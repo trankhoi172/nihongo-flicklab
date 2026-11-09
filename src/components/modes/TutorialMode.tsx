@@ -164,23 +164,29 @@ export const TutorialMode: React.FC<TutorialModeProps> = ({ settings }) => {
 
           <div className="text-white text-base sm:text-lg font-bold">
             {targetDir === 'center' ? (
-              <span>
-                👉 <span className="text-red-400">Chạm nhẹ</span> vào ô phím{' '}
-                <span className="underline decoration-red-500 font-extrabold text-xl text-white">
-                  {currentKey.hiragana.center}
-                </span>{' '}
-                để gõ "{targetChar}"
+              <span className="inline-flex items-center gap-1.5 flex-wrap justify-center">
+                <ChevronRight className="w-4 h-4 text-neutral-400" />
+                <span>
+                  <span className="text-white font-extrabold underline decoration-white/40">Chạm nhẹ</span> vào ô phím{' '}
+                  <span className="font-extrabold text-xl text-white">
+                    {currentKey.hiragana.center}
+                  </span>{' '}
+                  để gõ "{targetChar}"
+                </span>
               </span>
             ) : (
-              <span>
-                👉 Chạm và{' '}
-                <span className="text-red-400 font-extrabold">
-                  {targetDir === 'left' && 'Vuốt sang TRÁI (←)'}
-                  {targetDir === 'up' && 'Vuốt LÊN TRÊN (↑)'}
-                  {targetDir === 'right' && 'Vuốt sang PHẢI (→)'}
-                  {targetDir === 'down' && 'Vuốt XUỐNG DƯỚI (↓)'}
-                </span>{' '}
-                để gõ "{targetChar}" ({targetRomaji})
+              <span className="inline-flex items-center gap-1.5 flex-wrap justify-center">
+                <ChevronRight className="w-4 h-4 text-neutral-400" />
+                <span>
+                  Chạm và{' '}
+                  <span className="text-white font-extrabold underline decoration-white/40">
+                    {targetDir === 'left' && 'Vuốt sang TRÁI (←)'}
+                    {targetDir === 'up' && 'Vuốt LÊN TRÊN (↑)'}
+                    {targetDir === 'right' && 'Vuốt sang PHẢI (→)'}
+                    {targetDir === 'down' && 'Vuốt XUỐNG DƯỚI (↓)'}
+                  </span>{' '}
+                  để gõ "{targetChar}" ({targetRomaji})
+                </span>
               </span>
             )}
           </div>

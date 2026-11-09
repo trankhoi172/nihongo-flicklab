@@ -18,18 +18,25 @@ export const FlickFlower: React.FC<FlickFlowerProps> = ({
   const isModifier = !!keyDef.isModifier;
   const isPunctuation = !!keyDef.isPunctuation;
 
-  // Determine column index to prevent edge clipping (0 = left, 1 = mid, 2 = right)
-  const isLeftCol = ['a', 'ta', 'ma', 'wa'].includes(keyDef.id);
-  const isRightCol = ['sa', 'ha', 'ra', 'mod'].includes(keyDef.id);
+  // Determine column index to prevent edge clipping on small screens
+  // Row 0: a (col 0), ka (col 1), sa (col 2)
+  // Row 1: ta (col 0), na (col 1), ha (col 2)
+  // Row 2: ma (col 0), ya (col 1), ra (col 2)
+  // Row 3: mod (col 0), wa (col 1), punct (col 2)
+  const isLeftCol = ['a', 'ta', 'ma', 'mod'].includes(keyDef.id);
+  const isRightCol = ['sa', 'ha', 'ra', 'punct'].includes(keyDef.id);
 
-  const horizontalOffset = isLeftCol ? 42 : isRightCol ? 42 : 46;
-  const verticalOffset = 46;
+  // Calibrate container shift so edge petals stay comfortably inside screen padding
+  const containerShiftX = isLeftCol ? 16 : isRightCol ? -16 : 0;
+
+  // Distance between tile centers (px). Tile size is 54px.
+  // 62px offset - 54px tile = 8px clean separation gap! No overlapping ever.
+  const stepOffset = 62;
 
   const petals: Array<{
     dir: FlickDirection;
     char: string;
     romaji: string;
-    arrow: string;
     label?: string;
     offsetX: number;
     offsetY: number;
@@ -38,7 +45,6 @@ export const FlickFlower: React.FC<FlickFlowerProps> = ({
       dir: 'center',
       char: map.center,
       romaji: keyDef.romaji.center,
-      arrow: '●',
       label: isModifier ? 'Chạm' : 'A',
       offsetX: 0,
       offsetY: 0,
@@ -47,94 +53,73 @@ export const FlickFlower: React.FC<FlickFlowerProps> = ({
       dir: 'left',
       char: map.left,
       romaji: keyDef.romaji.left,
-      arrow: '←',
       label: isModifier ? 'Đục ゛' : 'I',
-      offsetX: -horizontalOffset,
+      offsetX: -stepOffset,
       offsetY: 0,
     },
     {
       dir: 'up',
       char: map.up,
       romaji: keyDef.romaji.up,
-      arrow: '↑',
       label: isModifier ? 'Nhỏ 小' : 'U',
       offsetX: 0,
-      offsetY: -verticalOffset,
+      offsetY: -stepOffset,
     },
     {
       dir: 'right',
       char: map.right,
       romaji: keyDef.romaji.right,
-      arrow: '→',
       label: isModifier ? 'Bán đục ゜' : 'E',
-      offsetX: horizontalOffset,
+      offsetX: stepOffset,
       offsetY: 0,
     },
     {
       dir: 'down',
       char: map.down,
       romaji: keyDef.romaji.down,
-      arrow: '↓',
       label: isModifier ? 'Đổi' : 'O',
       offsetX: 0,
-      offsetY: verticalOffset,
+      offsetY: stepOffset,
     },
   ];
 
-  const activeChar = map[activeDirection] || map.center;
-  const activeRomaji = keyDef.romaji[activeDirection] || '';
-
   return (
-    <div className="absolute inset-0 pointer-events-none z-50 flex items-center justify-center">
-      {/* 1. Floating Overhead HUD Bubble (Minimal frosted glass callout) */}
-      <div className="absolute -top-14 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#1c1d22]/95 backdrop-blur-2xl border border-white/[0.12] text-white shadow-xl z-50 whitespace-nowrap animate-in fade-in zoom-in-95 duration-75">
-        <span className="text-neutral-300 font-medium text-xs">
-          {activeDirection === 'left' && '← Trái'}
-          {activeDirection === 'up' && '↑ Lên'}
-          {activeDirection === 'right' && '→ Phải'}
-          {activeDirection === 'down' && '↓ Dưới'}
-          {activeDirection === 'center' && '● Chạm'}
-        </span>
-        <span className="w-1 h-1 rounded-full bg-white/20" />
-        <span className="font-bold text-base text-white">{activeChar}</span>
-        {showRomaji && activeRomaji && activeRomaji.length <= 4 && (
-          <span className="text-[10px] text-neutral-400 font-mono uppercase">
-            ({activeRomaji})
-          </span>
-        )}
-      </div>
-
-      {/* 2. Liquid Glass Cross Flower Petals */}
+    <div
+      className="absolute inset-0 pointer-events-none z-50 flex items-center justify-center"
+      style={{
+        transform: containerShiftX ? `translateX(${containerShiftX}px)` : undefined,
+      }}
+    >
+      {/* 5-way Cross Petals (iOS 27 Liquid Glass Style) */}
       <div className="relative w-full h-full flex items-center justify-center">
         {petals.map((petal) => {
+          if (!petal.char || !petal.char.trim()) return null;
+
           const isActive = activeDirection === petal.dir;
-          if (!petal.char) return null;
 
           return (
             <div
               key={petal.dir}
               style={{
-                transform: `translate(calc(-50% + ${petal.offsetX}px), calc(-50% + ${petal.offsetY}px)) scale(${
-                  isActive ? 1.12 : 0.96
-                })`,
                 left: '50%',
                 top: '50%',
+                transform: `translate(calc(-50% + ${petal.offsetX}px), calc(-50% + ${petal.offsetY}px)) scale(${
+                  isActive ? 1.08 : 0.98
+                })`,
               }}
-              className={`absolute flex flex-col items-center justify-center rounded-2xl transition-all duration-100 ${
-                petal.dir === 'center' ? 'z-30 w-13 h-13' : 'z-20 w-12 h-12'
-              } ${
+              className={`absolute w-[54px] h-[54px] flex flex-col items-center justify-center rounded-2xl transition-all duration-100 ease-out select-none ${
                 isActive
-                  ? 'bg-white text-black shadow-xl ring-1 ring-white/80 font-bold'
-                  : 'bg-[#222329]/95 text-neutral-200 border border-white/[0.08] shadow-md backdrop-blur-2xl'
+                  ? 'z-40 bg-white text-black font-extrabold shadow-[0_12px_28px_rgba(0,0,0,0.6)] ring-2 ring-white/90'
+                  : 'z-20 bg-[#21232a]/95 text-neutral-100 border border-white/[0.12] shadow-xl backdrop-blur-2xl'
               }`}
             >
               {/* Kana Character */}
               <span
-                className={`leading-none ${
+                className={`leading-none select-none tracking-tight ${
                   isModifier
                     ? 'text-xs font-bold'
                     : isPunctuation
-                    ? 'text-lg font-bold'
+                    ? 'text-xl font-bold'
                     : isActive
                     ? 'text-2xl font-bold'
                     : 'text-xl font-medium'
@@ -143,14 +128,16 @@ export const FlickFlower: React.FC<FlickFlowerProps> = ({
                 {petal.char}
               </span>
 
-              {/* Direction label or vowel identifier */}
-              <span
-                className={`text-[8px] uppercase tracking-wider font-mono mt-0.5 leading-none ${
-                  isActive ? 'text-black/70 font-semibold' : 'text-neutral-400'
-                }`}
-              >
-                {petal.label}
-              </span>
+              {/* Subtitle / Romaji vowel or modifier instruction */}
+              {showRomaji && petal.label && (
+                <span
+                  className={`text-[9px] uppercase tracking-wider font-mono mt-1 leading-none select-none ${
+                    isActive ? 'text-black/75 font-semibold' : 'text-neutral-400 font-medium'
+                  }`}
+                >
+                  {isModifier ? petal.label : petal.romaji || petal.label}
+                </span>
+              )}
             </div>
           );
         })}

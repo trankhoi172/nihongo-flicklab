@@ -14,6 +14,7 @@ import { MinigameMode } from './components/modes/MinigameMode';
 import { FreeTypingMode } from './components/modes/FreeTypingMode';
 import { ProgressMode } from './components/modes/ProgressMode';
 import { SettingsModal } from './components/modes/SettingsModal';
+import { FacebookIcon } from './components/common/Icons';
 
 export const App: React.FC = () => {
   const [currentMode, setCurrentMode] = useState<PracticeMode>('dashboard');
@@ -105,15 +106,27 @@ export const App: React.FC = () => {
         </main>
       </div>
 
-      <footer className="w-full border-t border-stone-800/80 py-4 px-4 text-center text-xs text-stone-500 bg-[#090A0D]">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 font-medium text-stone-400">
-            <span>Flick Lab</span>
-            <span>•</span>
-            <span>日本語フリック入力の練習プラットフォーム</span>
+      <footer className="w-full border-t border-white/[0.08] py-4 px-4 text-xs bg-[#090A0D]">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2 font-medium text-neutral-400">
+            <span className="font-semibold text-neutral-300">Flick Lab</span>
+            <span className="text-neutral-600">•</span>
+            <span className="text-neutral-500 font-mono text-[11px]">日本語フリック入力</span>
           </div>
-          <div className="text-[11px] font-mono text-stone-500">
-            Chạm • Vuốt 4 hướng • Thành thạo gõ tiếng Nhật
+
+          <div className="flex items-center gap-4">
+            <a
+              href="https://facebook.com/@ronaldoGoatskibidi"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-neutral-400 hover:text-white transition-colors group"
+              title="Liên hệ Facebook Tran Dang Khoi"
+            >
+              <FacebookIcon className="w-3.5 h-3.5 text-neutral-400 group-hover:text-[#1877F2] transition-colors" />
+              <span className="text-xs">
+                Made by <strong className="font-semibold text-neutral-200 group-hover:text-white">Tran Dang Khoi</strong>
+              </span>
+            </a>
           </div>
         </div>
       </footer>

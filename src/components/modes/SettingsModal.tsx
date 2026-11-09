@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { UserSettings, FlickSensitivity, SoundTheme, LanguageMeaning } from '../../types/settings';
 import { X, Volume2, VolumeX, Sliders, Globe, RotateCcw, Check } from 'lucide-react';
+import { FacebookIcon } from '../common/Icons';
 import { soundEffects } from '../../utils/audio';
 
 interface SettingsModalProps {
@@ -298,7 +299,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 border-t border-stone-800/80 bg-[#101217] flex justify-end">
+        <div className="px-6 py-3 border-t border-stone-800/80 bg-[#101217] flex items-center justify-between">
+          <a
+            href="https://facebook.com/@ronaldoGoatskibidi"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-stone-400 hover:text-white transition-colors group"
+            title="Liên hệ Facebook Tran Dang Khoi"
+          >
+            <FacebookIcon className="w-3.5 h-3.5 text-stone-400 group-hover:text-[#1877F2] transition-colors" />
+            <span className="text-[11px]">
+              Made by <strong className="font-semibold text-stone-300 group-hover:text-white">Tran Dang Khoi</strong>
+            </span>
+          </a>
+
           <button
             type="button"
             onClick={onClose}

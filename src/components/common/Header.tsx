@@ -1,6 +1,7 @@
 import React from 'react';
 import type { PracticeMode } from '../../types/practice';
 import { Settings as SettingsIcon, Flame, Keyboard } from 'lucide-react';
+import { FacebookIcon } from './Icons';
 
 interface HeaderProps {
   currentMode: PracticeMode;
@@ -57,6 +58,19 @@ export const Header: React.FC<HeaderProps> = ({
             <Keyboard className="w-3.5 h-3.5 text-neutral-400" />
             <span>{totalCharsTyped.toLocaleString()} ký tự</span>
           </div>
+
+          <a
+            href="https://facebook.com/@ronaldoGoatskibidi"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] text-neutral-400 hover:text-white border border-white/[0.06] hover:border-white/[0.12] text-xs font-medium transition-all group"
+            title="Made by Tran Dang Khoi"
+          >
+            <FacebookIcon className="w-3.5 h-3.5 text-neutral-400 group-hover:text-[#1877F2] transition-colors" />
+            <span className="text-[11px]">
+              Made by <strong className="font-semibold text-neutral-300 group-hover:text-white">Tran Dang Khoi</strong>
+            </span>
+          </a>
 
           <button
             onClick={onOpenSettings}

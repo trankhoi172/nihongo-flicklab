@@ -14,6 +14,7 @@ import {
   Zap,
   CheckCircle2,
   Gamepad2,
+  Lightbulb,
 } from 'lucide-react';
 
 interface DashboardProps {
@@ -84,7 +85,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ progress, onSelectMode }) 
       desc: 'Bắn hạ các ký tự và từ vựng đang rơi trước khi chạm tia đỏ, duy trì combo rực rỡ và lập kỷ lục!',
       icon: <Gamepad2 className="w-5 h-5 text-amber-400" />,
       color: 'bg-amber-950/40 border-amber-800/80',
-      badge: (progress.minigameHighScore || 0) > 0 ? `Kỷ lục: ${progress.minigameHighScore} PTS` : 'Mới ✨',
+      badge: (progress.minigameHighScore || 0) > 0 ? `Kỷ lục: ${progress.minigameHighScore} PTS` : 'Mới',
     },
     {
       id: 'free',
@@ -187,8 +188,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ progress, onSelectMode }) 
       <div className="p-5 rounded-3xl bg-[#14161D] border border-stone-800 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-red-600/30 text-red-400 border border-red-800 flex items-center justify-center font-bold text-xs">
-              💡
+            <div className="w-6 h-6 rounded-md bg-white/[0.08] text-white border border-white/[0.1] flex items-center justify-center text-xs">
+              <Lightbulb className="w-3.5 h-3.5 text-neutral-300" />
             </div>
             <h2 className="text-sm font-bold text-white">
               Quy tắc vàng 5 hướng vuốt của người Nhật (5母音の法則)

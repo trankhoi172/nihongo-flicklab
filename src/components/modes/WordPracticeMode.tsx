@@ -243,10 +243,11 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
         {/* Next Hint for Active Character */}
         {expectedInfo?.needsModifier && !isCompleted && (
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.07] text-neutral-200 text-xs font-medium border border-white/[0.1]">
+            <ChevronRight className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
             {!typedBuffer ? (
-              <span>👉 Gõ âm gốc <strong className="text-white">"{expectedInfo.baseChar}"</strong> trước</span>
+              <span>Gõ âm gốc <strong className="text-white">"{expectedInfo.baseChar}"</strong> trước</span>
             ) : (
-              <span>👉 Đã gõ <strong className="text-white">{typedBuffer}</strong> ➔ Nhấn <strong className="text-white">"゛゜小"</strong> để thành <strong className="text-white">"{expectedChar}"</strong></span>
+              <span>Đã gõ <strong className="text-white">{typedBuffer}</strong> ➔ Nhấn <strong className="text-white">"゛゜小"</strong> để thành <strong className="text-white">"{expectedChar}"</strong></span>
             )}
           </div>
         )}
