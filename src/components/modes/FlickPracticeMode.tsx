@@ -6,7 +6,7 @@ import { FlickKeyboard } from '../keyboard/FlickKeyboard';
 import { getPracticeTargets, applyModifier, isReachableInCycle } from '../../utils/kanaHelper';
 import { recordKanaPractice } from '../../utils/storage';
 import { soundEffects } from '../../utils/audio';
-import { Zap, Eye, EyeOff, RotateCcw } from 'lucide-react';
+import { Eye, EyeOff, RotateCcw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface FlickPracticeModeProps {
@@ -152,10 +152,10 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
             <button
               key={f.id}
               onClick={() => setSelectedFilter(f.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
+              className={`px-2.5 py-1 rounded-md text-xs font-medium whitespace-nowrap transition-colors border cursor-pointer ${
                 isSelected
-                  ? 'bg-white text-black border-white shadow-xs font-bold'
-                  : 'bg-white/[0.04] text-neutral-400 hover:text-white border-white/[0.06]'
+                  ? 'bg-white text-black border-white font-semibold'
+                  : 'bg-transparent text-neutral-400 hover:text-white border-neutral-800 hover:border-neutral-700'
               }`}
             >
               {f.label}
@@ -165,22 +165,22 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
       </div>
 
       {/* Target Display & Stats */}
-      <div className="p-5 rounded-3xl bg-[#15161c]/90 border border-white/[0.08] shadow-xl space-y-3">
+      <div className="p-5 rounded-xl bg-[#111216] border border-neutral-800/80 space-y-4">
         {/* Top bar with stats & hint toggle */}
-        <div className="flex items-center justify-between text-xs font-medium text-neutral-400">
+        <div className="flex items-center justify-between text-xs font-medium text-neutral-400 border-b border-neutral-850 pb-3">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 font-bold text-white">
-              <Zap className="w-3.5 h-3.5 text-white" />
-              <span>Combo: {comboStreak}</span>
+            <div className="flex items-center gap-1 font-mono text-white">
+              <span>Combo:</span>
+              <strong className="text-white">{comboStreak}</strong>
             </div>
-            <div>
-              <span>Độ chính xác: </span>
-              <span className="font-bold text-white">{accuracy}%</span>
+            <div className="font-mono text-neutral-400">
+              <span>Chính xác: </span>
+              <strong className="text-white">{accuracy}%</strong>
             </div>
             {reactionTimeMs !== null && (
-              <div className="hidden sm:block">
+              <div className="hidden sm:block font-mono text-neutral-400">
                 <span>Tốc độ: </span>
-                <span className="font-bold text-white">{reactionTimeMs}ms</span>
+                <strong className="text-white">{reactionTimeMs}ms</strong>
               </div>
             )}
           </div>
@@ -189,10 +189,10 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
             <button
               type="button"
               onClick={() => setShowHint(!showHint)}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border text-xs transition-colors ${
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-md border text-xs transition-colors cursor-pointer ${
                 showHint
-                  ? 'bg-white text-black border-white font-bold'
-                  : 'border-white/[0.08] text-neutral-400 bg-white/[0.04]'
+                  ? 'bg-white text-black border-white font-semibold'
+                  : 'border-neutral-800 text-neutral-400 hover:text-white'
               }`}
               title="Bật/Tắt gợi ý hướng phím"
             >
@@ -203,7 +203,7 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
             <button
               type="button"
               onClick={pickNewTarget}
-              className="p-1 rounded-lg text-neutral-400 hover:text-white"
+              className="p-1 rounded-md text-neutral-400 hover:text-white cursor-pointer"
               title="Đổi chữ khác"
             >
               <RotateCcw className="w-4 h-4" />
@@ -213,17 +213,17 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
 
         {/* Center Target Box */}
         <div className="flex flex-col items-center justify-center py-2 space-y-2">
-          <span className="text-[11px] uppercase font-mono tracking-wider text-neutral-500 font-semibold">
+          <span className="text-[10px] uppercase font-mono tracking-wider text-neutral-500 font-medium">
             Hãy gõ ký tự:
           </span>
 
           <div
-            className={`w-28 h-28 rounded-3xl flex items-center justify-center transition-all duration-150 ${
+            className={`w-24 h-24 rounded-xl flex items-center justify-center transition-all duration-150 ${
               feedbackState === 'correct'
-                ? 'bg-white text-black font-extrabold shadow-xl scale-105'
+                ? 'bg-white text-black font-extrabold shadow-md scale-105'
                 : feedbackState === 'wrong'
                 ? 'bg-neutral-800 text-rose-400 border border-rose-500 animate-shake'
-                : 'bg-[#101115] text-white border border-white/[0.08] shadow-inner'
+                : 'bg-[#0E0F12] text-white border border-neutral-800'
             }`}
           >
             <span className="text-5xl font-black font-sans">

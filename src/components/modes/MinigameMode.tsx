@@ -435,7 +435,7 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
 
       {/* Main Playfield Arena */}
       <div
-        className={`relative w-full h-[290px] sm:h-[320px] rounded-3xl bg-[#101115] border border-white/[0.08] overflow-hidden shadow-2xl transition-all ${
+        className={`relative w-full h-[290px] sm:h-[320px] rounded-xl bg-[#0B0C0E] border border-neutral-800 overflow-hidden transition-all ${
           screenShake ? 'animate-shake border-rose-500' : ''
         }`}
       >
@@ -448,7 +448,7 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
         {/* HUD Top Bar inside Canvas */}
         <div className="absolute top-2 left-3 right-3 z-20 flex items-center justify-between text-xs">
           {/* Hearts / Lives */}
-          <div className="flex items-center gap-1 bg-[#14151a]/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/[0.08]">
+          <div className="flex items-center gap-1 bg-[#14151a]/95 px-2.5 py-1 rounded-md border border-neutral-800">
             {[1, 2, 3].map((heartIndex) => (
               <Heart
                 key={heartIndex}
@@ -464,12 +464,12 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
           {/* Current Score & Combo */}
           <div className="flex items-center gap-2">
             {combo > 1 && (
-              <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/[0.1] text-white border border-white/[0.15] text-[11px] font-semibold">
-                <Flame className="w-3 h-3 text-white fill-white" />
+              <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#16171B] text-neutral-200 border border-neutral-800 text-[11px] font-mono">
+                <Flame className="w-3 h-3 text-neutral-400 fill-neutral-400" />
                 <span>COMBO x{combo}</span>
               </div>
             )}
-            <div className="bg-[#14151a]/90 backdrop-blur-md px-3 py-1 rounded-full border border-white/[0.08] font-mono font-bold text-white text-xs">
+            <div className="bg-[#14151a]/95 px-3 py-1 rounded-md border border-neutral-800 font-mono font-medium text-white text-xs">
               {score.toLocaleString()} <span className="text-[10px] text-neutral-400 font-normal">PTS</span>
             </div>
           </div>
@@ -478,7 +478,7 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
           {gameState === 'playing' && (
             <button
               onClick={() => setGameState('paused')}
-              className="p-1.5 rounded-full bg-[#14151a]/90 hover:bg-neutral-800 text-neutral-300 border border-white/[0.08] transition-colors"
+              className="p-1.5 rounded-md bg-[#14151a]/95 hover:bg-neutral-800 text-neutral-300 border border-neutral-800 transition-colors"
               title="Tạm dừng"
             >
               <Pause className="w-3.5 h-3.5" />
@@ -518,10 +518,10 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
               >
                 {/* Bubble */}
                 <div
-                  className={`relative flex items-center justify-center rounded-2xl border px-3 py-1.5 shadow-lg backdrop-blur-md transition-all ${
+                  className={`relative flex items-center justify-center rounded-lg border px-3 py-1.5 shadow-sm transition-all ${
                     isWord
-                      ? 'bg-neutral-900/95 border-white/20 text-white'
-                      : 'bg-[#18191f]/95 border-white/[0.12] text-white'
+                      ? 'bg-neutral-900/95 border-neutral-700 text-white'
+                      : 'bg-[#18191f]/95 border-neutral-800 text-white'
                   }`}
                 >
                   {isWord && item.fullWord ? (
@@ -574,11 +574,11 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
         {gameState === 'menu' && (
           <div className="absolute inset-0 z-40 bg-[#0e0f13]/95 backdrop-blur-md p-3.5 sm:p-5 flex flex-col justify-between overflow-y-auto custom-scrollbar">
             <div>
-              <div className="flex items-center gap-1.5 text-xs text-neutral-300 font-semibold mb-1">
-                <Sparkles className="w-3.5 h-3.5 text-white" />
+              <div className="flex items-center gap-1.5 text-xs text-neutral-400 font-medium mb-1">
+                <Sparkles className="w-3.5 h-3.5 text-neutral-300" />
                 <span>Rèn luyện phản xạ ngón tay tức thì</span>
               </div>
-              <h2 className="text-lg sm:text-xl font-bold text-white">
+              <h2 className="text-lg sm:text-xl font-semibold text-neutral-100">
                 Chọn chế độ mưa Kana
               </h2>
               <p className="text-xs text-neutral-400 mt-0.5 line-clamp-2 sm:line-clamp-none">
@@ -597,13 +597,13 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
                 <button
                   key={d.id}
                   onClick={() => setDifficulty(d.id as GameDifficulty)}
-                  className={`p-2 sm:p-2.5 rounded-xl border text-left transition-all ${
+                  className={`p-2 sm:p-2.5 rounded-md border text-left transition-colors ${
                     difficulty === d.id
-                      ? 'bg-white text-black border-white shadow-xs font-bold'
-                      : 'bg-white/[0.04] border-white/[0.08] text-neutral-400 hover:text-white'
+                      ? 'bg-white text-black border-white'
+                      : 'bg-[#111216] border-neutral-800 text-neutral-400 hover:text-white'
                   }`}
                 >
-                  <div className={`text-xs font-bold ${difficulty === d.id ? 'text-black' : 'text-neutral-200'}`}>
+                  <div className={`text-xs font-semibold ${difficulty === d.id ? 'text-black' : 'text-neutral-200'}`}>
                     {d.name}
                   </div>
                   <div className={`text-[10px] font-medium leading-tight ${difficulty === d.id ? 'text-black/80' : 'text-neutral-400'}`}>
@@ -617,7 +617,7 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
             </div>
 
             {/* Start Button - Always fully visible on mobile */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-2 border-t border-white/[0.08] mt-auto shrink-0">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-2 border-t border-neutral-800 mt-auto shrink-0">
               <div className="text-[11px] text-neutral-400 flex items-center gap-1.5">
                 <HelpCircle className="w-3.5 h-3.5 text-neutral-500" />
                 <span className="inline-flex items-center gap-1">
@@ -626,9 +626,9 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
               </div>
               <button
                 onClick={() => startGame(difficulty)}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-white hover:bg-neutral-200 text-black font-extrabold text-sm shadow-md active:scale-95 transition-all"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2 rounded-md bg-white hover:bg-neutral-200 text-black font-semibold text-xs transition-colors"
               >
-                <Play className="w-4 h-4 fill-current" />
+                <Play className="w-3.5 h-3.5 fill-current" />
                 <span>Bắt đầu chơi (開始)</span>
               </button>
             </div>
@@ -637,28 +637,28 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
 
         {gameState === 'paused' && (
           <div className="absolute inset-0 z-40 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-6 space-y-4">
-            <h3 className="text-xl font-bold text-white">Đang tạm dừng (一時停止)</h3>
+            <h3 className="text-lg font-semibold text-neutral-100">Đang tạm dừng (一時停止)</h3>
             <p className="text-xs text-neutral-400 text-center max-w-xs">
               Thư giãn ngón tay trước khi tiếp tục chuỗi combo rực rỡ!
             </p>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setGameState('playing')}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-black font-bold text-xs shadow-md active:scale-95 transition-all"
+                className="flex items-center gap-2 px-5 py-2 rounded-md bg-white text-black font-semibold text-xs hover:bg-neutral-200 transition-colors"
               >
-                <Play className="w-4 h-4 fill-current" />
+                <Play className="w-3.5 h-3.5 fill-current" />
                 <span>Tiếp tục</span>
               </button>
               <button
                 onClick={() => startGame(difficulty)}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/[0.08] text-neutral-300 hover:text-white border border-white/[0.08] text-xs font-semibold"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-md bg-[#16171B] text-neutral-300 hover:text-white border border-neutral-800 text-xs font-medium"
               >
-                <RotateCcw className="w-4 h-4" />
+                <RotateCcw className="w-3.5 h-3.5" />
                 <span>Chơi lại</span>
               </button>
               <button
                 onClick={() => setGameState('menu')}
-                className="px-4 py-2.5 rounded-xl bg-white/[0.05] text-neutral-400 hover:text-neutral-200 border border-white/[0.06] text-xs font-semibold"
+                className="px-4 py-2 rounded-md bg-[#111216] text-neutral-400 hover:text-neutral-200 border border-neutral-800 text-xs font-medium"
               >
                 Về menu
               </button>
@@ -669,16 +669,16 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
         {gameState === 'gameover' && (
           <div className="absolute inset-0 z-40 bg-[#0e0f13]/95 backdrop-blur-md p-3.5 sm:p-5 flex flex-col justify-between overflow-y-auto custom-scrollbar animate-in zoom-in-95 duration-150">
             <div className="text-center space-y-1">
-              <div className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-white/[0.08] border border-white/[0.1] text-white text-[11px] font-bold">
+              <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#16171B] border border-neutral-800 text-neutral-300 text-[11px] font-mono">
                 Trận đấu kết thúc (ゲームオーバー)
               </div>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
-                {score.toLocaleString()} <span className="text-sm text-neutral-400">PTS</span>
+              <h3 className="text-2xl sm:text-3xl font-bold text-neutral-100">
+                {score.toLocaleString()} <span className="text-xs text-neutral-400 font-mono">PTS</span>
               </h3>
               {isNewHigh && (
-                <div className="inline-flex items-center gap-1.5 text-xs text-amber-300 font-bold">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  <span>KỶ LỤC MỚI ĐÃ ĐƯỢC XÁC LẬP!</span>
+                <div className="inline-flex items-center gap-1.5 text-xs text-neutral-200 font-mono">
+                  <Sparkles className="w-3.5 h-3.5 text-neutral-400" />
+                  <span>KỶ LỤC MỚI ĐÃ ĐƯỢC XÁC LẬP</span>
                 </div>
               )}
             </div>
@@ -687,28 +687,28 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
             {(() => {
               const rank = getRank(score);
               return (
-                <div className="flex items-center justify-around py-2.5 px-3 rounded-2xl bg-white/[0.04] border border-white/[0.08]">
+                <div className="flex items-center justify-around py-2.5 px-3 rounded-md bg-[#0B0C0E] border border-neutral-800">
                   <div className="text-center">
                     <div className="text-[10px] text-neutral-500 uppercase font-mono">Xếp hạng</div>
-                    <div className="text-xl font-bold px-2.5 py-0.5 rounded-lg border border-white/20 mt-0.5 text-white">
+                    <div className="text-lg font-bold px-2 py-0.5 rounded-md border border-neutral-700 mt-0.5 text-white">
                       {rank.label}
                     </div>
                   </div>
                   <div className="text-center">
                     <div className="text-[10px] text-neutral-500 uppercase font-mono">Danh hiệu</div>
-                    <div className="text-xs font-bold text-neutral-200 mt-1">{rank.title}</div>
+                    <div className="text-xs font-medium text-neutral-200 mt-1">{rank.title}</div>
                   </div>
                   <div className="text-center">
                     <div className="text-[10px] text-neutral-500 uppercase font-mono">Max Combo</div>
-                    <div className="text-base font-bold text-white mt-0.5 flex items-center justify-center gap-1">
-                      <Flame className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                    <div className="text-base font-semibold text-white mt-0.5 flex items-center justify-center gap-1 font-mono">
+                      <Flame className="w-3.5 h-3.5 text-neutral-400 fill-neutral-400" />
                       <span>{maxCombo}</span>
                     </div>
                   </div>
                   <div className="text-center">
                     <div className="text-[10px] text-neutral-500 uppercase font-mono">Đã diệt</div>
-                    <div className="text-base font-bold text-white mt-0.5 flex items-center justify-center gap-1">
-                      <Zap className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                    <div className="text-base font-semibold text-white mt-0.5 flex items-center justify-center gap-1 font-mono">
+                      <Zap className="w-3.5 h-3.5 text-neutral-400 fill-neutral-400" />
                       <span>{clearedCount}</span>
                     </div>
                   </div>
@@ -717,18 +717,18 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
             })()}
 
             {/* Actions */}
-            <div className="flex items-center justify-between pt-1 border-t border-white/[0.06] mt-auto shrink-0">
+            <div className="flex items-center justify-between pt-1 border-t border-neutral-800 mt-auto shrink-0">
               <button
                 onClick={() => setGameState('menu')}
-                className="px-4 py-2 rounded-xl bg-white/[0.06] text-neutral-300 text-xs font-semibold hover:bg-white/[0.1] border border-white/[0.06]"
+                className="px-4 py-2 rounded-md bg-[#16171B] text-neutral-300 text-xs font-medium hover:bg-neutral-800 border border-neutral-800"
               >
                 Đổi chế độ
               </button>
               <button
                 onClick={() => startGame(difficulty)}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-white hover:bg-neutral-200 text-black font-extrabold text-sm shadow-md active:scale-95 transition-all"
+                className="flex items-center gap-2 px-5 py-2 rounded-md bg-white hover:bg-neutral-200 text-black font-semibold text-xs transition-colors"
               >
-                <RotateCcw className="w-4 h-4" />
+                <RotateCcw className="w-3.5 h-3.5" />
                 <span>Chơi lại ngay (再挑戦)</span>
               </button>
             </div>

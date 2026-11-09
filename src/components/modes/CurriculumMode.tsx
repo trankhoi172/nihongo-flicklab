@@ -10,7 +10,6 @@ import confetti from 'canvas-confetti';
 import {
   CheckCircle2,
   ChevronRight,
-  BookOpen,
   Sparkles,
 } from 'lucide-react';
 
@@ -148,42 +147,42 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-4 space-y-6 animate-in fade-in duration-200">
+    <div className="max-w-4xl mx-auto px-4 py-4 space-y-6 animate-in fade-in duration-150">
       {/* Curriculum Header & Global Progress */}
-      <div className="p-6 rounded-3xl bg-[#14161D] border border-stone-800 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="pb-4 border-b border-neutral-850 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-950/60 border border-red-800/80 text-red-400 text-xs font-bold mb-2">
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>Giáo trình chuẩn Nhật Bản (日本語フリック完全カリキュラム)</span>
+            <div className="text-[11px] font-mono text-neutral-500 uppercase tracking-wider flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-600 inline-block" />
+              <span>日本語フリック完全カリキュラム • GIÁO TRÌNH CHUẨN</span>
             </div>
-            <h2 className="text-2xl font-black text-white">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">
               Lộ trình từ Cơ bản đến Bậc thầy
             </h2>
-            <p className="text-xs text-stone-400 mt-1">
-              8 học phần • 27 bài học chi tiết không sai sót bao quát toàn bộ quy tắc gõ Kana.
+            <p className="text-xs text-neutral-400 mt-1">
+              8 học phần • 27 bài học chi tiết bao quát toàn bộ quy tắc gõ Kana.
             </p>
           </div>
 
           <div className="sm:text-right shrink-0">
-            <div className="text-xs font-semibold text-stone-400">Tiến độ giáo trình</div>
-            <div className="text-2xl font-black text-white mt-0.5">
-              {completedCount} / {totalLessons}{' '}
-              <span className="text-xs font-normal text-stone-500">bài ({progressPercent}%)</span>
+            <div className="text-[10px] font-mono uppercase text-neutral-500 tracking-wider">Tiến độ giáo trình</div>
+            <div className="text-xl font-light text-white mt-0.5">
+              <strong className="font-semibold">{completedCount}</strong> / {totalLessons}{' '}
+              <span className="text-xs font-normal text-neutral-500 font-mono">({progressPercent}%)</span>
             </div>
           </div>
         </div>
 
         {/* Global Progress Bar */}
-        <div className="w-full h-2 rounded-full bg-white/[0.08] overflow-hidden">
+        <div className="w-full h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
           <div
-            className="h-full bg-white rounded-full transition-all duration-500"
+            className="h-full bg-white rounded-full transition-all duration-300"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
 
         {/* Horizontal Scrollable Module Selector */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar pt-2">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar pt-1">
           {CURRICULUM_MODULES.map((mod) => {
             const isSelected = mod.id === selectedModuleId;
             const completedInModule = mod.lessons.filter((l) => completedLessonIds.includes(l.id)).length;
@@ -196,17 +195,17 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
                   setSelectedModuleId(mod.id);
                   setSelectedLessonId(mod.lessons[0].id);
                 }}
-                className={`px-3.5 py-2 rounded-2xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 border ${
+                className={`px-3 py-1.5 rounded-md text-xs transition-colors flex items-center gap-2 border cursor-pointer ${
                   isSelected
-                    ? 'bg-white text-black border-white shadow-xs font-bold'
-                    : 'bg-white/[0.04] text-neutral-400 hover:text-white border-white/[0.08] hover:bg-white/[0.08]'
+                    ? 'bg-white text-black border-white font-semibold'
+                    : 'bg-white/[0.02] text-neutral-400 hover:text-white border-neutral-800/80 hover:border-neutral-700'
                 }`}
               >
                 <span>Học phần {mod.moduleNumber}</span>
                 {isAllCompleted ? (
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                 ) : (
-                  <span className={`text-[10px] ${isSelected ? 'text-black/70' : 'opacity-70'}`}>
+                  <span className={`text-[10px] font-mono ${isSelected ? 'text-black/70' : 'opacity-60'}`}>
                     {completedInModule}/{mod.lessons.length}
                   </span>
                 )}
@@ -217,17 +216,17 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
       </div>
 
       {/* Main Grid: Lessons Drawer & Active Practice Area */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Left: Lessons List in Current Module */}
         <div className="space-y-2 md:col-span-1">
-          <div className="text-xs font-bold text-stone-400 uppercase tracking-wider px-1 flex items-center justify-between">
+          <div className="text-[11px] font-mono font-medium text-neutral-400 uppercase tracking-wider px-1 flex items-center justify-between">
             <span>Danh sách bài học</span>
-            <span className="text-[10px] text-stone-500 font-normal">
+            <span className="text-[10px] text-neutral-500 font-normal">
               {currentModule.level}
             </span>
           </div>
 
-          <div className="space-y-1.5 max-h-[460px] overflow-y-auto custom-scrollbar pr-1.5">
+          <div className="space-y-1 max-h-[460px] overflow-y-auto custom-scrollbar pr-1.5 border-t border-neutral-850 pt-2">
             {currentModule.lessons.map((les) => {
               const isSelected = les.id === selectedLessonId;
               const isDone = completedLessonIds.includes(les.id);
@@ -236,23 +235,23 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
                 <button
                   key={les.id}
                   onClick={() => setSelectedLessonId(les.id)}
-                  className={`w-full text-left p-3 rounded-2xl border transition-all flex items-center justify-between gap-2 ${
+                  className={`w-full text-left p-2.5 rounded-md transition-colors flex items-center justify-between gap-2 border-l-2 cursor-pointer ${
                     isSelected
-                      ? 'bg-stone-800/90 border-red-500/80 text-white shadow-md'
-                      : 'bg-[#14161D] border-stone-800/80 text-stone-400 hover:bg-[#1A1C25] hover:text-stone-200'
+                      ? 'border-red-500 bg-white/[0.05] text-white'
+                      : 'border-transparent text-neutral-400 hover:bg-white/[0.02] hover:text-neutral-200'
                   }`}
                 >
                   <div className="space-y-0.5 min-w-0">
-                    <div className="text-[10px] font-mono text-stone-500">
+                    <div className="text-[10px] font-mono text-neutral-500">
                       Bài {les.lessonNumber}
                     </div>
-                    <div className="text-xs font-bold truncate text-stone-200">
+                    <div className="text-xs font-medium truncate text-neutral-200">
                       {les.title}
                     </div>
                   </div>
 
                   {isDone && (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   )}
                 </button>
               );
@@ -262,22 +261,22 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
 
         {/* Right: Active Lesson & Interactive Keyboard Drill */}
         <div className="md:col-span-2 space-y-4">
-          <div className="p-5 sm:p-6 rounded-3xl bg-[#14161D] border border-stone-800 space-y-5">
+          <div className="p-5 sm:p-6 rounded-xl bg-[#111216] border border-neutral-800/80 space-y-4">
             {/* Lesson Title & Objectives */}
-            <div className="space-y-2">
+            <div className="space-y-1.5 border-b border-neutral-850 pb-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-red-400 font-mono">
+                <span className="text-xs font-semibold text-red-400 font-mono">
                   Bài {currentLesson.lessonNumber} • {currentLesson.japaneseTitle}
                 </span>
-                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-stone-800 text-stone-400 font-medium">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-white/[0.04] text-neutral-400 font-mono border border-neutral-800">
                   {currentModule.level}
                 </span>
               </div>
 
-              <h3 className="text-xl font-extrabold text-white">
+              <h3 className="text-lg font-bold text-white">
                 {currentLesson.title}
               </h3>
-              <p className="text-xs text-stone-400 leading-relaxed">
+              <p className="text-xs text-neutral-400 leading-relaxed">
                 {currentLesson.description}
               </p>
             </div>
@@ -296,8 +295,8 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
             </div>
 
             {/* Practice Step Box */}
-            <div className="p-4 rounded-2xl bg-stone-900/90 border border-stone-800 space-y-3 text-center">
-              <div className="flex items-center justify-between text-xs text-stone-400 font-medium">
+            <div className="p-4 rounded-lg bg-black/40 border border-neutral-850 space-y-3 text-center">
+              <div className="flex items-center justify-between text-xs text-neutral-400 font-mono">
                 <span>Thực hành gõ bài này:</span>
                 <span>
                   Mục tiêu {targetIndex + 1} / {currentLesson.practiceTargets.length}
@@ -312,12 +311,12 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
                   return (
                     <span
                       key={idx}
-                      className={`px-3 py-1 rounded-xl text-xs font-mono font-bold transition-all ${
+                      className={`px-2.5 py-1 rounded-md text-xs font-mono transition-all ${
                         isFinished
-                          ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/60'
+                          ? 'bg-emerald-950/40 text-emerald-400 font-medium'
                           : isCurrent
-                          ? 'bg-red-600 text-white shadow-md scale-105 ring-2 ring-red-400'
-                          : 'bg-stone-800 text-stone-500 border border-stone-700/60'
+                          ? 'bg-red-600 text-white font-bold shadow-xs'
+                          : 'bg-white/[0.03] text-neutral-500'
                       }`}
                     >
                       {tgt}

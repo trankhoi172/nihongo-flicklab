@@ -162,10 +162,10 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
               <button
                 key={diff}
                 onClick={() => setSelectedDifficulty(diff)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
+                className={`px-3 py-1 rounded-md text-xs font-medium transition-colors border ${
                   isSelected
-                    ? 'bg-white text-black border-white shadow-xs font-bold'
-                    : 'bg-white/[0.04] text-neutral-400 hover:text-white border-white/[0.06]'
+                    ? 'bg-white text-black border-white'
+                    : 'bg-[#111216] text-neutral-400 hover:text-white border-neutral-800'
                 }`}
               >
                 {labels[diff]}
@@ -177,7 +177,7 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
         <button
           type="button"
           onClick={() => pickWord()}
-          className="flex items-center gap-1 text-xs font-semibold text-neutral-400 hover:text-white transition-colors"
+          className="flex items-center gap-1 text-xs font-medium text-neutral-400 hover:text-white transition-colors"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>Đổi từ khác</span>
@@ -186,18 +186,18 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
 
       {/* Target Word Card */}
       <div
-        className={`p-5 rounded-3xl bg-[#15161c]/90 border border-white/[0.08] shadow-xl space-y-3 text-center transition-all ${
+        className={`p-5 rounded-xl bg-[#111216] border border-neutral-800/80 space-y-3 text-center transition-all ${
           shakeActive ? 'animate-shake' : ''
         }`}
       >
         {/* Kanji & Category Tag */}
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white/[0.06] text-neutral-300 border border-white/[0.08]">
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#16171B] text-neutral-300 border border-neutral-800">
             {currentWord.category}
           </span>
           {currentWord.kanji && currentWord.kanji !== currentWord.kana && (
-            <span className="text-sm font-semibold text-neutral-300 font-serif">
-              Hán tự: {currentWord.kanji}
+            <span className="text-xs font-medium text-neutral-400">
+              Hán tự: <span className="text-neutral-200 font-sans">{currentWord.kanji}</span>
             </span>
           )}
         </div>
@@ -211,18 +211,18 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
             return (
               <div
                 key={idx}
-                className={`w-13 h-16 sm:w-15 sm:h-18 rounded-2xl flex flex-col items-center justify-center transition-all ${
+                className={`w-13 h-16 sm:w-15 sm:h-18 rounded-lg flex flex-col items-center justify-center transition-all ${
                   isDone
-                    ? 'bg-white/10 text-white border border-white/20 font-bold'
+                    ? 'bg-neutral-900 text-neutral-300 border border-neutral-800'
                     : isCurrent
-                    ? 'bg-white text-black font-extrabold shadow-lg scale-105'
-                    : 'bg-white/[0.04] text-neutral-500 border border-white/[0.06]'
+                    ? 'bg-white text-black font-bold shadow-sm'
+                    : 'bg-[#0B0C0E] text-neutral-500 border border-neutral-800/70'
                 }`}
               >
-                <span className="text-2xl sm:text-3xl font-black font-sans">
+                <span className="text-2xl sm:text-3xl font-medium font-sans">
                   {char}
                 </span>
-                <span className={`text-[9px] uppercase font-mono tracking-wider ${isCurrent ? 'text-black/70' : 'opacity-70'}`}>
+                <span className={`text-[9px] uppercase font-mono tracking-wider ${isCurrent ? 'text-black/70' : 'text-neutral-500'}`}>
                   {getKanaInfo(char)?.romaji || ''}
                 </span>
               </div>
@@ -232,7 +232,7 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
 
         {/* Word Meaning in Vietnamese and English */}
         <div className="space-y-0.5 pt-0.5">
-          <div className="text-base sm:text-lg font-bold text-white">
+          <div className="text-base sm:text-lg font-semibold text-neutral-100">
             {settings.languageMeaning === 'vi' ? currentWord.meaningVi : currentWord.meaningEn}
           </div>
           <div className="text-xs text-neutral-400 font-mono">
@@ -243,12 +243,12 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
         {/* Next Hint for Active Character (Reserved slot prevents CLS) */}
         <div className="h-8 flex items-center justify-center">
           {expectedInfo?.needsModifier && !isCompleted ? (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.07] text-neutral-200 text-xs font-medium border border-white/[0.1] animate-in fade-in duration-100">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#16171B] text-neutral-300 text-xs font-medium border border-neutral-800 animate-in fade-in duration-100">
               <ChevronRight className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
               {!typedBuffer ? (
-                <span>Gõ âm gốc <strong className="text-white">"{expectedInfo.baseChar}"</strong> trước</span>
+                <span>Gõ âm gốc <strong className="text-white font-semibold">"{expectedInfo.baseChar}"</strong> trước</span>
               ) : (
-                <span>Đã gõ <strong className="text-white">{typedBuffer}</strong> ➔ Nhấn <strong className="text-white">"゛゜小"</strong> để thành <strong className="text-white">"{expectedChar}"</strong></span>
+                <span>Đã gõ <strong className="text-white font-semibold">{typedBuffer}</strong> ➔ Nhấn <strong className="text-white font-semibold">"゛゜小"</strong> để thành <strong className="text-white font-semibold">"{expectedChar}"</strong></span>
               )}
             </div>
           ) : null}
@@ -256,28 +256,28 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
 
         {/* Completion Celebration Overlay */}
         {isCompleted && completionStats && (
-          <div className="p-3.5 rounded-2xl bg-white/[0.05] border border-white/[0.1] space-y-2.5 animate-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-center gap-1.5 text-white font-bold text-sm">
+          <div className="p-4 rounded-lg bg-[#16171B] border border-neutral-800 space-y-3 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-center gap-1.5 text-neutral-200 font-medium text-sm">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>Đã hoàn thành từ vựng!</span>
+              <span>Đã hoàn thành từ vựng</span>
             </div>
 
             <div className="grid grid-cols-3 gap-2 text-center text-xs">
-              <div className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.08]">
-                <div className="text-neutral-400">Thời gian</div>
-                <div className="font-bold text-white text-sm mt-0.5">
+              <div className="p-2 rounded-md bg-[#0B0C0E] border border-neutral-800">
+                <div className="text-neutral-400 font-mono text-[11px]">THỜI GIAN</div>
+                <div className="font-semibold text-neutral-100 text-sm mt-0.5">
                   {completionStats.timeSec}s
                 </div>
               </div>
-              <div className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.08]">
-                <div className="text-neutral-400">Độ chính xác</div>
-                <div className="font-bold text-white text-sm mt-0.5">
+              <div className="p-2 rounded-md bg-[#0B0C0E] border border-neutral-800">
+                <div className="text-neutral-400 font-mono text-[11px]">CHÍNH XÁC</div>
+                <div className="font-semibold text-neutral-100 text-sm mt-0.5">
                   {completionStats.accuracy}%
                 </div>
               </div>
-              <div className="p-2 rounded-xl bg-white/[0.04] border border-white/[0.08]">
-                <div className="text-neutral-400">Tốc độ CPM</div>
-                <div className="font-bold text-white text-sm mt-0.5">
+              <div className="p-2 rounded-md bg-[#0B0C0E] border border-neutral-800">
+                <div className="text-neutral-400 font-mono text-[11px]">TỐC ĐỘ CPM</div>
+                <div className="font-semibold text-neutral-100 text-sm mt-0.5">
                   {completionStats.cpm}
                 </div>
               </div>
@@ -287,7 +287,7 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
               <button
                 type="button"
                 onClick={() => pickWord()}
-                className="flex items-center gap-1.5 px-5 py-2 rounded-xl bg-white hover:bg-neutral-200 text-black font-bold text-xs shadow-md transition-all active:scale-95"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-md bg-white hover:bg-neutral-200 text-black font-medium text-xs transition-colors"
               >
                 <span>Từ tiếp theo</span>
                 <ChevronRight className="w-4 h-4" />

@@ -16,7 +16,7 @@ import { ProgressMode } from './components/modes/ProgressMode';
 import { SettingsModal } from './components/modes/SettingsModal';
 import { FacebookIcon } from './components/common/Icons';
 import { DesktopNoticeModal } from './components/common/DesktopNoticeModal';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Coffee } from 'lucide-react';
 import logoImg from './assets/logo.png';
 
 export const App: React.FC = () => {
@@ -117,7 +117,7 @@ export const App: React.FC = () => {
         </main>
       </div>
 
-      <footer className="w-full border-t border-white/[0.08] py-6 px-4 bg-[#090A0D]/90 backdrop-blur-md">
+      <footer className="w-full border-t border-neutral-800/80 py-6 px-4 bg-[#0B0C0E]">
         <div className="max-w-4xl mx-auto space-y-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             {/* Brand Logo & Name */}
@@ -125,14 +125,14 @@ export const App: React.FC = () => {
               <img
                 src={logoImg}
                 alt="TDK NIHONGO flicklab"
-                className="w-10 h-10 rounded-2xl object-contain bg-[#FAF9F6] p-1 shadow-md border border-white/10 shrink-0"
+                className="w-9 h-9 rounded-md object-contain bg-[#FAF9F6] p-1 border border-neutral-800 shrink-0"
               />
               <div>
                 <div className="flex items-center justify-center sm:justify-start gap-2">
-                  <span className="font-extrabold text-white text-sm tracking-tight">
-                    TDK <span className="font-normal text-xs uppercase text-neutral-300">NIHONGO</span>
+                  <span className="font-semibold text-neutral-100 text-sm tracking-tight">
+                    TDK <span className="font-normal text-xs uppercase text-neutral-400">NIHONGO</span>
                   </span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.08] text-neutral-300 border border-white/[0.08]">
+                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-md bg-[#16171B] text-neutral-400 border border-neutral-800">
                     flicklab
                   </span>
                 </div>
@@ -142,34 +142,46 @@ export const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Author Credit Badge */}
-            <div className="flex items-center gap-3">
+            {/* Support & Author Credit Badges */}
+            <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2.5">
+              {/* Ko-fi Support Link */}
+              <a
+                href="https://ko-fi.com/A0A61LIKK9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#111216] hover:bg-[#16171B] border border-neutral-800 hover:border-neutral-700 transition-colors text-xs text-neutral-300 hover:text-white"
+                title="Ủng hộ tác giả qua Ko-fi"
+              >
+                <Coffee className="w-3.5 h-3.5 text-[#5b8de3]" />
+                <span className="font-medium text-[11px]">Ủng hộ tui nhé</span>
+              </a>
+
+              {/* Creator Credit Link */}
               <a
                 href="https://facebook.com/@ronaldoGoatskibidi"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] hover:border-white/[0.18] transition-all group shadow-sm text-xs"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#111216] hover:bg-[#16171B] border border-neutral-800 hover:border-neutral-700 transition-colors text-xs text-neutral-300 hover:text-white"
                 title="Facebook: Tran Dang Khoi"
               >
-                <div className="w-6 h-6 rounded-full bg-[#1877F2]/20 border border-[#1877F2]/40 flex items-center justify-center text-[#1877F2] group-hover:scale-105 transition-transform shrink-0">
-                  <FacebookIcon className="w-3.5 h-3.5 fill-current" />
-                </div>
+                <FacebookIcon className="w-3.5 h-3.5 text-neutral-400 group-hover:text-[#1877F2] transition-colors" />
                 <div className="text-left">
-                  <div className="text-[10px] text-neutral-400 font-mono uppercase tracking-wider leading-none">
-                    Project Creator
-                  </div>
-                  <div className="text-xs font-bold text-white flex items-center gap-1 mt-0.5">
+                  <span className="text-[10px] text-neutral-400 font-mono block leading-none">
+                    PROJECT CREATOR
+                  </span>
+                  <span className="text-xs font-medium text-neutral-200 inline-flex items-center gap-1">
                     <span>Tran Dang Khoi</span>
-                    <ExternalLink className="w-3 h-3 text-neutral-500 group-hover:text-white transition-colors" />
-                  </div>
+                    <ExternalLink className="w-2.5 h-2.5 text-neutral-500" />
+                  </span>
                 </div>
               </a>
             </div>
           </div>
 
           {/* Subfooter notice */}
-          <div className="pt-3 border-t border-white/[0.05] flex items-center justify-between text-[11px] text-neutral-500">
+          <div className="pt-3 border-t border-neutral-800/60 flex items-center justify-between text-[11px] font-mono text-neutral-500">
             <span>© 2026 TDK NIHONGO flicklab</span>
+            <span>Minimalist Kana Interface</span>
           </div>
         </div>
       </footer>

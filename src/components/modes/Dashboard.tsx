@@ -1,21 +1,15 @@
 import React from 'react';
 import type { PracticeMode, UserProgress } from '../../types/practice';
 import { CURRICULUM_MODULES } from '../../constants/curriculum';
-import logoImg from '../../assets/logo.png';
 import {
   GraduationCap,
   Sparkles,
   BookOpen,
   Timer,
   Edit3,
-  Flame,
   ArrowRight,
   Compass,
-  Trophy,
-  Zap,
-  CheckCircle2,
   Gamepad2,
-  Lightbulb,
 } from 'lucide-react';
 
 interface DashboardProps {
@@ -27,257 +21,265 @@ export const Dashboard: React.FC<DashboardProps> = ({ progress, onSelectMode }) 
   const totalLessons = CURRICULUM_MODULES.flatMap((m) => m.lessons).length;
   const completedLessons = progress.completedLessonIds?.length || 0;
 
-  const modes: Array<{
+  const disciplines: Array<{
     id: PracticeMode;
+    index: string;
     title: string;
     japanese: string;
     desc: string;
     icon: React.ReactNode;
-    color: string;
-    badge?: string;
+    metric?: string;
   }> = [
     {
       id: 'curriculum',
+      index: '01',
       title: 'Giáo trình Toàn diện',
       japanese: '完全カリキュラム',
       desc: '8 học phần, 27 bài học từ cơ bản đến nâng cao bao quát 100% quy tắc gõ Kana.',
-      icon: <Compass className="w-5 h-5 text-red-400" />,
-      color: 'bg-red-950/40 border-red-800/80',
-      badge: `${completedLessons}/${totalLessons} bài`,
+      icon: <Compass className="w-4 h-4" />,
+      metric: `${completedLessons}/${totalLessons} bài hoàn thành`,
     },
     {
       id: 'tutorial',
+      index: '02',
       title: 'Bố cục 12 phím',
       japanese: '基本ガイド',
       desc: 'Hướng dẫn trực quan từng hàng phím (あ行 → か行) kèm sơ đồ hoa 5 cánh tương tác.',
-      icon: <GraduationCap className="w-5 h-5 text-indigo-400" />,
-      color: 'bg-indigo-950/40 border-indigo-800/80',
+      icon: <GraduationCap className="w-4 h-4" />,
     },
     {
       id: 'flick',
-      title: 'Luyện gõ Kana',
+      index: '03',
+      title: 'Luyện phản xạ Kana',
       japanese: 'フリック練習',
       desc: 'Rèn luyện phản xạ từng chữ cái theo hàng kèm độ trễ phản hồi (ms) và chuỗi combo.',
-      icon: <Sparkles className="w-5 h-5 text-amber-400" />,
-      color: 'bg-amber-950/40 border-amber-800/80',
-      badge: 'Cốt lõi',
+      icon: <Sparkles className="w-4 h-4" />,
+      metric: 'Cốt lõi phản xạ',
     },
     {
       id: 'word',
+      index: '04',
       title: 'Luyện từ vựng',
       japanese: '単語練習',
       desc: 'Gõ từ vựng tiếng Nhật thực tế kèm giải nghĩa tiếng Việt và tiến trình từng âm tiết.',
-      icon: <BookOpen className="w-5 h-5 text-emerald-400" />,
-      color: 'bg-emerald-950/40 border-emerald-800/80',
+      icon: <BookOpen className="w-4 h-4" />,
+      metric: `${progress.completedWordIds.length} từ đã học`,
     },
     {
       id: 'challenge',
+      index: '05',
       title: 'Thử thách tốc độ',
       japanese: 'タイムアタック',
       desc: 'Kiểm tra tốc độ 30s hoặc 60s, tính CPM (ký tự/phút) và xếp hạng danh hiệu S/A/B/C/D.',
-      icon: <Timer className="w-5 h-5 text-rose-400" />,
-      color: 'bg-rose-950/40 border-rose-800/80',
-      badge: progress.bestCPM > 0 ? `Kỷ lục: ${progress.bestCPM} CPM` : undefined,
+      icon: <Timer className="w-4 h-4" />,
+      metric: progress.bestCPM > 0 ? `Kỷ lục: ${progress.bestCPM} CPM` : undefined,
     },
     {
       id: 'minigame',
+      index: '06',
       title: 'Mưa chữ Kana (Minigame)',
       japanese: '雨の降下ゲーム',
-      desc: 'Bắn hạ các ký tự và từ vựng đang rơi trước khi chạm tia đỏ, duy trì combo rực rỡ và lập kỷ lục!',
-      icon: <Gamepad2 className="w-5 h-5 text-amber-400" />,
-      color: 'bg-amber-950/40 border-amber-800/80',
-      badge: (progress.minigameHighScore || 0) > 0 ? `Kỷ lục: ${progress.minigameHighScore} PTS` : 'Mới',
+      desc: 'Bắn hạ các ký tự và từ vựng đang rơi trước khi chạm đáy, duy trì combo và lập kỷ lục.',
+      icon: <Gamepad2 className="w-4 h-4" />,
+      metric: (progress.minigameHighScore || 0) > 0 ? `Kỷ lục: ${progress.minigameHighScore} PTS` : undefined,
     },
     {
       id: 'free',
+      index: '07',
       title: 'Gõ tự do (Sandbox)',
       japanese: '自由入力',
-      desc: 'Bàn phím đầy đủ như điện thoại thật để thử nghiệm câu văn tùy ý và sao chép văn bản.',
-      icon: <Edit3 className="w-5 h-5 text-cyan-400" />,
-      color: 'bg-cyan-950/40 border-cyan-800/80',
+      desc: 'Bàn phím 12 phím đầy đủ để thử nghiệm câu văn tùy ý và sao chép văn bản tiếng Nhật.',
+      icon: <Edit3 className="w-4 h-4" />,
     },
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 space-y-8 animate-in fade-in duration-200">
-      {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-[#14161D] border border-stone-800 p-6 sm:p-8 shadow-2xl">
-        <div className="relative z-10 max-w-xl space-y-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-950/60 text-red-300 border border-red-800/80 text-xs font-semibold">
-            <Compass className="w-3.5 h-3.5" />
-            <span>Phương pháp gõ điện thoại chuẩn Nhật Bản</span>
-          </div>
-
-          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight text-white">
-            Làm chủ bàn phím 12 phím Kana bằng phản xạ ngón tay
-          </h1>
-
-          <p className="text-sm sm:text-base text-stone-300 leading-relaxed">
-            Chỉ với 12 ô phím, bạn có thể gõ toàn bộ hệ thống tiếng Nhật bằng thao tác chạm và vuốt 4 hướng trực quan.
-          </p>
-
-          <div className="pt-2 flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => onSelectMode('curriculum')}
-              className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white hover:bg-neutral-200 text-black font-extrabold text-sm shadow-md active:scale-95 transition-all"
-            >
-              <span>Vào học giáo trình chuẩn</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => onSelectMode('flick')}
-              className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-white/[0.06] hover:bg-white/[0.1] text-neutral-200 font-semibold text-sm border border-white/[0.08] active:scale-95 transition-all"
-            >
-              <Zap className="w-4 h-4 text-white" />
-              <span>Luyện phản xạ nhanh</span>
-            </button>
-          </div>
+    <div className="max-w-4xl mx-auto px-4 py-8 space-y-12 animate-in fade-in duration-150">
+      {/* Editorial Hero Section */}
+      <section className="space-y-4 pt-2">
+        <div className="text-[11px] font-mono text-neutral-400 tracking-wider uppercase flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-red-600 inline-block" />
+          <span>日本語フリック入力 • PHẢN XẠ 12 PHÍM KANA</span>
         </div>
 
-        {/* Decorative Graphic Element */}
-        <div className="absolute right-4 bottom-4 sm:right-8 sm:top-1/2 sm:-translate-y-1/2 opacity-25 sm:opacity-90 pointer-events-none select-none hidden sm:block">
-          <img
-            src={logoImg}
-            alt="TDK NIHONGO flicklab"
-            className="w-28 h-28 sm:w-36 sm:h-36 rounded-3xl object-contain bg-[#FAF9F6] p-2 shadow-2xl border border-white/20"
-          />
-        </div>
-      </div>
+        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight font-sans">
+          Làm chủ bàn phím Kana bằng phản xạ ngón tay tự nhiên.
+        </h1>
 
-      {/* Quick Stats Summary */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="p-4 rounded-2xl bg-[#14161D] border border-stone-800 shadow-xs">
-          <div className="flex items-center gap-2 text-stone-400 text-xs font-medium">
-            <Flame className="w-4 h-4 text-amber-500" />
-            <span>Chuỗi ngày</span>
-          </div>
-          <div className="text-2xl font-bold text-white mt-1">
-            {progress.currentStreakDays} <span className="text-xs font-normal text-stone-400">ngày</span>
-          </div>
-        </div>
+        <p className="text-sm sm:text-base text-neutral-300 max-w-2xl leading-relaxed font-normal">
+          Chỉ với 12 ô phím, bạn có thể gõ toàn bộ hệ thống Hiragana, Katakana và biến âm.
+          Áp dụng quy tắc 5 nguyên âm để ngón cái tự động ghi nhớ vị trí mà không cần nhìn phím.
+        </p>
 
-        <div className="p-4 rounded-2xl bg-[#14161D] border border-stone-800 shadow-xs">
-          <div className="flex items-center gap-2 text-stone-400 text-xs font-medium">
-            <Zap className="w-4 h-4 text-red-500" />
-            <span>Ký tự đã gõ</span>
-          </div>
-          <div className="text-2xl font-bold text-white mt-1">
-            {progress.totalCharsTyped.toLocaleString()}
-          </div>
+        <div className="pt-2 flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => onSelectMode('curriculum')}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-white hover:bg-neutral-200 text-black font-semibold text-xs tracking-wide transition-colors cursor-pointer"
+          >
+            <span>Vào học giáo trình chuẩn</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={() => onSelectMode('flick')}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md border border-neutral-800 hover:border-neutral-600 text-neutral-300 hover:text-white text-xs font-medium transition-colors cursor-pointer"
+          >
+            <span>Luyện phản xạ nhanh</span>
+          </button>
         </div>
+      </section>
 
-        <div className="p-4 rounded-2xl bg-[#14161D] border border-stone-800 shadow-xs">
-          <div className="flex items-center gap-2 text-stone-400 text-xs font-medium">
-            <Trophy className="w-4 h-4 text-amber-500" />
-            <span>Tốc độ đỉnh cao</span>
-          </div>
-          <div className="text-2xl font-bold text-white mt-1">
-            {progress.bestCPM} <span className="text-xs font-normal text-stone-400">CPM</span>
-          </div>
-        </div>
-
-        <div className="p-4 rounded-2xl bg-[#14161D] border border-stone-800 shadow-xs">
-          <div className="flex items-center gap-2 text-stone-400 text-xs font-medium">
-            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-            <span>Bài học đã qua</span>
-          </div>
-          <div className="text-2xl font-bold text-white mt-1">
-            {completedLessons} / {totalLessons}
-          </div>
-        </div>
-      </div>
-
-      {/* 5-Direction Flick Principle Card (Visual Explainer) */}
-      <div className="p-5 rounded-3xl bg-[#14161D] border border-stone-800 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-white/[0.08] text-white border border-white/[0.1] flex items-center justify-center text-xs">
-              <Lightbulb className="w-3.5 h-3.5 text-neutral-300" />
+      {/* Swiss-Style Performance Data Strip */}
+      <section className="border-y border-neutral-850 py-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
+          <div>
+            <div className="text-[10px] font-mono uppercase text-neutral-500 tracking-wider">
+              01 • Chuỗi ngày
             </div>
-            <h2 className="text-sm font-bold text-white">
-              Quy tắc vàng 5 hướng vuốt của người Nhật (5母音の法則)
-            </h2>
+            <div className="mt-1 flex items-baseline gap-1">
+              <span className="text-3xl font-light tracking-tight text-white">
+                {progress.currentStreakDays}
+              </span>
+              <span className="text-xs text-neutral-500 font-mono">ngày</span>
+            </div>
           </div>
-          <span className="text-xs font-mono text-stone-400">A - I - U - E - O</span>
+
+          <div>
+            <div className="text-[10px] font-mono uppercase text-neutral-500 tracking-wider">
+              02 • Ký tự đã gõ
+            </div>
+            <div className="mt-1">
+              <span className="text-3xl font-light tracking-tight text-white">
+                {progress.totalCharsTyped.toLocaleString()}
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <div className="text-[10px] font-mono uppercase text-neutral-500 tracking-wider">
+              03 • Tốc độ cao nhất
+            </div>
+            <div className="mt-1 flex items-baseline gap-1">
+              <span className="text-3xl font-light tracking-tight text-white">
+                {progress.bestCPM}
+              </span>
+              <span className="text-xs text-neutral-500 font-mono">CPM</span>
+            </div>
+          </div>
+
+          <div>
+            <div className="text-[10px] font-mono uppercase text-neutral-500 tracking-wider">
+              04 • Tiến độ giáo trình
+            </div>
+            <div className="mt-1 flex items-baseline gap-1">
+              <span className="text-3xl font-light tracking-tight text-white">
+                {completedLessons}
+              </span>
+              <span className="text-xs text-neutral-500 font-mono">/ {totalLessons} bài</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Five-Vowel Principle (5母音の法則) — Clean Editorial Guide */}
+      <section className="space-y-4">
+        <div className="flex items-baseline justify-between border-b border-neutral-850 pb-2">
+          <div>
+            <h2 className="text-sm font-bold text-white tracking-wide uppercase font-mono">
+              Quy tắc 5 nguyên âm (5母音の法則)
+            </h2>
+            <p className="text-xs text-neutral-400 mt-0.5">
+              5 hướng vuốt tương ứng 5 nguyên âm cốt lõi của tiếng Nhật: A - I - U - E - O
+            </p>
+          </div>
+          <span className="text-[11px] font-mono text-neutral-500 hidden sm:inline">
+            A • I • U • E • O
+          </span>
         </div>
 
         <div className="grid grid-cols-5 gap-2 text-center text-xs">
-          <div className="p-2.5 rounded-xl bg-stone-850 border border-stone-750 shadow-2xs">
-            <div className="text-stone-400 text-base font-bold">● Chạm</div>
-            <div className="text-white font-bold text-sm mt-0.5">Cột A</div>
-            <div className="text-[11px] text-stone-400 font-mono">あ・か・さ</div>
+          <div className="py-3 px-2 border-b-2 border-neutral-700 bg-white/[0.02]">
+            <div className="text-[10px] font-mono uppercase text-neutral-400">● Chạm tâm</div>
+            <div className="text-base font-semibold text-white mt-1">Cột A</div>
+            <div className="text-[11px] text-neutral-400 font-sans mt-0.5">あ・か・さ</div>
           </div>
-          <div className="p-2.5 rounded-xl bg-stone-850 border border-stone-750 shadow-2xs">
-            <div className="text-red-400 text-base font-bold">← Trái</div>
-            <div className="text-white font-bold text-sm mt-0.5">Cột I</div>
-            <div className="text-[11px] text-stone-400 font-mono">い・き・し</div>
+
+          <div className="py-3 px-2 border-b-2 border-neutral-700 bg-white/[0.02]">
+            <div className="text-[10px] font-mono uppercase text-neutral-400">← Trái</div>
+            <div className="text-base font-semibold text-white mt-1">Cột I</div>
+            <div className="text-[11px] text-neutral-400 font-sans mt-0.5">い・き・し</div>
           </div>
-          <div className="p-2.5 rounded-xl bg-stone-850 border border-stone-750 shadow-2xs">
-            <div className="text-red-400 text-base font-bold">↑ Trên</div>
-            <div className="text-white font-bold text-sm mt-0.5">Cột U</div>
-            <div className="text-[11px] text-stone-400 font-mono">う・く・す</div>
+
+          <div className="py-3 px-2 border-b-2 border-neutral-700 bg-white/[0.02]">
+            <div className="text-[10px] font-mono uppercase text-neutral-400">↑ Lên trên</div>
+            <div className="text-base font-semibold text-white mt-1">Cột U</div>
+            <div className="text-[11px] text-neutral-400 font-sans mt-0.5">う・く・す</div>
           </div>
-          <div className="p-2.5 rounded-xl bg-stone-850 border border-stone-750 shadow-2xs">
-            <div className="text-red-400 text-base font-bold">→ Phải</div>
-            <div className="text-white font-bold text-sm mt-0.5">Cột E</div>
-            <div className="text-[11px] text-stone-400 font-mono">え・け・せ</div>
+
+          <div className="py-3 px-2 border-b-2 border-neutral-700 bg-white/[0.02]">
+            <div className="text-[10px] font-mono uppercase text-neutral-400">→ Phải</div>
+            <div className="text-base font-semibold text-white mt-1">Cột E</div>
+            <div className="text-[11px] text-neutral-400 font-sans mt-0.5">え・け・せ</div>
           </div>
-          <div className="p-2.5 rounded-xl bg-stone-850 border border-stone-750 shadow-2xs">
-            <div className="text-red-400 text-base font-bold">↓ Dưới</div>
-            <div className="text-white font-bold text-sm mt-0.5">Cột O</div>
-            <div className="text-[11px] text-stone-400 font-mono">お・こ・そ</div>
+
+          <div className="py-3 px-2 border-b-2 border-neutral-700 bg-white/[0.02]">
+            <div className="text-[10px] font-mono uppercase text-neutral-400">↓ Dưới</div>
+            <div className="text-base font-semibold text-white mt-1">Cột O</div>
+            <div className="text-[11px] text-neutral-400 font-sans mt-0.5">お・こ・そ</div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Modes Grid */}
-      <div className="space-y-4">
-        <h2 className="text-lg font-bold text-white">
-          Chế độ luyện tập (トレーニングモード)
-        </h2>
+      {/* Editorial Disciplines Catalog / Index */}
+      <section className="space-y-3">
+        <div className="flex items-baseline justify-between border-b border-neutral-850 pb-2">
+          <h2 className="text-sm font-bold text-white tracking-wide uppercase font-mono">
+            Danh mục chế độ luyện tập (練習科目)
+          </h2>
+          <span className="text-[10px] font-mono text-neutral-500 uppercase">
+            07 Chuyên đề
+          </span>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-          {modes.map((mode) => (
+        <div className="divide-y divide-neutral-850 border-b border-neutral-850">
+          {disciplines.map((item) => (
             <button
-              key={mode.id}
-              onClick={() => onSelectMode(mode.id)}
-              className="text-left p-5 rounded-3xl bg-[#14161D] border border-stone-800 shadow-xs hover:shadow-lg hover:border-red-500/80 transition-all group flex flex-col justify-between"
+              key={item.id}
+              onClick={() => onSelectMode(item.id)}
+              className="w-full text-left py-4 px-2 hover:bg-white/[0.02] transition-colors flex items-center justify-between gap-4 group cursor-pointer"
             >
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className={`p-2.5 rounded-2xl ${mode.color} border`}>
-                    {mode.icon}
-                  </div>
-                  {mode.badge && (
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-950/60 text-red-300 border border-red-800">
-                      {mode.badge}
-                    </span>
-                  )}
-                </div>
+              <div className="flex items-start gap-4 sm:gap-6 min-w-0">
+                <span className="text-xs font-mono text-neutral-500 pt-0.5 shrink-0">
+                  {item.index}
+                </span>
 
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <h3 className="text-base font-bold text-white group-hover:text-red-400 transition-colors">
-                      {mode.title}
-                    </h3>
-                    <span className="text-xs text-stone-400 font-medium">
-                      {mode.japanese}
+                <div className="space-y-0.5 min-w-0">
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <span className="text-sm sm:text-base font-semibold text-white group-hover:text-red-400 transition-colors">
+                      {item.title}
+                    </span>
+                    <span className="text-xs text-neutral-500 font-normal">
+                      {item.japanese}
                     </span>
                   </div>
-                  <p className="text-xs text-stone-400 mt-1.5 leading-relaxed line-clamp-2">
-                    {mode.desc}
+
+                  <p className="text-xs text-neutral-400 leading-relaxed truncate max-w-xl">
+                    {item.desc}
                   </p>
                 </div>
               </div>
 
-              <div className="pt-4 flex items-center justify-end text-xs font-semibold text-stone-400 group-hover:text-red-400 transition-colors gap-1">
-                <span>Vào luyện tập</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              <div className="flex items-center gap-3 shrink-0">
+                {item.metric && (
+                  <span className="hidden sm:inline-block text-[11px] font-mono text-neutral-400 bg-white/[0.04] px-2 py-0.5 rounded border border-neutral-800">
+                    {item.metric}
+                  </span>
+                )}
+                <ArrowRight className="w-4 h-4 text-neutral-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
               </div>
             </button>
           ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 };

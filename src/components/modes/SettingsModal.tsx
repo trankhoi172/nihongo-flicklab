@@ -46,43 +46,43 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
       <div
-        className="w-full max-w-lg bg-[#14161D] rounded-3xl border border-stone-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="w-full max-w-lg bg-[#111216] rounded-xl border border-neutral-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-stone-800/80 bg-[#101217]">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-neutral-800 bg-[#0B0C0E]">
           <div className="flex items-center gap-2.5">
             <img
               src={logoImg}
               alt="TDK NIHONGO"
-              className="w-7 h-7 rounded-lg object-contain bg-[#FAF9F6] p-0.5 shadow-xs"
+              className="w-6 h-6 rounded-md object-contain bg-[#FAF9F6] p-0.5"
             />
-            <h2 className="text-base font-bold text-white">
+            <h2 className="text-sm font-semibold text-neutral-100">
               Cài đặt & Tùy biến (設定)
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-stone-400 hover:text-white hover:bg-stone-800 transition-colors"
+            className="p-1 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800/60 transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Body content */}
-        <div className="p-6 space-y-6 overflow-y-auto no-scrollbar overscroll-contain">
+        <div className="p-5 space-y-5 overflow-y-auto no-scrollbar overscroll-contain">
           {/* Flick Sensitivity */}
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-white flex items-center justify-between">
+            <label className="text-xs font-medium text-neutral-200 flex items-center justify-between">
               <span>Độ nhạy vuốt (Flick Sensitivity)</span>
-              <span className="text-xs font-mono text-red-400 uppercase font-bold">
+              <span className="text-[11px] font-mono text-neutral-400 uppercase">
                 {settings.flickSensitivity}
               </span>
             </label>
-            <p className="text-xs text-stone-400">
+            <p className="text-[11px] text-neutral-400">
               Khoảng cách ngón tay di chuyển để kích hoạt thao tác vuốt 4 hướng.
             </p>
-            <div className="grid grid-cols-3 gap-2 pt-1">
+            <div className="grid grid-cols-3 gap-2 pt-0.5">
               {(['low', 'medium', 'high'] as FlickSensitivity[]).map((level) => {
                 const labels = {
                   low: 'Nhạy cao (20px)',
@@ -95,10 +95,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     key={level}
                     type="button"
                     onClick={() => handleSensitivityChange(level)}
-                    className={`py-2 px-2 rounded-xl text-xs font-medium border text-center transition-all ${
+                    className={`py-1.5 px-2 rounded-md text-xs font-medium border text-center transition-colors ${
                       isSelected
-                        ? 'bg-red-950/60 border-red-500 text-red-400 font-bold shadow-md'
-                        : 'border-stone-800 hover:bg-stone-800 text-stone-400'
+                        ? 'bg-white text-black border-white'
+                        : 'border-neutral-800 hover:text-white text-neutral-400 bg-[#0B0C0E]'
                     }`}
                   >
                     {labels[level]}
@@ -109,13 +109,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
 
           {/* Sound & Haptic Feedback */}
-          <div className="space-y-3 pt-2 border-t border-stone-800/80">
+          <div className="space-y-3 pt-2 border-t border-neutral-800">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-sm font-semibold text-white block">
+                <span className="text-xs font-medium text-neutral-200 block">
                   Âm thanh & Phản hồi gõ phím
                 </span>
-                <span className="text-xs text-stone-400">
+                <span className="text-[11px] text-neutral-400">
                   Âm phím cơ học và hiệu ứng chuông thông báo kết quả tức thì
                 </span>
               </div>
@@ -125,20 +125,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   update({ soundEnabled: !settings.soundEnabled });
                   if (!settings.soundEnabled) soundEffects.playTap(settings.soundTheme, settings.soundVolume);
                 }}
-                className={`p-2 rounded-xl border transition-colors ${
+                className={`p-1.5 rounded-md border transition-colors ${
                   settings.soundEnabled
-                    ? 'bg-red-950/60 border-red-500 text-red-400'
-                    : 'bg-stone-850 border-stone-800 text-stone-500'
+                    ? 'bg-white text-black border-white'
+                    : 'bg-[#0B0C0E] border-neutral-800 text-neutral-500'
                 }`}
               >
-                {settings.soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+                {settings.soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
               </button>
             </div>
 
             {settings.soundEnabled && (
-              <div className="space-y-3 pl-1">
+              <div className="space-y-2.5 pl-0.5">
                 <div className="flex items-center gap-3">
-                  <span className="text-xs text-stone-400 w-16">Âm lượng:</span>
+                  <span className="text-[11px] text-neutral-400 w-16">Âm lượng:</span>
                   <input
                     type="range"
                     min="0.1"
@@ -146,9 +146,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     step="0.05"
                     value={settings.soundVolume}
                     onChange={(e) => update({ soundVolume: parseFloat(e.target.value) })}
-                    className="flex-1 accent-red-600"
+                    className="flex-1 accent-white"
                   />
-                  <span className="text-xs font-mono text-stone-400 w-8 text-right">
+                  <span className="text-[11px] font-mono text-neutral-400 w-8 text-right">
                     {Math.round(settings.soundVolume * 100)}%
                   </span>
                 </div>
@@ -166,10 +166,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         key={themeName}
                         type="button"
                         onClick={() => handleSoundThemeChange(themeName)}
-                        className={`py-1.5 px-2 rounded-lg text-xs font-medium border text-center transition-all ${
+                        className={`py-1.5 px-2 rounded-md text-xs font-medium border text-center transition-colors ${
                           isSelected
-                            ? 'bg-stone-800 text-white font-bold border-stone-600'
-                            : 'border-stone-800 text-stone-400 hover:bg-stone-850'
+                            ? 'bg-white text-black border-white'
+                            : 'border-neutral-800 text-neutral-400 hover:text-white bg-[#0B0C0E]'
                         }`}
                       >
                         {names[themeName]}
@@ -182,17 +182,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
 
           {/* Visual Guides */}
-          <div className="space-y-3 pt-2 border-t border-stone-800/80">
-            <span className="text-sm font-semibold text-white block">
+          <div className="space-y-3 pt-2 border-t border-neutral-800">
+            <span className="text-xs font-medium text-neutral-200 block">
               Trợ giúp thị giác (Visual Guides)
             </span>
 
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs font-medium text-stone-200 block">
+                <span className="text-xs text-neutral-200 block">
                   Hiển thị Romaji (Phiên âm chữ cái Latinh)
                 </span>
-                <span className="text-[11px] text-stone-500">
+                <span className="text-[11px] text-neutral-500">
                   Hữu ích cho người mới làm quen mặt chữ
                 </span>
               </div>
@@ -200,16 +200,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 type="checkbox"
                 checked={settings.showRomaji}
                 onChange={(e) => update({ showRomaji: e.target.checked })}
-                className="w-4 h-4 accent-red-600 rounded cursor-pointer"
+                className="w-4 h-4 accent-white rounded cursor-pointer"
               />
             </div>
 
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-xs font-medium text-stone-200 block">
+                <span className="text-xs text-neutral-200 block">
                   Hiển thị 4 chữ vệ tinh trên mặt phím
                 </span>
-                <span className="text-[11px] text-stone-500">
+                <span className="text-[11px] text-neutral-500">
                   Hiển thị ký tự trái/trên/phải/dưới ngay trên mỗi ô phím
                 </span>
               </div>
@@ -217,18 +217,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 type="checkbox"
                 checked={settings.showFlickHints}
                 onChange={(e) => update({ showFlickHints: e.target.checked })}
-                className="w-4 h-4 accent-red-600 rounded cursor-pointer"
+                className="w-4 h-4 accent-white rounded cursor-pointer"
               />
             </div>
 
             {/* Blind Mode (Muscle Memory) */}
-            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+            <div className="flex items-center justify-between p-3 rounded-md bg-[#16171B] border border-neutral-800">
               <div className="pr-3">
-                <span className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
-                  <EyeOff className="w-3.5 h-3.5" />
+                <span className="text-xs font-medium text-neutral-200 flex items-center gap-1.5">
+                  <EyeOff className="w-3.5 h-3.5 text-neutral-400" />
                   <span>Chế độ Luyện phản xạ mù (Blind Flick)</span>
                 </span>
-                <span className="text-[11px] text-stone-400 block mt-0.5 leading-relaxed">
+                <span className="text-[11px] text-neutral-400 block mt-0.5 leading-relaxed">
                   Ẩn hoàn toàn ký tự trên mặt phím để rèn luyện và kiểm tra trí nhớ cơ bắp (Muscle Memory) của ngón tay.
                 </span>
               </div>
@@ -236,32 +236,32 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 type="checkbox"
                 checked={!!settings.blindMode}
                 onChange={(e) => update({ blindMode: e.target.checked })}
-                className="w-4 h-4 accent-amber-500 rounded cursor-pointer shrink-0"
+                className="w-4 h-4 accent-white rounded cursor-pointer shrink-0"
               />
             </div>
           </div>
 
           {/* Meaning Language */}
-          <div className="space-y-3 pt-2 border-t border-stone-800/80">
-            <span className="text-sm font-semibold text-white block">
+          <div className="space-y-2.5 pt-2 border-t border-neutral-800">
+            <span className="text-xs font-medium text-neutral-200 block">
               Ngôn ngữ giải nghĩa từ vựng
             </span>
 
-            <div className="flex items-center justify-between pt-1">
+            <div className="flex items-center justify-between pt-0.5">
               <div className="flex items-center gap-1.5">
-                <Globe className="w-4 h-4 text-stone-500" />
-                <span className="text-xs text-stone-300">
-                  Dịch nghĩa từ vựng sang:
+                <Globe className="w-3.5 h-3.5 text-neutral-400" />
+                <span className="text-xs text-neutral-400">
+                  Dịch nghĩa sang:
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => handleLanguageChange('vi')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold ${
+                  className={`px-3 py-1 rounded-md text-xs font-medium border transition-colors ${
                     settings.languageMeaning === 'vi'
-                      ? 'bg-red-600 text-white'
-                      : 'bg-stone-850 text-stone-400'
+                      ? 'bg-white text-black border-white'
+                      : 'bg-[#0B0C0E] border-neutral-800 text-neutral-400 hover:text-white'
                   }`}
                 >
                   Tiếng Việt
@@ -269,10 +269,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <button
                   type="button"
                   onClick={() => handleLanguageChange('en')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold ${
+                  className={`px-3 py-1 rounded-md text-xs font-medium border transition-colors ${
                     settings.languageMeaning === 'en'
-                      ? 'bg-red-600 text-white'
-                      : 'bg-stone-850 text-stone-400'
+                      ? 'bg-white text-black border-white'
+                      : 'bg-[#0B0C0E] border-neutral-800 text-neutral-400 hover:text-white'
                   }`}
                 >
                   English
@@ -282,26 +282,26 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
 
           {/* Reset Progress */}
-          <div className="pt-2 border-t border-stone-800/80">
+          <div className="pt-2 border-t border-neutral-800">
             {!showConfirmReset ? (
               <button
                 type="button"
                 onClick={() => setShowConfirmReset(true)}
-                className="w-full py-2.5 text-xs text-stone-500 hover:text-red-400 flex items-center justify-center gap-1.5 transition-colors"
+                className="w-full py-2 text-xs text-neutral-500 hover:text-rose-400 flex items-center justify-center gap-1.5 transition-colors"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Đặt lại toàn bộ dữ liệu tiến trình</span>
               </button>
             ) : (
-              <div className="p-3 bg-red-950/40 border border-red-900 rounded-xl space-y-2">
-                <p className="text-xs text-red-300 font-medium">
+              <div className="p-3 bg-[#1C1214] border border-rose-900/60 rounded-md space-y-2">
+                <p className="text-xs text-rose-300">
                   Bạn có chắc muốn xóa sạch chuỗi ngày, bài học đã hoàn thành và kết quả luyện tập?
                 </p>
                 <div className="flex items-center justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setShowConfirmReset(false)}
-                    className="px-3 py-1 text-xs rounded-lg bg-stone-800 text-stone-300"
+                    className="px-2.5 py-1 text-xs rounded-md bg-neutral-800 text-neutral-300 hover:bg-neutral-700"
                   >
                     Hủy
                   </button>
@@ -312,7 +312,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       setShowConfirmReset(false);
                       onClose();
                     }}
-                    className="px-3 py-1 text-xs rounded-lg bg-red-600 text-white font-bold"
+                    className="px-2.5 py-1 text-xs rounded-md bg-rose-700 text-white font-medium"
                   >
                     Xác nhận xóa
                   </button>
@@ -323,24 +323,24 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3.5 border-t border-stone-800/80 bg-[#101217] flex items-center justify-between gap-3">
+        <div className="px-5 py-3 border-t border-neutral-800 bg-[#0B0C0E] flex items-center justify-between gap-3">
           <a
             href="https://facebook.com/@ronaldoGoatskibidi"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-stone-400 hover:text-white border border-white/[0.06] transition-all group"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-neutral-400 hover:text-white border border-neutral-800 hover:border-neutral-700 transition-colors"
             title="Liên hệ Facebook Tran Dang Khoi"
           >
-            <FacebookIcon className="w-3.5 h-3.5 text-stone-400 group-hover:text-[#1877F2] transition-colors" />
+            <FacebookIcon className="w-3.5 h-3.5 text-neutral-400" />
             <span className="text-[11px]">
-              Created by <strong className="font-semibold text-stone-200 group-hover:text-white">Tran Dang Khoi</strong>
+              Created by <span className="text-neutral-200">Tran Dang Khoi</span>
             </span>
           </a>
 
           <button
             type="button"
             onClick={onClose}
-            className="flex items-center gap-1 px-4 py-2 rounded-xl bg-stone-100 text-stone-900 text-xs font-bold hover:bg-white transition-colors"
+            className="flex items-center gap-1 px-3.5 py-1.5 rounded-md bg-white text-black text-xs font-medium hover:bg-neutral-200 transition-colors"
           >
             <Check className="w-3.5 h-3.5" />
             <span>Hoàn tất (閉じる)</span>

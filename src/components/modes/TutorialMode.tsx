@@ -104,19 +104,19 @@ export const TutorialMode: React.FC<TutorialModeProps> = ({ settings }) => {
   const isRowFinished = DIRECTIONS_ORDER.every((d) => completedDirs[d]);
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-4 space-y-4 animate-in fade-in duration-200">
+    <div className="max-w-2xl mx-auto px-4 py-3 space-y-3 animate-in fade-in duration-150">
       {/* Row Selector Stepper */}
-      <div className="flex items-center justify-between gap-1 overflow-x-auto pb-1 no-scrollbar">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
         {KEYBOARD_LAYOUT.map((k, idx) => {
           const isSelected = idx === currentRowIndex;
           return (
             <button
               key={k.id}
               onClick={() => handleSelectRow(idx)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shrink-0 border ${
+              className={`px-3 py-1 rounded-md text-xs font-medium transition-colors shrink-0 border ${
                 isSelected
-                  ? 'bg-white text-black border-white shadow-xs font-bold'
-                  : 'bg-white/[0.04] text-neutral-400 hover:text-white border-white/[0.06]'
+                  ? 'bg-white text-black border-white'
+                  : 'bg-[#111216] text-neutral-400 hover:text-white border-neutral-800'
               }`}
             >
               {k.rowName}
@@ -126,22 +126,22 @@ export const TutorialMode: React.FC<TutorialModeProps> = ({ settings }) => {
       </div>
 
       {/* Main Interactive Guide Card */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-[#14161D] border border-stone-800 shadow-xl space-y-5 text-center">
+      <div className="p-5 sm:p-6 rounded-xl bg-[#111216] border border-neutral-800/80 space-y-4 text-center">
         {/* Navigation & Title */}
         <div className="flex items-center justify-between">
           <button
             onClick={handlePrevRow}
             disabled={currentRowIndex === 0}
-            className="p-2 rounded-xl border border-stone-800 text-stone-400 hover:text-white disabled:opacity-30 transition-colors"
+            className="p-1.5 rounded-md border border-neutral-800 text-neutral-400 hover:text-white disabled:opacity-30 transition-colors"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-4 h-4" />
           </button>
 
           <div>
-            <span className="text-xs uppercase font-mono font-bold text-red-400">
+            <span className="text-[11px] uppercase font-mono tracking-widest text-neutral-400">
               Hàng {currentRowIndex + 1} / {KEYBOARD_LAYOUT.length}
             </span>
-            <h2 className="text-xl font-extrabold text-white">
+            <h2 className="text-lg font-semibold text-neutral-100">
               Hàng {currentKey.rowName}
             </h2>
           </div>
@@ -149,26 +149,25 @@ export const TutorialMode: React.FC<TutorialModeProps> = ({ settings }) => {
           <button
             onClick={handleNextRow}
             disabled={currentRowIndex === KEYBOARD_LAYOUT.length - 1}
-            className="p-2 rounded-xl border border-stone-800 text-stone-400 hover:text-white disabled:opacity-30 transition-colors"
+            className="p-1.5 rounded-md border border-neutral-800 text-neutral-400 hover:text-white disabled:opacity-30 transition-colors"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
         {/* Current Prompt */}
-        <div className="p-4 rounded-2xl bg-[#0D0E13] border border-stone-800/80 space-y-1">
-          <div className="text-xs text-stone-400 flex items-center justify-center gap-1 font-medium">
-            <HelpCircle className="w-3.5 h-3.5 text-stone-500" />
-            <span>Thao tác yêu cầu:</span>
+        <div className="p-3.5 rounded-lg bg-[#0B0C0E] border border-neutral-800 space-y-1">
+          <div className="text-[11px] text-neutral-400 flex items-center justify-center gap-1 font-mono">
+            <HelpCircle className="w-3 h-3 text-neutral-400" />
+            <span>THAO TÁC YÊU CẦU:</span>
           </div>
 
-          <div className="text-white text-base sm:text-lg font-bold">
+          <div className="text-neutral-100 text-sm sm:text-base font-medium">
             {targetDir === 'center' ? (
               <span className="inline-flex items-center gap-1.5 flex-wrap justify-center">
-                <ChevronRight className="w-4 h-4 text-neutral-400" />
                 <span>
-                  <span className="text-white font-extrabold underline decoration-white/40">Chạm nhẹ</span> vào ô phím{' '}
-                  <span className="font-extrabold text-xl text-white">
+                  <span className="text-white font-semibold underline decoration-neutral-500">Chạm nhẹ</span> vào ô phím{' '}
+                  <span className="font-semibold text-lg text-white">
                     {currentKey.hiragana.center}
                   </span>{' '}
                   để gõ "{targetChar}"
@@ -176,10 +175,9 @@ export const TutorialMode: React.FC<TutorialModeProps> = ({ settings }) => {
               </span>
             ) : (
               <span className="inline-flex items-center gap-1.5 flex-wrap justify-center">
-                <ChevronRight className="w-4 h-4 text-neutral-400" />
                 <span>
                   Chạm và{' '}
-                  <span className="text-white font-extrabold underline decoration-white/40">
+                  <span className="text-white font-semibold underline decoration-neutral-500">
                     {targetDir === 'left' && 'Vuốt sang TRÁI (←)'}
                     {targetDir === 'up' && 'Vuốt LÊN TRÊN (↑)'}
                     {targetDir === 'right' && 'Vuốt sang PHẢI (→)'}
@@ -193,101 +191,101 @@ export const TutorialMode: React.FC<TutorialModeProps> = ({ settings }) => {
         </div>
 
         {/* Visual 5-way Blossom Diagram for Current Key */}
-        <div className="relative w-48 h-48 mx-auto flex items-center justify-center my-3">
+        <div className="relative w-44 h-44 mx-auto flex items-center justify-center my-2">
           {/* Center */}
           <div
-            className={`absolute w-14 h-14 rounded-2xl flex flex-col items-center justify-center transition-all ${
+            className={`absolute w-13 h-13 rounded-lg flex flex-col items-center justify-center transition-all ${
               targetDir === 'center'
-                ? 'bg-red-600 text-white shadow-xl scale-110 ring-4 ring-red-950 font-bold'
+                ? 'bg-white text-black font-bold shadow-sm scale-105 z-10'
                 : completedDirs.center
-                ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800'
-                : 'bg-stone-850 text-stone-300 border border-stone-750'
+                ? 'bg-neutral-900 text-neutral-200 border border-neutral-700'
+                : 'bg-[#0B0C0E] text-neutral-400 border border-neutral-800'
             }`}
           >
-            <span className="text-xl font-bold">{currentKey.hiragana.center}</span>
-            <span className="text-[9px] uppercase font-mono opacity-80">Chạm</span>
+            <span className="text-lg font-medium">{currentKey.hiragana.center}</span>
+            <span className="text-[8px] uppercase font-mono opacity-80">Chạm</span>
           </div>
 
           {/* Left */}
           <div
-            className={`absolute left-0 w-12 h-12 rounded-2xl flex flex-col items-center justify-center transition-all ${
+            className={`absolute left-0 w-11 h-11 rounded-lg flex flex-col items-center justify-center transition-all ${
               targetDir === 'left'
-                ? 'bg-red-600 text-white shadow-xl scale-110 ring-4 ring-red-950 font-bold'
+                ? 'bg-white text-black font-bold shadow-sm scale-105 z-10'
                 : completedDirs.left
-                ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800'
-                : 'bg-stone-850 text-stone-300 border border-stone-750'
+                ? 'bg-neutral-900 text-neutral-200 border border-neutral-700'
+                : 'bg-[#0B0C0E] text-neutral-400 border border-neutral-800'
             }`}
           >
-            <span className="text-lg font-bold">{currentKey.hiragana.left}</span>
-            <span className="text-[9px] font-mono opacity-80">← Trái</span>
+            <span className="text-base font-medium">{currentKey.hiragana.left}</span>
+            <span className="text-[8px] font-mono opacity-80">← Trái</span>
           </div>
 
           {/* Up */}
           <div
-            className={`absolute top-0 w-12 h-12 rounded-2xl flex flex-col items-center justify-center transition-all ${
+            className={`absolute top-0 w-11 h-11 rounded-lg flex flex-col items-center justify-center transition-all ${
               targetDir === 'up'
-                ? 'bg-red-600 text-white shadow-xl scale-110 ring-4 ring-red-950 font-bold'
+                ? 'bg-white text-black font-bold shadow-sm scale-105 z-10'
                 : completedDirs.up
-                ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800'
-                : 'bg-stone-850 text-stone-300 border border-stone-750'
+                ? 'bg-neutral-900 text-neutral-200 border border-neutral-700'
+                : 'bg-[#0B0C0E] text-neutral-400 border border-neutral-800'
             }`}
           >
-            <span className="text-lg font-bold">{currentKey.hiragana.up}</span>
-            <span className="text-[9px] font-mono opacity-80">↑ Trên</span>
+            <span className="text-base font-medium">{currentKey.hiragana.up}</span>
+            <span className="text-[8px] font-mono opacity-80">↑ Trên</span>
           </div>
 
           {/* Right */}
           <div
-            className={`absolute right-0 w-12 h-12 rounded-2xl flex flex-col items-center justify-center transition-all ${
+            className={`absolute right-0 w-11 h-11 rounded-lg flex flex-col items-center justify-center transition-all ${
               targetDir === 'right'
-                ? 'bg-red-600 text-white shadow-xl scale-110 ring-4 ring-red-950 font-bold'
+                ? 'bg-white text-black font-bold shadow-sm scale-105 z-10'
                 : completedDirs.right
-                ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800'
-                : 'bg-stone-850 text-stone-300 border border-stone-750'
+                ? 'bg-neutral-900 text-neutral-200 border border-neutral-700'
+                : 'bg-[#0B0C0E] text-neutral-400 border border-neutral-800'
             }`}
           >
-            <span className="text-lg font-bold">{currentKey.hiragana.right}</span>
-            <span className="text-[9px] font-mono opacity-80">→ Phải</span>
+            <span className="text-base font-medium">{currentKey.hiragana.right}</span>
+            <span className="text-[8px] font-mono opacity-80">→ Phải</span>
           </div>
 
           {/* Down */}
           <div
-            className={`absolute bottom-0 w-12 h-12 rounded-2xl flex flex-col items-center justify-center transition-all ${
+            className={`absolute bottom-0 w-11 h-11 rounded-lg flex flex-col items-center justify-center transition-all ${
               targetDir === 'down'
-                ? 'bg-red-600 text-white shadow-xl scale-110 ring-4 ring-red-950 font-bold'
+                ? 'bg-white text-black font-bold shadow-sm scale-105 z-10'
                 : completedDirs.down
-                ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800'
-                : 'bg-stone-850 text-stone-300 border border-stone-750'
+                ? 'bg-neutral-900 text-neutral-200 border border-neutral-700'
+                : 'bg-[#0B0C0E] text-neutral-400 border border-neutral-800'
             }`}
           >
-            <span className="text-lg font-bold">{currentKey.hiragana.down}</span>
-            <span className="text-[9px] font-mono opacity-80">↓ Dưới</span>
+            <span className="text-base font-medium">{currentKey.hiragana.down}</span>
+            <span className="text-[8px] font-mono opacity-80">↓ Dưới</span>
           </div>
         </div>
 
         {/* Feedback Alert */}
         {feedback && (
           <div
-            className={`p-3 rounded-2xl text-xs font-semibold flex items-center justify-center gap-2 ${
+            className={`p-2.5 rounded-md text-xs font-medium flex items-center justify-center gap-2 ${
               feedback.isCorrect
-                ? 'bg-emerald-950/40 text-emerald-300 border border-emerald-800'
-                : 'bg-red-950/40 text-red-300 border border-red-800 animate-shake'
+                ? 'bg-[#16171B] text-neutral-200 border border-neutral-800'
+                : 'bg-[#1C1214] text-rose-300 border border-rose-900/60 animate-shake'
             }`}
           >
-            {feedback.isCorrect && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+            {feedback.isCorrect && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
             <span>{feedback.message}</span>
           </div>
         )}
 
         {/* Row Finished Actions */}
         {isRowFinished && (
-          <div className="pt-2 flex justify-center">
+          <div className="pt-1 flex justify-center">
             <button
               onClick={handleNextRow}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-stone-100 text-stone-900 text-sm font-bold shadow-lg hover:bg-white transition-all"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-md bg-white hover:bg-neutral-200 text-black text-xs font-semibold transition-colors"
             >
               <span>Học hàng tiếp theo</span>
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
         )}
