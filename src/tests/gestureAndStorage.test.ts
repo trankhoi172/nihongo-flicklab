@@ -66,6 +66,7 @@ describe('Pointer Gesture Recognition Logic', () => {
 
 describe('LocalStorage & Progress Tracking', () => {
   beforeEach(() => {
+    resetAllData();
     localStorage.clear();
   });
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { PracticeMode, UserProgress } from './types/practice';
 import type { UserSettings } from './types/settings';
-import { loadSettings, saveSettings, loadProgress, resetAllData } from './utils/storage';
+import { loadSettings, saveSettings, loadProgress, resetAllData, initStorage } from './utils/storage';
 import { Header } from './components/common/Header';
 import { NavigationTabs } from './components/common/NavigationTabs';
 import { Dashboard } from './components/modes/Dashboard';
@@ -29,6 +29,14 @@ export const App: React.FC = () => {
   useEffect(() => {
     document.documentElement.classList.add('dark');
     document.body.classList.add('theme-dark', 'bg-[#0B0C0E]', 'text-stone-100');
+  }, []);
+
+  // Hydrate settings and progress from IndexedDB and run automatic migration from localStorage
+  useEffect(() => {
+    initStorage().then(({ settings: loadedSettings, progress: loadedProgress }) => {
+      setSettings(loadedSettings);
+      setProgress(loadedProgress);
+    });
   }, []);
 
   // Refresh progress state whenever returning to dashboard or progress page

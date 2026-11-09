@@ -4,7 +4,7 @@ import { render, screen, cleanup } from '@testing-library/react';
 import { WordPracticeMode } from '../components/modes/WordPracticeMode';
 import { CurriculumMode } from '../components/modes/CurriculumMode';
 import { applyModifier, isReachableInCycle, getModifiedChar, getPracticeTargets } from '../utils/kanaHelper';
-import { DEFAULT_SETTINGS } from '../utils/storage';
+import { DEFAULT_SETTINGS, resetAllData } from '../utils/storage';
 
 vi.mock('../utils/audio', () => ({
   soundEffects: {
@@ -24,6 +24,7 @@ vi.mock('canvas-confetti', () => ({
 
 describe('Bug Fixes Verification', () => {
   beforeEach(() => {
+    resetAllData();
     localStorage.clear();
   });
 
