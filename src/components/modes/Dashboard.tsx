@@ -1,6 +1,7 @@
 import React from 'react';
 import type { PracticeMode, UserProgress } from '../../types/practice';
 import { CURRICULUM_MODULES } from '../../constants/curriculum';
+import logoImg from '../../assets/logo.png';
 import {
   GraduationCap,
   Sparkles,
@@ -134,10 +135,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ progress, onSelectMode }) 
         </div>
 
         {/* Decorative Graphic Element */}
-        <div className="absolute right-4 bottom-2 sm:right-8 sm:bottom-4 opacity-10 pointer-events-none select-none text-right">
-          <div className="text-8xl sm:text-9xl font-bold font-serif leading-none tracking-tighter text-white">
-            あ
-          </div>
+        <div className="absolute right-4 bottom-4 sm:right-8 sm:top-1/2 sm:-translate-y-1/2 opacity-25 sm:opacity-90 pointer-events-none select-none hidden sm:block">
+          <img
+            src={logoImg}
+            alt="TDK NIHONGO flicklab"
+            className="w-28 h-28 sm:w-36 sm:h-36 rounded-3xl object-contain bg-[#FAF9F6] p-2 shadow-2xl border border-white/20"
+          />
         </div>
       </div>
 

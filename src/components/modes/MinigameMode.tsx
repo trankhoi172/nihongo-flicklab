@@ -736,8 +736,8 @@ export const MinigameMode: React.FC<MinigameModeProps> = ({ settings }) => {
         )}
       </div>
 
-      {/* Locked 12-Key Flick Virtual Keyboard */}
-      <div className="pt-1 sticky bottom-2 z-20">
+      {/* Anchored 12-Key Flick Virtual Keyboard */}
+      <div className="pt-2 w-full relative z-10">
         <FlickKeyboard
           settings={settings}
           onCharInput={handleKeyPress}

@@ -295,8 +295,8 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
         )}
       </div>
 
-      {/* Locked On-Screen Keyboard */}
-      <div className="pt-1 sticky bottom-2 z-20">
+      {/* Anchored On-Screen Keyboard */}
+      <div className="pt-2 w-full relative z-10">
         <FlickKeyboard
           settings={settings}
           targetKeyId={

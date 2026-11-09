@@ -2,6 +2,7 @@ import React from 'react';
 import type { PracticeMode } from '../../types/practice';
 import { Settings as SettingsIcon, Flame, Keyboard } from 'lucide-react';
 import { FacebookIcon } from './Icons';
+import logoImg from '../../assets/logo.png';
 
 interface HeaderProps {
   currentMode: PracticeMode;
@@ -24,16 +25,18 @@ export const Header: React.FC<HeaderProps> = ({
           onClick={() => onSelectMode('dashboard')}
           className="flex items-center gap-2.5 text-left group"
         >
-          <div className="w-8 h-8 rounded-xl bg-white text-black flex items-center justify-center font-bold text-base shadow-sm group-hover:scale-105 transition-transform">
-            <span>あ</span>
-          </div>
+          <img
+            src={logoImg}
+            alt="TDK NIHONGO flicklab"
+            className="w-8 h-8 rounded-xl object-contain bg-[#FAF9F6] p-0.5 shadow-sm group-hover:scale-105 transition-transform"
+          />
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-bold text-white text-base tracking-tight">
-                Flick Lab
+              <span className="font-extrabold text-white text-base tracking-tight">
+                TDK <span className="font-normal text-xs uppercase tracking-wider text-neutral-300">NIHONGO</span>
               </span>
-              <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-white/[0.08] text-neutral-300 font-medium border border-white/[0.08]">
-                日本語
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.08] text-neutral-300 font-medium border border-white/[0.08]">
+                flicklab
               </span>
             </div>
             <p className="text-[11px] text-neutral-400 hidden sm:block leading-none mt-0.5 font-normal">

@@ -134,8 +134,8 @@ export const FreeTypingMode: React.FC<FreeTypingModeProps> = ({ settings }) => {
         </div>
       </div>
 
-      {/* Locked On-Screen Keyboard */}
-      <div className="pt-1 sticky bottom-2 z-20">
+      {/* Anchored On-Screen Keyboard */}
+      <div className="pt-2 w-full relative z-10">
         <FlickKeyboard
           settings={settings}
           isKatakana={isKatakana}

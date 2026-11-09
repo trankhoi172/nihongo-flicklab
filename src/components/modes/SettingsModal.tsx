@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import type { UserSettings, FlickSensitivity, SoundTheme, LanguageMeaning } from '../../types/settings';
-import { X, Volume2, VolumeX, Sliders, Globe, RotateCcw, Check } from 'lucide-react';
+import { X, Volume2, VolumeX, Globe, RotateCcw, Check } from 'lucide-react';
 import { FacebookIcon } from '../common/Icons';
 import { soundEffects } from '../../utils/audio';
+import logoImg from '../../assets/logo.png';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -50,10 +51,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-stone-800/80 bg-[#101217]">
-          <div className="flex items-center gap-2">
-            <Sliders className="w-5 h-5 text-red-500" />
-            <h2 className="text-lg font-bold text-white">
-              Cài đặt (設定)
+          <div className="flex items-center gap-2.5">
+            <img
+              src={logoImg}
+              alt="TDK NIHONGO"
+              className="w-7 h-7 rounded-lg object-contain bg-[#FAF9F6] p-0.5 shadow-xs"
+            />
+            <h2 className="text-base font-bold text-white">
+              Cài đặt & Tùy biến (設定)
             </h2>
           </div>
           <button
@@ -299,17 +304,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 border-t border-stone-800/80 bg-[#101217] flex items-center justify-between">
+        <div className="px-6 py-3.5 border-t border-stone-800/80 bg-[#101217] flex items-center justify-between gap-3">
           <a
             href="https://facebook.com/@ronaldoGoatskibidi"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-stone-400 hover:text-white transition-colors group"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-stone-400 hover:text-white border border-white/[0.06] transition-all group"
             title="Liên hệ Facebook Tran Dang Khoi"
           >
             <FacebookIcon className="w-3.5 h-3.5 text-stone-400 group-hover:text-[#1877F2] transition-colors" />
             <span className="text-[11px]">
-              Made by <strong className="font-semibold text-stone-300 group-hover:text-white">Tran Dang Khoi</strong>
+              Created by <strong className="font-semibold text-stone-200 group-hover:text-white">Tran Dang Khoi</strong>
             </span>
           </a>
 
