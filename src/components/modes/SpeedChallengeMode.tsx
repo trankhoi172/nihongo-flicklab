@@ -342,19 +342,21 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
                   </span>
                 </div>
 
-                {/* Visual feedback for active buffer and modifier hint */}
-                {typedBuffer ? (
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.08] border border-white/[0.12] text-xs text-neutral-200">
-                    <span className="text-neutral-400">Đã gõ:</span>
-                    <span className="font-bold text-white text-sm">{typedBuffer}</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-neutral-400" />
-                    <span className="text-white font-semibold">Nhấn phím [゛゜小]</span>
-                  </div>
-                ) : getKanaInfo(currentKana)?.needsModifier ? (
-                  <div className="text-[11px] text-neutral-400 font-medium">
-                    Gõ âm gốc <span className="text-white font-bold">"{getKanaInfo(currentKana)?.baseChar}"</span> trước
-                  </div>
-                ) : null}
+                {/* Visual feedback for active buffer and modifier hint (Reserved slot prevents CLS) */}
+                <div className="h-8 flex items-center justify-center">
+                  {typedBuffer ? (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.08] border border-white/[0.12] text-xs text-neutral-200">
+                      <span className="text-neutral-400">Đã gõ:</span>
+                      <span className="font-bold text-white text-sm">{typedBuffer}</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-neutral-400" />
+                      <span className="text-white font-semibold">Nhấn phím [゛゜小]</span>
+                    </div>
+                  ) : getKanaInfo(currentKana)?.needsModifier ? (
+                    <div className="text-[11px] text-neutral-400 font-medium">
+                      Gõ âm gốc <span className="text-white font-bold">"{getKanaInfo(currentKana)?.baseChar}"</span> trước
+                    </div>
+                  ) : null}
+                </div>
               </div>
             ) : (
               <div className="space-y-2 text-center">

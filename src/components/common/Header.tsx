@@ -1,6 +1,6 @@
 import React from 'react';
 import type { PracticeMode } from '../../types/practice';
-import { Settings as SettingsIcon, Flame, Keyboard } from 'lucide-react';
+import { Settings as SettingsIcon, Flame, Keyboard, Eye, EyeOff } from 'lucide-react';
 import { FacebookIcon } from './Icons';
 import logoImg from '../../assets/logo.png';
 
@@ -8,6 +8,8 @@ interface HeaderProps {
   currentMode: PracticeMode;
   streakDays: number;
   totalCharsTyped: number;
+  blindMode?: boolean;
+  onToggleBlindMode?: () => void;
   onOpenSettings: () => void;
   onSelectMode: (mode: PracticeMode) => void;
 }
@@ -15,6 +17,8 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({
   streakDays,
   totalCharsTyped,
+  blindMode = false,
+  onToggleBlindMode,
   onOpenSettings,
   onSelectMode,
 }) => {
@@ -74,6 +78,21 @@ export const Header: React.FC<HeaderProps> = ({
               Made by <strong className="font-semibold text-neutral-300 group-hover:text-white">Tran Dang Khoi</strong>
             </span>
           </a>
+
+          {onToggleBlindMode && (
+            <button
+              onClick={onToggleBlindMode}
+              className={`p-2 rounded-xl border transition-all ${
+                blindMode
+                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-xs'
+                  : 'text-neutral-400 hover:text-white hover:bg-white/[0.08] border-transparent hover:border-white/[0.08]'
+              }`}
+              title={blindMode ? 'Đang bật Gõ mù (Click để hiện phím)' : 'Bật chế độ Gõ mù (Blind Flick Practice)'}
+              aria-label="Chế độ gõ mù"
+            >
+              {blindMode ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          )}
 
           <button
             onClick={onOpenSettings}

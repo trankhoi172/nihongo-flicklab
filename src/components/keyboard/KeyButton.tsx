@@ -14,6 +14,7 @@ interface KeyButtonProps {
   soundTheme: SoundTheme;
   showRomaji: boolean;
   showHints: boolean;
+  blindMode?: boolean;
   isHighlighted?: boolean;
   targetDirection?: FlickDirection;
   onKeyCommit: (payload: KeyboardEventPayload) => void;
@@ -28,6 +29,7 @@ export const KeyButton: React.FC<KeyButtonProps> = ({
   soundTheme,
   showRomaji,
   showHints,
+  blindMode = false,
   isHighlighted = false,
   targetDirection,
   onKeyCommit,
@@ -77,8 +79,8 @@ export const KeyButton: React.FC<KeyButtonProps> = ({
       tabIndex={0}
       aria-label={`${keyDef.rowName} key`}
     >
-      {/* 5-way Satellite Hints on the Key Face (Hidden while pressing to prevent ghosting) */}
-      {showHints && !isModifier && !isPunctuation && (
+      {/* 5-way Satellite Hints on the Key Face (Hidden while pressing or in Blind Mode) */}
+      {showHints && !isModifier && !isPunctuation && !blindMode && (
         <div className={`transition-opacity duration-75 ${isPressing ? 'opacity-0' : 'opacity-100'}`}>
           {/* Top (U-vowel) */}
           <span
@@ -138,26 +140,30 @@ export const KeyButton: React.FC<KeyButtonProps> = ({
         </div>
       )}
 
-      {/* Center Kana Character (Hidden while pressing so FlickFlower center petal takes over) */}
+      {/* Center Kana Character (Hidden while pressing so FlickFlower center petal takes over, or replaced with dot in Blind Mode) */}
       <div className={`flex flex-col items-center justify-center transition-opacity duration-75 ${isPressing ? 'opacity-0' : 'opacity-100'}`}>
-        <span
-          className={`font-medium tracking-tight leading-none ${
-            isModifier
-              ? 'text-sm sm:text-base font-medium text-neutral-300'
-              : isPunctuation
-              ? 'text-xl sm:text-2xl font-medium text-neutral-200'
-              : 'text-2xl sm:text-3xl font-medium text-white'
-          } ${
-            isHighlighted && targetDirection === 'center'
-              ? 'text-white font-bold underline decoration-white decoration-2'
-              : ''
-          }`}
-        >
-          {map.center}
-        </span>
+        {blindMode && !isModifier && !isPunctuation ? (
+          <span className="w-1.5 h-1.5 rounded-full bg-white/25 my-3" />
+        ) : (
+          <span
+            className={`font-medium tracking-tight leading-none ${
+              isModifier
+                ? 'text-sm sm:text-base font-medium text-neutral-300'
+                : isPunctuation
+                ? 'text-xl sm:text-2xl font-medium text-neutral-200'
+                : 'text-2xl sm:text-3xl font-medium text-white'
+            } ${
+              isHighlighted && targetDirection === 'center'
+                ? 'text-white font-bold underline decoration-white decoration-2'
+                : ''
+            }`}
+          >
+            {map.center}
+          </span>
+        )}
 
         {/* Subtitle / Romaji */}
-        {showRomaji && !isModifier && !isPunctuation && (
+        {showRomaji && !isModifier && !isPunctuation && !blindMode && (
           <span className="text-[10px] text-neutral-400 uppercase tracking-widest font-mono mt-0.5 leading-none">
             {keyDef.romaji.center}
           </span>
@@ -171,6 +177,7 @@ export const KeyButton: React.FC<KeyButtonProps> = ({
           isKatakana={isKatakana}
           activeDirection={currentDirection}
           showRomaji={showRomaji}
+          blindMode={blindMode}
         />
       )}
     </div>

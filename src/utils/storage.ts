@@ -11,6 +11,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
   soundTheme: 'click',
   showRomaji: true,
   showFlickHints: true,
+  blindMode: false,
   languageMeaning: 'vi',
   theme: 'dark', // Default to pure dark theme as requested
 };

@@ -227,7 +227,7 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
             </span>
           </div>
 
-          <div className="space-y-1.5 max-h-[460px] overflow-y-auto pr-1">
+          <div className="space-y-1.5 max-h-[460px] overflow-y-auto custom-scrollbar pr-1.5">
             {currentModule.lessons.map((les) => {
               const isSelected = les.id === selectedLessonId;
               const isDone = completedLessonIds.includes(les.id);
@@ -338,18 +338,22 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
                 )}
               </div>
 
-              {/* Active Feedback Alert */}
-              {feedback && (
-                <div
-                  className={`p-2.5 rounded-xl text-xs font-semibold ${
-                    feedback.isCorrect
-                      ? 'bg-emerald-950/40 text-emerald-300 border border-emerald-800/80'
-                      : 'bg-red-950/40 text-red-300 border border-red-800/80 animate-shake'
-                  }`}
-                >
-                  {feedback.message}
-                </div>
-              )}
+              {/* Reserved Feedback Slot (Fixed height prevents Cumulative Layout Shift of the keyboard) */}
+              <div className="h-10 min-h-[40px] flex items-center justify-center">
+                {feedback ? (
+                  <div
+                    className={`w-full py-2 px-3 rounded-xl text-xs font-semibold transition-all duration-150 ${
+                      feedback.isCorrect
+                        ? 'bg-emerald-950/40 text-emerald-300 border border-emerald-800/80'
+                        : 'bg-red-950/40 text-red-300 border border-red-800/80 animate-shake'
+                    }`}
+                  >
+                    {feedback.message}
+                  </div>
+                ) : (
+                  <div className="h-full w-full pointer-events-none" aria-hidden="true" />
+                )}
+              </div>
 
               {/* Lesson Complete Banner */}
               {isLessonComplete && (

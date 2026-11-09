@@ -238,13 +238,16 @@ export const FlickPracticeMode: React.FC<FlickPracticeModeProps> = ({ settings }
             </span>
           </div>
 
-          {currentTarget?.needsModifier && (
-            <div className="text-xs text-neutral-200 bg-white/[0.06] px-3 py-1 rounded-full border border-white/[0.1] font-medium">
-              {!typedBuffer
-                ? `1. Gõ chữ gốc "${currentTarget.baseChar}"`
-                : `2. Đã gõ "${typedBuffer}" ➔ Nhấn "゛゜小" để thành "${currentTarget.char}"!`}
-            </div>
-          )}
+          {/* Reserved slot for modifier hint to prevent CLS */}
+          <div className="h-7 flex items-center justify-center">
+            {currentTarget?.needsModifier ? (
+              <div className="text-xs text-neutral-200 bg-white/[0.06] px-3 py-1 rounded-full border border-white/[0.1] font-medium animate-in fade-in duration-100">
+                {!typedBuffer
+                  ? `1. Gõ chữ gốc "${currentTarget.baseChar}"`
+                  : `2. Đã gõ "${typedBuffer}" ➔ Nhấn "゛゜小" để thành "${currentTarget.char}"!`}
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
 

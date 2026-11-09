@@ -41,6 +41,12 @@ export const App: React.FC = () => {
     saveSettings(newSettings);
   };
 
+  const handleToggleBlindMode = () => {
+    const updated = { ...settings, blindMode: !settings.blindMode };
+    setSettings(updated);
+    saveSettings(updated);
+  };
+
   const handleResetProgress = () => {
     resetAllData();
     setProgress(loadProgress());
@@ -54,6 +60,8 @@ export const App: React.FC = () => {
           currentMode={currentMode}
           streakDays={progress.currentStreakDays}
           totalCharsTyped={progress.totalCharsTyped}
+          blindMode={!!settings.blindMode}
+          onToggleBlindMode={handleToggleBlindMode}
           onOpenSettings={() => setIsSettingsOpen(true)}
           onSelectMode={setCurrentMode}
         />
@@ -129,7 +137,7 @@ export const App: React.FC = () => {
                   </span>
                 </div>
                 <p className="text-[11px] text-neutral-400 font-normal">
-                  Luyện phản xạ gõ tiếng Nhật 12 phím Kana chuẩn iOS
+                  Luyện phản xạ gõ tiếng Nhật 12 phím Kana chuẩn Nhật
                 </p>
               </div>
             </div>
@@ -160,11 +168,8 @@ export const App: React.FC = () => {
           </div>
 
           {/* Subfooter notice */}
-          <div className="pt-3 border-t border-white/[0.05] flex flex-col sm:flex-row items-center justify-between text-[11px] text-neutral-500 gap-2">
-            <span>© 2026 TDK NIHONGO flicklab • Giao diện Apple iOS Liquid Glass</span>
-            <span className="font-mono text-[10px] text-neutral-600">
-              Chạm • Vuốt 4 hướng • Thành thạo Hiragana & Katakana
-            </span>
+          <div className="pt-3 border-t border-white/[0.05] flex items-center justify-between text-[11px] text-neutral-500">
+            <span>© 2026 TDK NIHONGO flicklab</span>
           </div>
         </div>
       </footer>

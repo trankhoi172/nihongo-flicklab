@@ -43,6 +43,10 @@ body.theme-dark {
 }
 
 /* Custom sleek subtle dark scrollbar when needed */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;
   height: 5px;

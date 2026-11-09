@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { UserSettings, FlickSensitivity, SoundTheme, LanguageMeaning } from '../../types/settings';
-import { X, Volume2, VolumeX, Globe, RotateCcw, Check } from 'lucide-react';
+import { X, Volume2, VolumeX, Globe, RotateCcw, Check, EyeOff } from 'lucide-react';
 import { FacebookIcon } from '../common/Icons';
 import { soundEffects } from '../../utils/audio';
 import logoImg from '../../assets/logo.png';
@@ -218,6 +218,25 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 checked={settings.showFlickHints}
                 onChange={(e) => update({ showFlickHints: e.target.checked })}
                 className="w-4 h-4 accent-red-600 rounded cursor-pointer"
+              />
+            </div>
+
+            {/* Blind Mode (Muscle Memory) */}
+            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+              <div className="pr-3">
+                <span className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                  <EyeOff className="w-3.5 h-3.5" />
+                  <span>Chế độ Luyện phản xạ mù (Blind Flick)</span>
+                </span>
+                <span className="text-[11px] text-stone-400 block mt-0.5 leading-relaxed">
+                  Ẩn hoàn toàn ký tự trên mặt phím để rèn luyện và kiểm tra trí nhớ cơ bắp (Muscle Memory) của ngón tay.
+                </span>
+              </div>
+              <input
+                type="checkbox"
+                checked={!!settings.blindMode}
+                onChange={(e) => update({ blindMode: e.target.checked })}
+                className="w-4 h-4 accent-amber-500 rounded cursor-pointer shrink-0"
               />
             </div>
           </div>

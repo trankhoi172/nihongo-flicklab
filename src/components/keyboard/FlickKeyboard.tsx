@@ -3,7 +3,7 @@ import { KEYBOARD_LAYOUT } from '../../constants/keyboardLayout';
 import type { FlickDirection, KeyboardEventPayload } from '../../types/keyboard';
 import type { UserSettings } from '../../types/settings';
 import { KeyButton } from './KeyButton';
-import { Delete, CornerDownLeft, Sparkles } from 'lucide-react';
+import { Delete, CornerDownLeft, Sparkles, EyeOff } from 'lucide-react';
 import { soundEffects } from '../../utils/audio';
 
 interface FlickKeyboardProps {
@@ -82,6 +82,14 @@ export const FlickKeyboard: React.FC<FlickKeyboardProps> = ({
       className={`w-full max-w-sm sm:max-w-md mx-auto p-3 sm:p-4 rounded-3xl bg-[#18191f]/85 backdrop-blur-2xl border border-white/[0.08] shadow-2xl transition-all select-none overflow-visible relative z-20 ${className}`}
       style={{ touchAction: 'none' }}
     >
+      {/* Blind Mode Active Notice */}
+      {settings.blindMode && (
+        <div className="flex items-center justify-center gap-1.5 pb-2 text-[10px] font-mono text-amber-300">
+          <EyeOff className="w-3 h-3 text-amber-400" />
+          <span>Chế độ gõ mù (Blind Flick) • Rèn luyện trí nhớ cơ bắp</span>
+        </div>
+      )}
+
       {/* 4x3 Grid of 12 Kana Keys (overflow-visible so active key petals float freely) */}
       <div className="grid grid-cols-3 gap-2 sm:gap-2.5 overflow-visible relative">
         {KEYBOARD_LAYOUT.map((keyDef) => {
@@ -98,6 +106,7 @@ export const FlickKeyboard: React.FC<FlickKeyboardProps> = ({
               soundTheme={settings.soundTheme}
               showRomaji={settings.showRomaji}
               showHints={settings.showFlickHints}
+              blindMode={settings.blindMode}
               isHighlighted={isHighlighted}
               targetDirection={isHighlighted ? targetDirection : undefined}
               onKeyCommit={handleKeyCommit}

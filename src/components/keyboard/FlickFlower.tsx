@@ -6,6 +6,7 @@ interface FlickFlowerProps {
   isKatakana: boolean;
   activeDirection: FlickDirection;
   showRomaji?: boolean;
+  blindMode?: boolean;
 }
 
 export const FlickFlower: React.FC<FlickFlowerProps> = ({
@@ -13,6 +14,7 @@ export const FlickFlower: React.FC<FlickFlowerProps> = ({
   isKatakana,
   activeDirection,
   showRomaji = true,
+  blindMode = false,
 }) => {
   const map = isKatakana ? keyDef.katakana : keyDef.hiragana;
   const isModifier = !!keyDef.isModifier;
@@ -113,23 +115,31 @@ export const FlickFlower: React.FC<FlickFlowerProps> = ({
                   : 'z-20 bg-[#21232a]/95 text-neutral-100 border border-white/[0.12] shadow-xl backdrop-blur-2xl'
               }`}
             >
-              {/* Kana Character */}
-              <span
-                className={`leading-none select-none tracking-tight ${
-                  isModifier
-                    ? 'text-xs font-bold'
-                    : isPunctuation
-                    ? 'text-xl font-bold'
-                    : isActive
-                    ? 'text-2xl font-bold'
-                    : 'text-xl font-medium'
-                }`}
-              >
-                {petal.char}
-              </span>
+              {/* Kana Character or Minimal Dot in Blind Mode */}
+              {blindMode && !isModifier && !isPunctuation ? (
+                <span
+                  className={`rounded-full transition-all ${
+                    isActive ? 'w-2.5 h-2.5 bg-black/70' : 'w-1.5 h-1.5 bg-white/30'
+                  }`}
+                />
+              ) : (
+                <span
+                  className={`leading-none select-none tracking-tight ${
+                    isModifier
+                      ? 'text-xs font-bold'
+                      : isPunctuation
+                      ? 'text-xl font-bold'
+                      : isActive
+                      ? 'text-2xl font-bold'
+                      : 'text-xl font-medium'
+                  }`}
+                >
+                  {petal.char}
+                </span>
+              )}
 
-              {/* Subtitle / Romaji vowel or modifier instruction */}
-              {showRomaji && petal.label && (
+              {/* Subtitle / Romaji vowel or modifier instruction (Hidden in Blind Mode) */}
+              {showRomaji && !blindMode && petal.label && (
                 <span
                   className={`text-[9px] uppercase tracking-wider font-mono mt-1 leading-none select-none ${
                     isActive ? 'text-black/75 font-semibold' : 'text-neutral-400 font-medium'

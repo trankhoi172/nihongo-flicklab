@@ -10,6 +10,7 @@ export interface UserSettings {
   soundTheme: SoundTheme;
   showRomaji: boolean;
   showFlickHints: boolean; // shows direction guides on keyboard
+  blindMode?: boolean; // Blind Flick: hides kana on keys to test muscle memory
   languageMeaning: LanguageMeaning;
   theme: AppTheme;
 }
