@@ -8,13 +8,15 @@ import { getPracticeTargets, applyModifier, isReachableInCycle, getKanaInfo } fr
 import { recordSpeedChallenge, loadProgress } from '../../utils/storage';
 import { soundEffects } from '../../utils/audio';
 import confetti from 'canvas-confetti';
-import { Timer, Zap, Trophy, Play, RotateCcw, ArrowRight } from 'lucide-react';
+import { Timer, Zap, Trophy, Play, RotateCcw, ArrowRight, Share2 } from 'lucide-react';
+import { ShareCardModal } from '../common/ShareCardModal';
 
 interface SpeedChallengeModeProps {
   settings: UserSettings;
 }
 
 export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings }) => {
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState<30 | 60>(30);
   const [selectedType, setSelectedType] = useState<'kana' | 'word'>('kana');
 
@@ -465,17 +467,24 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
             </div>
           </div>
 
-          <div className="pt-1 flex justify-center gap-3">
+          <div className="pt-1 flex flex-wrap justify-center gap-2.5">
+            <button
+              onClick={() => setIsShareModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-md bg-[#16171B] border border-neutral-700 hover:border-neutral-500 text-neutral-100 text-xs font-medium hover:bg-neutral-800 transition-colors cursor-pointer"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>Chia sẻ thẻ Story</span>
+            </button>
             <button
               onClick={startChallenge}
-              className="flex items-center gap-2 px-5 py-2 rounded-md bg-white text-black text-xs font-semibold hover:bg-neutral-200 transition-colors"
+              className="flex items-center gap-2 px-5 py-2 rounded-md bg-white text-black text-xs font-semibold hover:bg-neutral-200 transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Thử lại lần nữa</span>
             </button>
             <button
               onClick={() => setGameState('idle')}
-              className="px-4 py-2 rounded-md border border-neutral-800 text-neutral-300 text-xs font-medium hover:bg-neutral-800/40 transition-colors"
+              className="px-4 py-2 rounded-md border border-neutral-800 text-neutral-300 text-xs font-medium hover:bg-neutral-800/40 transition-colors cursor-pointer"
             >
               Đổi cài đặt
             </button>
@@ -512,6 +521,14 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
           onEnter={() => {}}
         />
       </div>
+
+      {/* Social Story Share Card Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        progress={loadProgress()}
+        latestChallengeRecord={resultRecord}
+      />
     </div>
   );
 };

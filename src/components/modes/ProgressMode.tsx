@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { UserProgress } from '../../types/practice';
 import { KEYBOARD_LAYOUT } from '../../constants/keyboardLayout';
 import { VOCABULARY_LIST } from '../../constants/vocabulary';
 import { CURRICULUM_MODULES } from '../../constants/curriculum';
-import { BookOpen, CheckCircle2, Gamepad2 } from 'lucide-react';
+import { BookOpen, CheckCircle2, Gamepad2, Share2 } from 'lucide-react';
+import { ShareCardModal } from '../common/ShareCardModal';
 
 interface ProgressModeProps {
   progress: UserProgress;
 }
 
 export const ProgressMode: React.FC<ProgressModeProps> = ({ progress }) => {
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const wordsTotal = VOCABULARY_LIST.length;
   const wordsLearned = progress.completedWordIds.length;
 
@@ -18,16 +20,25 @@ export const ProgressMode: React.FC<ProgressModeProps> = ({ progress }) => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-4 space-y-6 animate-in fade-in duration-150">
-      <div>
-        <div className="text-[11px] font-mono tracking-widest text-neutral-400 uppercase">
-          Thống kê học tập
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <div className="text-[11px] font-mono tracking-widest text-neutral-400 uppercase">
+            Thống kê học tập
+          </div>
+          <h2 className="text-xl sm:text-2xl font-semibold text-neutral-100 mt-1">
+            Tiến trình & Bản đồ thành thạo (上達記録)
+          </h2>
+          <p className="text-xs text-neutral-400 mt-0.5">
+            Theo dõi mức độ phản xạ cơ bắp trên từng hàng phím Kana và lịch sử luyện tập cá nhân.
+          </p>
         </div>
-        <h2 className="text-xl sm:text-2xl font-semibold text-neutral-100 mt-1">
-          Tiến trình & Bản đồ thành thạo (上達記録)
-        </h2>
-        <p className="text-xs text-neutral-400 mt-0.5">
-          Theo dõi mức độ phản xạ cơ bắp trên từng hàng phím Kana và lịch sử luyện tập cá nhân.
-        </p>
+        <button
+          onClick={() => setIsShareModalOpen(true)}
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white hover:bg-neutral-200 text-neutral-900 text-xs font-semibold shadow-sm transition-all self-start sm:self-auto cursor-pointer"
+        >
+          <Share2 className="w-3.5 h-3.5 text-neutral-900" />
+          <span>Chia sẻ thẻ Story</span>
+        </button>
       </div>
 
       {/* Top 4 Key Performance Indicators - Swiss Editorial Strip */}
@@ -256,6 +267,12 @@ export const ProgressMode: React.FC<ProgressModeProps> = ({ progress }) => {
           </div>
         </div>
       )}
+      {/* Social Story Share Card Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        progress={progress}
+      />
     </div>
   );
 };

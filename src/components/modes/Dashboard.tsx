@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { PracticeMode, UserProgress } from '../../types/practice';
 import { CURRICULUM_MODULES } from '../../constants/curriculum';
 import {
@@ -10,7 +10,9 @@ import {
   ArrowRight,
   Compass,
   Gamepad2,
+  Share2,
 } from 'lucide-react';
+import { ShareCardModal } from '../common/ShareCardModal';
 
 interface DashboardProps {
   progress: UserProgress;
@@ -18,6 +20,7 @@ interface DashboardProps {
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ progress, onSelectMode }) => {
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const totalLessons = CURRICULUM_MODULES.flatMap((m) => m.lessons).length;
   const completedLessons = progress.completedLessonIds?.length || 0;
 
@@ -124,6 +127,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ progress, onSelectMode }) 
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md border border-neutral-800 hover:border-neutral-600 text-neutral-300 hover:text-white text-xs font-medium transition-colors cursor-pointer"
           >
             <span>Luyện phản xạ nhanh</span>
+          </button>
+          <button
+            onClick={() => setIsShareModalOpen(true)}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md border border-neutral-800 hover:border-neutral-700 bg-[#111216] text-neutral-300 hover:text-white text-xs font-medium transition-colors cursor-pointer"
+          >
+            <Share2 className="w-3.5 h-3.5 text-neutral-400" />
+            <span>Thẻ Story</span>
           </button>
         </div>
       </section>
@@ -280,6 +290,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ progress, onSelectMode }) 
           ))}
         </div>
       </section>
+      {/* Social Story Share Card Modal */}
+      <ShareCardModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        progress={progress}
+      />
     </div>
   );
 };
