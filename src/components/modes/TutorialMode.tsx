@@ -155,8 +155,8 @@ export const TutorialMode: React.FC<TutorialModeProps> = ({ settings }) => {
           </button>
         </div>
 
-        {/* Current Prompt */}
-        <div className="p-3.5 rounded-lg bg-[#0B0C0E] border border-neutral-800 space-y-1">
+        {/* Current Prompt - Fixed min height prevents layout jitter between 1-line and 2-line instructions */}
+        <div className="p-3 rounded-lg bg-[#0B0C0E] border border-neutral-800 space-y-1 min-h-[70px] flex flex-col justify-center">
           <div className="text-[11px] text-neutral-400 flex items-center justify-center gap-1 font-mono">
             <HelpCircle className="w-3 h-3 text-neutral-400" />
             <span>THAO TÁC YÊU CẦU:</span>
@@ -263,23 +263,20 @@ export const TutorialMode: React.FC<TutorialModeProps> = ({ settings }) => {
           </div>
         </div>
 
-        {/* Feedback Alert */}
-        {feedback && (
-          <div
-            className={`p-2.5 rounded-md text-xs font-medium flex items-center justify-center gap-2 ${
-              feedback.isCorrect
-                ? 'bg-[#16171B] text-neutral-200 border border-neutral-800'
-                : 'bg-[#1C1214] text-rose-300 border border-rose-900/60 animate-shake'
-            }`}
-          >
-            {feedback.isCorrect && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
-            <span>{feedback.message}</span>
-          </div>
-        )}
-
-        {/* Row Finished Actions */}
-        {isRowFinished && (
-          <div className="pt-1 flex justify-center">
+        {/* Fixed Height Slot for Feedback and Actions (Fixed height prevents Cumulative Layout Shift of the keyboard) */}
+        <div className="h-11 min-h-[44px] flex items-center justify-center">
+          {feedback ? (
+            <div
+              className={`w-full max-w-sm py-1.5 px-3 rounded-md text-xs font-medium flex items-center justify-center gap-2 ${
+                feedback.isCorrect
+                  ? 'bg-[#16171B] text-neutral-200 border border-neutral-800'
+                  : 'bg-[#1C1214] text-rose-300 border border-rose-900/60 animate-shake'
+              }`}
+            >
+              {feedback.isCorrect && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
+              <span>{feedback.message}</span>
+            </div>
+          ) : isRowFinished ? (
             <button
               onClick={handleNextRow}
               className="flex items-center gap-1.5 px-4 py-2 rounded-md bg-white hover:bg-neutral-200 text-black text-xs font-semibold transition-colors"
@@ -287,8 +284,10 @@ export const TutorialMode: React.FC<TutorialModeProps> = ({ settings }) => {
               <span>Học hàng tiếp theo</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
-          </div>
-        )}
+          ) : (
+            <div className="h-full w-full pointer-events-none" aria-hidden="true" />
+          )}
+        </div>
       </div>
 
       {/* Anchored On-Screen Keyboard */}

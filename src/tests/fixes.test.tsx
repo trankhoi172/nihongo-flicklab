@@ -2,7 +2,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
 import { WordPracticeMode } from '../components/modes/WordPracticeMode';
-import { applyModifier, isReachableInCycle, getModifiedChar } from '../utils/kanaHelper';
+import { CurriculumMode } from '../components/modes/CurriculumMode';
+import { applyModifier, isReachableInCycle, getModifiedChar, getPracticeTargets } from '../utils/kanaHelper';
 import { DEFAULT_SETTINGS } from '../utils/storage';
 
 vi.mock('../utils/audio', () => ({
@@ -57,5 +58,36 @@ describe('Bug Fixes Verification', () => {
     // Renders filter buttons and interactive cards
     expect(screen.getByText('Tất cả')).toBeDefined();
     expect(screen.getByText('Đổi từ khác')).toBeDefined();
+  });
+
+  it('guarantees practice targets exclude MOD and punctuation marks', () => {
+    const targets = getPracticeTargets('all');
+    const chars = targets.map((t) => t.char);
+    const keyIds = targets.map((t) => t.keyId);
+
+    // MOD key and punctuation must never appear as practice targets
+    expect(chars).not.toContain('゛゜小');
+    expect(chars).not.toContain('、');
+    expect(chars).not.toContain('。');
+    expect(chars).not.toContain('？');
+    expect(chars).not.toContain('！');
+    expect(chars).not.toContain('…');
+    expect(chars).not.toContain('（');
+    expect(chars).not.toContain('）');
+    expect(keyIds).not.toContain('mod');
+    expect(keyIds).not.toContain('sym');
+
+    // Genuine kana must be present
+    expect(chars).toContain('あ');
+    expect(chars).toContain('か');
+    expect(chars).toContain('が');
+    expect(chars).toContain('ぱ');
+  });
+
+  it('renders CurriculumMode compound words with individual interactive slots', () => {
+    render(<CurriculumMode settings={DEFAULT_SETTINGS} completedLessonIds={[]} />);
+    // Lesson 1 is loaded with practiceTargets ['あ', 'い', ...]
+    expect(screen.getAllByText(/Quy tắc vàng 5 hướng vuốt/).length).toBeGreaterThan(0);
+    expect(screen.getByText('Thực hành gõ bài này:')).toBeDefined();
   });
 });

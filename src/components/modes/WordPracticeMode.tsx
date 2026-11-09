@@ -186,7 +186,7 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
 
       {/* Target Word Card */}
       <div
-        className={`p-5 rounded-xl bg-[#111216] border border-neutral-800/80 space-y-3 text-center transition-all ${
+        className={`p-5 rounded-xl bg-[#111216] border border-neutral-800/80 space-y-3 text-center transition-all min-h-[230px] flex flex-col justify-between ${
           shakeActive ? 'animate-shake' : ''
         }`}
       >
@@ -202,83 +202,88 @@ export const WordPracticeMode: React.FC<WordPracticeModeProps> = ({ settings }) 
           )}
         </div>
 
-        {/* Character-by-character Interactive Display */}
-        <div className="py-1 flex items-center justify-center gap-2 sm:gap-2.5 flex-wrap">
-          {currentWord.kana.split('').map((char, idx) => {
-            const isDone = idx < charIndex;
-            const isCurrent = idx === charIndex;
+        {/* Dynamic Inner Content: Typing Phase vs Completed Phase (Same height prevents keyboard jumping) */}
+        {!isCompleted ? (
+          <>
+            {/* Character-by-character Interactive Display */}
+            <div className="py-1 flex items-center justify-center gap-2 sm:gap-2.5 flex-wrap">
+              {currentWord.kana.split('').map((char, idx) => {
+                const isDone = idx < charIndex;
+                const isCurrent = idx === charIndex;
 
-            return (
-              <div
-                key={idx}
-                className={`w-13 h-16 sm:w-15 sm:h-18 rounded-lg flex flex-col items-center justify-center transition-all ${
-                  isDone
-                    ? 'bg-neutral-900 text-neutral-300 border border-neutral-800'
-                    : isCurrent
-                    ? 'bg-white text-black font-bold shadow-sm'
-                    : 'bg-[#0B0C0E] text-neutral-500 border border-neutral-800/70'
-                }`}
-              >
-                <span className="text-2xl sm:text-3xl font-medium font-sans">
-                  {char}
-                </span>
-                <span className={`text-[9px] uppercase font-mono tracking-wider ${isCurrent ? 'text-black/70' : 'text-neutral-500'}`}>
-                  {getKanaInfo(char)?.romaji || ''}
-                </span>
+                return (
+                  <div
+                    key={idx}
+                    className={`w-13 h-16 sm:w-15 sm:h-18 rounded-lg flex flex-col items-center justify-center transition-all ${
+                      isDone
+                        ? 'bg-neutral-900 text-neutral-300 border border-neutral-800'
+                        : isCurrent
+                        ? 'bg-white text-black font-bold shadow-sm'
+                        : 'bg-[#0B0C0E] text-neutral-500 border border-neutral-800/70'
+                    }`}
+                  >
+                    <span className="text-2xl sm:text-3xl font-medium font-sans">
+                      {char}
+                    </span>
+                    <span className={`text-[9px] uppercase font-mono tracking-wider ${isCurrent ? 'text-black/70' : 'text-neutral-500'}`}>
+                      {getKanaInfo(char)?.romaji || ''}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Word Meaning in Vietnamese and English */}
+            <div className="space-y-0.5 pt-0.5">
+              <div className="text-base sm:text-lg font-semibold text-neutral-100">
+                {settings.languageMeaning === 'vi' ? currentWord.meaningVi : currentWord.meaningEn}
               </div>
-            );
-          })}
-        </div>
+              <div className="text-xs text-neutral-400 font-mono">
+                {currentWord.romaji}
+              </div>
+            </div>
 
-        {/* Word Meaning in Vietnamese and English */}
-        <div className="space-y-0.5 pt-0.5">
-          <div className="text-base sm:text-lg font-semibold text-neutral-100">
-            {settings.languageMeaning === 'vi' ? currentWord.meaningVi : currentWord.meaningEn}
-          </div>
-          <div className="text-xs text-neutral-400 font-mono">
-            {currentWord.romaji}
-          </div>
-        </div>
-
-        {/* Next Hint for Active Character (Reserved slot prevents CLS) */}
-        <div className="h-8 flex items-center justify-center">
-          {expectedInfo?.needsModifier && !isCompleted ? (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#16171B] text-neutral-300 text-xs font-medium border border-neutral-800 animate-in fade-in duration-100">
-              <ChevronRight className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
-              {!typedBuffer ? (
-                <span>Gõ âm gốc <strong className="text-white font-semibold">"{expectedInfo.baseChar}"</strong> trước</span>
+            {/* Next Hint for Active Character (Fixed height prevents CLS) */}
+            <div className="h-10 min-h-[40px] flex items-center justify-center">
+              {expectedInfo?.needsModifier ? (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#16171B] text-neutral-300 text-xs font-medium border border-neutral-800 animate-in fade-in duration-100">
+                  <ChevronRight className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+                  {!typedBuffer ? (
+                    <span>Gõ âm gốc <strong className="text-white font-semibold">"{expectedInfo.baseChar}"</strong> trước</span>
+                  ) : (
+                    <span>Đã gõ <strong className="text-white font-semibold">{typedBuffer}</strong> ➔ Nhấn <strong className="text-white font-semibold">"゛゜小"</strong> để thành <strong className="text-white font-semibold">"{expectedChar}"</strong></span>
+                  )}
+                </div>
               ) : (
-                <span>Đã gõ <strong className="text-white font-semibold">{typedBuffer}</strong> ➔ Nhấn <strong className="text-white font-semibold">"゛゜小"</strong> để thành <strong className="text-white font-semibold">"{expectedChar}"</strong></span>
+                <div className="h-full w-full pointer-events-none" aria-hidden="true" />
               )}
             </div>
-          ) : null}
-        </div>
-
-        {/* Completion Celebration Overlay */}
-        {isCompleted && completionStats && (
-          <div className="p-4 rounded-lg bg-[#16171B] border border-neutral-800 space-y-3 animate-in zoom-in-95 duration-150">
+          </>
+        ) : (
+          /* Completion Celebration Overlay in same footprint */
+          <div className="py-2 space-y-3 animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-center gap-1.5 text-neutral-200 font-medium text-sm">
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>Đã hoàn thành từ vựng</span>
+              <span>Đã hoàn thành: <strong className="text-white">{currentWord.kana}</strong> ({settings.languageMeaning === 'vi' ? currentWord.meaningVi : currentWord.meaningEn})</span>
             </div>
 
             <div className="grid grid-cols-3 gap-2 text-center text-xs">
               <div className="p-2 rounded-md bg-[#0B0C0E] border border-neutral-800">
                 <div className="text-neutral-400 font-mono text-[11px]">THỜI GIAN</div>
                 <div className="font-semibold text-neutral-100 text-sm mt-0.5">
-                  {completionStats.timeSec}s
+                  {completionStats?.timeSec || 0}s
                 </div>
               </div>
               <div className="p-2 rounded-md bg-[#0B0C0E] border border-neutral-800">
                 <div className="text-neutral-400 font-mono text-[11px]">CHÍNH XÁC</div>
                 <div className="font-semibold text-neutral-100 text-sm mt-0.5">
-                  {completionStats.accuracy}%
+                  {completionStats?.accuracy || 100}%
                 </div>
               </div>
               <div className="p-2 rounded-md bg-[#0B0C0E] border border-neutral-800">
                 <div className="text-neutral-400 font-mono text-[11px]">TỐC ĐỘ CPM</div>
                 <div className="font-semibold text-neutral-100 text-sm mt-0.5">
-                  {completionStats.cpm}
+                  {completionStats?.cpm || 0}
                 </div>
               </div>
             </div>

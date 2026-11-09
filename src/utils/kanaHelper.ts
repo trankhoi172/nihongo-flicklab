@@ -222,11 +222,21 @@ export function getKanaInfo(char: string): KanaInfo | undefined {
   return KANA_MAP.get(char);
 }
 
+const EXCLUDED_PRACTICE_CHARS = new Set([
+  '゛゜小', '゛', '゜', '小',
+  '、', '。', '？', '！', '…',
+  '（', '）', '〜', 'ー'
+]);
+
 export function getPracticeTargets(rowFilter: KanaRowId | 'all'): KanaTarget[] {
   const targets: KanaTarget[] = [];
 
   KANA_MAP.forEach((info) => {
     if (info.isKatakana) return;
+    // Exclude modifier key (MOD), punctuation keys, brackets, and non-kana symbols
+    if (info.keyId === 'mod' || info.keyId === 'sym' || EXCLUDED_PRACTICE_CHARS.has(info.char)) {
+      return;
+    }
 
     if (rowFilter === 'all') {
       targets.push({

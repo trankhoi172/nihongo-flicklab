@@ -295,7 +295,7 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
             </div>
 
             {/* Practice Step Box */}
-            <div className="p-4 rounded-lg bg-black/40 border border-neutral-850 space-y-3 text-center">
+            <div className="p-4 rounded-lg bg-black/40 border border-neutral-850 space-y-3 text-center min-h-[220px] flex flex-col justify-between">
               <div className="flex items-center justify-between text-xs text-neutral-400 font-mono">
                 <span>Thực hành gõ bài này:</span>
                 <span>
@@ -311,11 +311,11 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
                   return (
                     <span
                       key={idx}
-                      className={`px-2.5 py-1 rounded-md text-xs font-mono transition-all ${
+                      className={`px-2.5 py-1 rounded-md text-xs font-mono transition-colors ${
                         isFinished
-                          ? 'bg-emerald-950/40 text-emerald-400 font-medium'
+                          ? 'bg-neutral-900 text-neutral-400 font-medium'
                           : isCurrent
-                          ? 'bg-red-600 text-white font-bold shadow-xs'
+                          ? 'bg-white text-black font-semibold'
                           : 'bg-white/[0.03] text-neutral-500'
                       }`}
                     >
@@ -325,57 +325,107 @@ export const CurriculumMode: React.FC<CurriculumModeProps> = ({
                 })}
               </div>
 
-              {/* Big Current Character Display */}
-              <div className="py-2">
-                <div className="text-5xl font-black text-white font-sans">
-                  {currentExpectedChar}
-                </div>
-                {expectedInfo && (
-                  <div className="text-xs text-stone-400 font-mono mt-1">
-                    Phiên âm: <span className="text-stone-200 uppercase">{expectedInfo.romaji}</span>
-                  </div>
-                )}
-              </div>
+              {!isLessonComplete ? (
+                <>
+                  {/* Target Display: Single Kana vs Compound Word */}
+                  <div className="py-2 min-h-[96px] flex flex-col items-center justify-center">
+                    {currentTargetWord.length > 1 ? (
+                      <div className="space-y-1.5 text-center">
+                        {/* Compound Word Interactive Character Slots */}
+                        <div className="flex items-center justify-center gap-2 sm:gap-2.5 flex-wrap">
+                          {currentTargetWord.split('').map((char, idx) => {
+                            const isDone = idx < charIndexInTarget;
+                            const isCurrent = idx === charIndexInTarget;
 
-              {/* Reserved Feedback Slot (Fixed height prevents Cumulative Layout Shift of the keyboard) */}
-              <div className="h-10 min-h-[40px] flex items-center justify-center">
-                {feedback ? (
-                  <div
-                    className={`w-full py-2 px-3 rounded-xl text-xs font-semibold transition-all duration-150 ${
-                      feedback.isCorrect
-                        ? 'bg-emerald-950/40 text-emerald-300 border border-emerald-800/80'
-                        : 'bg-red-950/40 text-red-300 border border-red-800/80 animate-shake'
-                    }`}
-                  >
-                    {feedback.message}
-                  </div>
-                ) : (
-                  <div className="h-full w-full pointer-events-none" aria-hidden="true" />
-                )}
-              </div>
+                            return (
+                              <div
+                                key={idx}
+                                className={`w-12 h-14 sm:w-14 sm:h-16 rounded-lg flex flex-col items-center justify-center transition-all ${
+                                  isDone
+                                    ? 'bg-neutral-900 text-neutral-400 border border-neutral-800'
+                                    : isCurrent
+                                    ? 'bg-white text-black font-bold shadow-sm'
+                                    : 'bg-[#0B0C0E] text-neutral-500 border border-neutral-800/70'
+                                }`}
+                              >
+                                <span className="text-xl sm:text-2xl font-medium font-sans">
+                                  {char}
+                                </span>
+                                <span className={`text-[9px] uppercase font-mono tracking-wider ${isCurrent ? 'text-black/70' : 'text-neutral-500'}`}>
+                                  {getKanaInfo(char)?.romaji || ''}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
 
-              {/* Lesson Complete Banner */}
-              {isLessonComplete && (
-                <div className="p-4 rounded-2xl bg-emerald-950/50 border border-emerald-800 space-y-3 animate-in zoom-in-95 duration-200">
-                  <div className="flex items-center justify-center gap-2 text-emerald-400 font-extrabold text-sm">
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span>Xuất sắc! Bạn đã hoàn thành Bài {currentLesson.lessonNumber}!</span>
+                        {/* Full Word Romaji and Current Active Character Hint */}
+                        <div className="text-xs text-neutral-400 font-mono">
+                          Từ ghép:{' '}
+                          <span className="text-neutral-200 uppercase font-medium">
+                            {currentTargetWord.split('').map((c) => getKanaInfo(c)?.romaji || c).join('')}
+                          </span>
+                          {expectedInfo && (
+                            <span className="ml-2 text-neutral-400">
+                              • Đang gõ: <strong className="text-white font-semibold">"{currentExpectedChar}"</strong> ({expectedInfo.romaji.toUpperCase()})
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      /* Single Kana Display */
+                      <div className="text-center">
+                        <div className="text-5xl font-medium text-neutral-100 font-sans">
+                          {currentExpectedChar}
+                        </div>
+                        {expectedInfo && (
+                          <div className="text-xs text-neutral-400 font-mono mt-1">
+                            Phiên âm: <span className="text-neutral-200 uppercase font-medium">{expectedInfo.romaji}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Reserved Feedback Slot (Fixed height prevents Cumulative Layout Shift of the keyboard) */}
+                  <div className="h-10 min-h-[40px] flex items-center justify-center">
+                    {feedback ? (
+                      <div
+                        className={`w-full py-2 px-3 rounded-md text-xs font-medium transition-all duration-150 ${
+                          feedback.isCorrect
+                            ? 'bg-[#16171B] text-neutral-200 border border-neutral-800'
+                            : 'bg-[#1C1214] text-rose-300 border border-rose-900/60 animate-shake'
+                        }`}
+                      >
+                        {feedback.message}
+                      </div>
+                    ) : (
+                      <div className="h-full w-full pointer-events-none" aria-hidden="true" />
+                    )}
+                  </div>
+                </>
+              ) : (
+                /* Lesson Complete Banner inside same footprint */
+                <div className="py-3 rounded-lg bg-[#16171B] border border-neutral-800 space-y-3 animate-in zoom-in-95 duration-150">
+                  <div className="flex items-center justify-center gap-2 text-emerald-400 font-medium text-sm">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Xuất sắc! Bạn đã hoàn thành Bài {currentLesson.lessonNumber}</span>
                   </div>
                   <div className="flex items-center justify-center gap-3 pt-1">
                     <button
                       type="button"
                       onClick={resetLessonPractice}
-                      className="px-4 py-2 rounded-xl bg-stone-800 text-stone-300 text-xs font-semibold hover:bg-stone-700 transition-colors"
+                      className="px-4 py-2 rounded-md bg-[#0B0C0E] border border-neutral-800 text-neutral-300 text-xs font-medium hover:text-white transition-colors"
                     >
                       Luyện lại bài này
                     </button>
                     <button
                       type="button"
                       onClick={handleNextLesson}
-                      className="flex items-center gap-1.5 px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md"
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-md bg-white hover:bg-neutral-200 text-black text-xs font-semibold transition-colors"
                     >
                       <span>Bài tiếp theo</span>
-                      <ChevronRight className="w-4 h-4" />
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>

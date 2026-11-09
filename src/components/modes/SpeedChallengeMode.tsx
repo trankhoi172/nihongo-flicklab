@@ -26,8 +26,7 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
   const [wordCharIndex, setWordCharIndex] = useState(0);
   const [typedBuffer, setTypedBuffer] = useState('');
 
-  const [totalCharsTyped, setTotalCharsTyped] = useState(0);
-  const [correctChars, setCorrectChars] = useState(0);
+  const [, setStatsTick] = useState(0);
   const [currentCombo, setCurrentCombo] = useState(0);
   const [maxCombo, setMaxCombo] = useState(0);
 
@@ -35,17 +34,69 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
   const [isNewRecord, setIsNewRecord] = useState(false);
 
   const timerRef = useRef<number | null>(null);
+  const correctCharsRef = useRef(0);
+  const totalCharsTypedRef = useRef(0);
+  const currentComboRef = useRef(0);
+  const maxComboRef = useRef(0);
+
+  const finishGame = () => {
+    setGameState('finished');
+
+    const duration = selectedDuration;
+    const finalCorrect = correctCharsRef.current;
+    const finalTotal = totalCharsTypedRef.current;
+    const finalMaxCombo = maxComboRef.current;
+
+    const cpm = Math.round((finalCorrect / duration) * 60);
+    const accuracy = finalTotal > 0 ? Math.round((finalCorrect / finalTotal) * 100) : 100;
+    const score = Math.round(cpm * (accuracy / 100) + finalMaxCombo * 10);
+
+    let rank: 'S' | 'A' | 'B' | 'C' | 'D' = 'D';
+    if (cpm >= 160) rank = 'S';
+    else if (cpm >= 110) rank = 'A';
+    else if (cpm >= 75) rank = 'B';
+    else if (cpm >= 40) rank = 'C';
+
+    const record: SpeedChallengeRecord = {
+      date: new Date().toISOString(),
+      durationSeconds: duration,
+      mode: selectedType,
+      cpm,
+      accuracy,
+      totalChars: finalCorrect,
+      score,
+      rank,
+    };
+
+    setResultRecord(record);
+
+    const prevProgress = loadProgress();
+    if (cpm > prevProgress.bestCPM) {
+      setIsNewRecord(true);
+      confetti({ particleCount: 70, spread: 80, origin: { y: 0.5 } });
+    }
+
+    if (settings.soundEnabled) soundEffects.playCelebration(settings.soundVolume);
+    recordSpeedChallenge(record);
+  };
+
+  const finishGameRef = useRef(finishGame);
+  finishGameRef.current = finishGame;
 
   const startChallenge = () => {
     setTimeLeft(selectedDuration);
-    setTotalCharsTyped(0);
-    setCorrectChars(0);
+    setStatsTick(0);
     setCurrentCombo(0);
     setMaxCombo(0);
     setTypedBuffer('');
     setWordCharIndex(0);
     setIsNewRecord(false);
     setResultRecord(null);
+
+    correctCharsRef.current = 0;
+    totalCharsTypedRef.current = 0;
+    currentComboRef.current = 0;
+    maxComboRef.current = 0;
 
     const pool = getPracticeTargets('all');
     const firstKana = pool[Math.floor(Math.random() * pool.length)].char;
@@ -62,7 +113,7 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
         setTimeLeft((prev) => {
           if (prev <= 1) {
             clearInterval(timerRef.current!);
-            finishGame();
+            finishGameRef.current();
             return 0;
           }
           if (prev <= 5 && settings.soundEnabled) {
@@ -80,47 +131,11 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
     };
   }, [gameState, settings.soundEnabled]);
 
-  const finishGame = () => {
-    setGameState('finished');
-
-    const duration = selectedDuration;
-    const cpm = Math.round((correctChars / duration) * 60);
-    const accuracy = totalCharsTyped > 0 ? Math.round((correctChars / totalCharsTyped) * 100) : 100;
-    const score = Math.round(cpm * (accuracy / 100) + maxCombo * 10);
-
-    let rank: 'S' | 'A' | 'B' | 'C' | 'D' = 'D';
-    if (cpm >= 160) rank = 'S';
-    else if (cpm >= 110) rank = 'A';
-    else if (cpm >= 75) rank = 'B';
-    else if (cpm >= 40) rank = 'C';
-
-    const record: SpeedChallengeRecord = {
-      date: new Date().toISOString(),
-      durationSeconds: duration,
-      mode: selectedType,
-      cpm,
-      accuracy,
-      totalChars: correctChars,
-      score,
-      rank,
-    };
-
-    setResultRecord(record);
-
-    const prevProgress = loadProgress();
-    if (cpm > prevProgress.bestCPM) {
-      setIsNewRecord(true);
-      confetti({ particleCount: 70, spread: 80, origin: { y: 0.5 } });
-    }
-
-    if (settings.soundEnabled) soundEffects.playCelebration(settings.soundVolume);
-    recordSpeedChallenge(record);
-  };
-
   const handleCharInput = (char: string) => {
     if (gameState !== 'running') return;
 
-    setTotalCharsTyped((prev) => prev + 1);
+    totalCharsTypedRef.current += 1;
+    setStatsTick((p) => p + 1);
 
     if (selectedType === 'kana') {
       const info = getKanaInfo(currentKana);
@@ -167,7 +182,8 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
   const handleModifier = (direction?: FlickDirection) => {
     if (gameState !== 'running' || !typedBuffer) return;
 
-    setTotalCharsTyped((prev) => prev + 1);
+    totalCharsTypedRef.current += 1;
+    setStatsTick((p) => p + 1);
     const modified = applyModifier(typedBuffer, direction);
 
     if (selectedType === 'kana') {
@@ -209,16 +225,19 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
   };
 
   const onSuccess = () => {
-    setCorrectChars((prev) => prev + 1);
-    setCurrentCombo((prev) => {
-      const next = prev + 1;
-      if (next > maxCombo) setMaxCombo(next);
-      return next;
-    });
+    correctCharsRef.current += 1;
+    currentComboRef.current += 1;
+    if (currentComboRef.current > maxComboRef.current) {
+      maxComboRef.current = currentComboRef.current;
+    }
+    setStatsTick((p) => p + 1);
+    setCurrentCombo(currentComboRef.current);
+    setMaxCombo(maxComboRef.current);
     if (settings.soundEnabled) soundEffects.playSuccess(settings.soundVolume);
   };
 
   const onMistake = () => {
+    currentComboRef.current = 0;
     setCurrentCombo(0);
     setTypedBuffer('');
     if (settings.soundEnabled) soundEffects.playError(settings.soundVolume);
@@ -226,7 +245,7 @@ export const SpeedChallengeMode: React.FC<SpeedChallengeModeProps> = ({ settings
 
   const currentCpm =
     selectedDuration - timeLeft > 0
-      ? Math.round((correctChars / (selectedDuration - timeLeft)) * 60)
+      ? Math.round((correctCharsRef.current / (selectedDuration - timeLeft)) * 60)
       : 0;
 
   return (
