@@ -1,0 +1,26 @@
+{
+  "name": "TDK NIHONGO flicklab",
+  "short_name": "TDK flicklab",
+  "description": "Luyện phản xạ gõ tiếng Nhật 12 phím Kana chuẩn Nhật",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0C0E",
+  "theme_color": "#0B0C0E",
+  "categories": ["education", "utilities"],
+  "icons": [
+    {
+      "src": "./logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
