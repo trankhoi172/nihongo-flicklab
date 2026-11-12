@@ -8,7 +8,18 @@ import {
   setMany,
   getCachedItem,
   migrateFromLocalStorage,
+  clearMemoryCache,
+  populateMemoryCacheFromLocalStorage,
 } from '../lib/db';
+import {
+  loadProgress,
+  saveProgress,
+  loadSettings,
+  saveSettings,
+  initStorage,
+  createDefaultProgress,
+  DEFAULT_SETTINGS,
+} from '../utils/storage';
 
 describe('IndexedDB & Memory Storage Module', () => {
   beforeEach(async () => {
@@ -79,13 +90,49 @@ describe('IndexedDB & Memory Storage Module', () => {
     expect(newSettings).toEqual(legacySettings);
     expect(newProgress).toEqual(legacyProgress);
 
-    // Verify old localStorage keys were cleaned up
-    expect(localStorage.getItem('flick_lab_settings_v1')).toBeNull();
-    expect(localStorage.getItem('flick_lab_progress_v1')).toBeNull();
+    // Migration flag set and backup maintained for instant F5 boot
     expect(localStorage.getItem('tdk_migration_completed')).toBe('true');
+    expect(localStorage.getItem('flick_lab_settings_v1')).not.toBeNull();
+    expect(localStorage.getItem('flick_lab_progress_v1')).not.toBeNull();
 
     // Second call should return false (already migrated)
     const secondMigration = await migrateFromLocalStorage();
     expect(secondMigration).toBe(false);
+  });
+
+  it('persists data across simulated page refresh (F5) without data loss', async () => {
+    // 1. User practices and earns progress
+    saveProgress({
+      ...createDefaultProgress(),
+      totalCharsTyped: 890,
+      correctCharsTyped: 880,
+      bestCPM: 154,
+      currentStreakDays: 5,
+    });
+    saveSettings({
+      ...DEFAULT_SETTINGS,
+      soundVolume: 0.8,
+      blindMode: true,
+    });
+
+    // 2. Simulate browser refresh (F5):
+    // In-memory cache is wiped out (new JS context)
+    clearMemoryCache();
+
+    // 3. Page starts up: synchronous read (0ms render)
+    populateMemoryCacheFromLocalStorage();
+    const freshProgress = loadProgress();
+    const freshSettings = loadSettings();
+
+    expect(freshProgress.totalCharsTyped).toBe(890);
+    expect(freshProgress.bestCPM).toBe(154);
+    expect(freshProgress.currentStreakDays).toBe(5);
+    expect(freshSettings.soundVolume).toBe(0.8);
+    expect(freshSettings.blindMode).toBe(true);
+
+    // 4. Async IndexedDB hydration completes
+    const asyncInit = await initStorage();
+    expect(asyncInit.progress.totalCharsTyped).toBe(890);
+    expect(asyncInit.settings.soundVolume).toBe(0.8);
   });
 });

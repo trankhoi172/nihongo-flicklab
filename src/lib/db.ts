@@ -5,12 +5,46 @@ const DB_VERSION = 1;
 const STORE_NAME = 'keyval';
 
 // Check if IndexedDB is available in the current browser/runtime environment
-const isIndexedDBSupported =
+export const isIndexedDBSupported =
   typeof window !== 'undefined' &&
   typeof window.indexedDB !== 'undefined';
 
-// In-memory cache layer (Map) to eliminate redundant disk I/O and support instant reads
+// In-memory cache layer (Map) to eliminate redundant disk I/O and support instant synchronous reads
 const memoryCache = new Map<string, any>();
+
+/**
+ * Synchronously populate memoryCache from localStorage.
+ * Runs on module load for instant 0ms F5 hydration.
+ */
+export function populateMemoryCacheFromLocalStorage(): void {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && (k.startsWith('flick_lab_') || k.startsWith('tdk_'))) {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            try {
+              memoryCache.set(k, JSON.parse(raw));
+            } catch {
+              memoryCache.set(k, raw);
+            }
+          }
+        }
+      }
+    } catch {}
+  }
+}
+
+// Initial populate on load
+populateMemoryCacheFromLocalStorage();
+
+/**
+ * Clears the in-memory cache (useful for testing F5 refresh simulations).
+ */
+export function clearMemoryCache(): void {
+  memoryCache.clear();
+}
 
 let dbPromise: Promise<IDBPDatabase | null> | null = null;
 
@@ -40,38 +74,68 @@ export async function getDB(): Promise<IDBPDatabase | null> {
 
 /**
  * Retrieve an item from storage.
- * Reads from in-memory cache first, then fetches from IndexedDB if not cached.
+ * Priority: 1. Memory Cache -> 2. IndexedDB -> 3. LocalStorage fallback.
  */
 export async function getItem<T = any>(key: string): Promise<T | null> {
   if (memoryCache.has(key)) {
     return memoryCache.get(key) as T;
   }
 
+  // 1. Try reading from IndexedDB
   try {
     const db = await getDB();
-    if (!db) {
-      return null;
+    if (db) {
+      const val = (await db.get(STORE_NAME, key)) as T | undefined;
+      if (val !== undefined && val !== null) {
+        memoryCache.set(key, val);
+        // Sync to localStorage as synchronous backup
+        if (typeof window !== 'undefined' && window.localStorage) {
+          try {
+            localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val));
+          } catch {}
+        }
+        return val;
+      }
     }
-    const val = (await db.get(STORE_NAME, key)) as T | undefined;
-    if (val !== undefined) {
-      memoryCache.set(key, val);
-      return val;
-    }
-    return null;
   } catch (error) {
     console.warn(`[IndexedDB] Error reading key "${key}":`, error);
-    return null;
   }
+
+  // 2. Fallback to localStorage if IndexedDB had no value
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          memoryCache.set(key, parsed);
+          return parsed as T;
+        } catch {
+          memoryCache.set(key, raw);
+          return raw as unknown as T;
+        }
+      }
+    } catch {}
+  }
+
+  return null;
 }
 
 /**
  * Store an item in storage.
- * Stores directly as native Objects, Arrays, Numbers, or Blobs without manual JSON.stringify.
- * Immediately updates in-memory cache and asynchronously persists to IndexedDB.
+ * Writes to memory cache + localStorage (instant sync backup) + IndexedDB (deep persistent storage).
  */
 export async function setItem<T = any>(key: string, value: T): Promise<void> {
   memoryCache.set(key, value);
 
+  // 1. Synchronously persist to localStorage as immediate F5 protection
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+    } catch {}
+  }
+
+  // 2. Persist to IndexedDB
   try {
     const db = await getDB();
     if (db) {
@@ -83,10 +147,16 @@ export async function setItem<T = any>(key: string, value: T): Promise<void> {
 }
 
 /**
- * Remove an item from storage.
+ * Remove an item from memory cache, localStorage, and IndexedDB.
  */
 export async function removeItem(key: string): Promise<void> {
   memoryCache.delete(key);
+
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      localStorage.removeItem(key);
+    } catch {}
+  }
 
   try {
     const db = await getDB();
@@ -104,6 +174,14 @@ export async function removeItem(key: string): Promise<void> {
 export async function clear(): Promise<void> {
   memoryCache.clear();
 
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      localStorage.removeItem('flick_lab_settings_v1');
+      localStorage.removeItem('flick_lab_progress_v1');
+      localStorage.removeItem('tdk_migration_completed');
+    } catch {}
+  }
+
   try {
     const db = await getDB();
     if (db) {
@@ -115,11 +193,16 @@ export async function clear(): Promise<void> {
 }
 
 /**
- * Batch write multiple key-value pairs in a single transaction for maximum performance.
+ * Batch write multiple key-value pairs.
  */
 export async function setMany(entries: Array<[string, any]>): Promise<void> {
   for (const [key, val] of entries) {
     memoryCache.set(key, val);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val));
+      } catch {}
+    }
   }
 
   try {
@@ -151,8 +234,7 @@ export function setCachedItem<T = any>(key: string, value: T): void {
 }
 
 /**
- * Automatic migration helper: Transfers legacy localStorage data to IndexedDB,
- * clears the old localStorage keys, and sets the migration_completed flag.
+ * Automatic migration helper: Ensures legacy localStorage data is securely mirrored into IndexedDB.
  */
 export async function migrateFromLocalStorage(): Promise<boolean> {
   if (typeof window === 'undefined' || !window.localStorage) {
@@ -160,14 +242,7 @@ export async function migrateFromLocalStorage(): Promise<boolean> {
   }
 
   try {
-    const localMigrationFlag = localStorage.getItem('tdk_migration_completed');
-    if (localMigrationFlag === 'true') {
-      return false;
-    }
-
-    const dbMigrationFlag = await getItem<boolean>('migration_completed');
-    if (dbMigrationFlag) {
-      localStorage.setItem('tdk_migration_completed', 'true');
+    if (localStorage.getItem('tdk_migration_completed') === 'true') {
       return false;
     }
 
@@ -183,6 +258,7 @@ export async function migrateFromLocalStorage(): Promise<boolean> {
       try {
         const parsedSettings = JSON.parse(rawSettings);
         batchEntries.push([legacySettingsKey, parsedSettings]);
+        memoryCache.set(legacySettingsKey, parsedSettings);
       } catch {}
     }
 
@@ -190,23 +266,20 @@ export async function migrateFromLocalStorage(): Promise<boolean> {
       try {
         const parsedProgress = JSON.parse(rawProgress);
         batchEntries.push([legacyProgressKey, parsedProgress]);
+        memoryCache.set(legacyProgressKey, parsedProgress);
       } catch {}
     }
 
-    batchEntries.push(['migration_completed', true]);
+    batchEntries.push(['tdk_migration_completed', true]);
+    localStorage.setItem('tdk_migration_completed', 'true');
 
     if (batchEntries.length > 0) {
       await setMany(batchEntries);
     }
 
-    // Clean up old localStorage keys after successful transfer
-    localStorage.removeItem(legacySettingsKey);
-    localStorage.removeItem(legacyProgressKey);
-    localStorage.setItem('tdk_migration_completed', 'true');
-
     return true;
   } catch (error) {
-    console.warn('[Migration] Failed migrating localStorage to IndexedDB:', error);
+    console.warn('[Migration] Failed syncing localStorage with IndexedDB:', error);
     return false;
   }
 }

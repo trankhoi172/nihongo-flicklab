@@ -83,26 +83,48 @@ export async function initStorage(): Promise<{ settings: UserSettings; progress:
 }
 
 /**
- * Asynchronously loads settings from IndexedDB (or memory cache).
+ * Asynchronously loads settings from IndexedDB (or memory cache / localStorage).
  */
 export async function loadSettingsAsync(): Promise<UserSettings> {
+  // 1. Prioritize reading directly from IndexedDB
+  try {
+    const stored = await getItem<UserSettings>(SETTINGS_KEY);
+    if (stored) {
+      const finalSettings: UserSettings = { ...DEFAULT_SETTINGS, ...stored, theme: 'dark' };
+      setCachedItem(SETTINGS_KEY, finalSettings);
+      if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+          localStorage.setItem(SETTINGS_KEY, JSON.stringify(finalSettings));
+        } catch {}
+      }
+      return finalSettings;
+    }
+  } catch (err) {
+    console.warn('[Storage] Error loading settings from IndexedDB:', err);
+  }
+
+  // 2. Check localStorage fallback
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const raw = localStorage.getItem(SETTINGS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const finalSettings: UserSettings = { ...DEFAULT_SETTINGS, ...parsed, theme: 'dark' };
+        setCachedItem(SETTINGS_KEY, finalSettings);
+        setItem(SETTINGS_KEY, finalSettings).catch(() => {});
+        return finalSettings;
+      }
+    } catch {}
+  }
+
+  // 3. Check memoryCache fallback
   const cached = getCachedItem<UserSettings>(SETTINGS_KEY);
   if (cached) {
     return { ...DEFAULT_SETTINGS, ...cached, theme: 'dark' };
   }
 
-  try {
-    const stored = await getItem<UserSettings>(SETTINGS_KEY);
-    if (!stored) {
-      setCachedItem(SETTINGS_KEY, DEFAULT_SETTINGS);
-      return { ...DEFAULT_SETTINGS };
-    }
-    const finalSettings: UserSettings = { ...DEFAULT_SETTINGS, ...stored, theme: 'dark' };
-    setCachedItem(SETTINGS_KEY, finalSettings);
-    return finalSettings;
-  } catch {
-    return { ...DEFAULT_SETTINGS };
-  }
+  setCachedItem(SETTINGS_KEY, DEFAULT_SETTINGS);
+  return { ...DEFAULT_SETTINGS };
 }
 
 /**
@@ -111,13 +133,58 @@ export async function loadSettingsAsync(): Promise<UserSettings> {
 export async function saveSettingsAsync(settings: UserSettings): Promise<void> {
   const payload = { ...settings, theme: 'dark' as const };
   setCachedItem(SETTINGS_KEY, payload);
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
+    } catch {}
+  }
   await setItem(SETTINGS_KEY, payload);
 }
 
 /**
- * Asynchronously loads progress from IndexedDB (or memory cache).
+ * Asynchronously loads progress from IndexedDB (or memory cache / localStorage).
  */
 export async function loadProgressAsync(): Promise<UserProgress> {
+  // 1. Prioritize reading directly from IndexedDB (source of truth)
+  try {
+    const stored = await getItem<UserProgress>(PROGRESS_KEY);
+    if (stored) {
+      const data: UserProgress = {
+        ...createDefaultProgress(),
+        ...stored,
+        rowMastery: { ...(stored.rowMastery || {}) },
+        completedWordIds: [...(stored.completedWordIds || [])],
+        completedLessonIds: [...(stored.completedLessonIds || [])],
+        challengeHistory: [...(stored.challengeHistory || [])],
+      };
+      const withStreak = updateStreak(data);
+      setCachedItem(PROGRESS_KEY, withStreak);
+      if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+          localStorage.setItem(PROGRESS_KEY, JSON.stringify(withStreak));
+        } catch {}
+      }
+      return withStreak;
+    }
+  } catch (err) {
+    console.warn('[Storage] Error loading progress from IndexedDB:', err);
+  }
+
+  // 2. Check localStorage fallback
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const raw = localStorage.getItem(PROGRESS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const data = updateStreak({ ...createDefaultProgress(), ...parsed });
+        setCachedItem(PROGRESS_KEY, data);
+        setItem(PROGRESS_KEY, data).catch(() => {});
+        return data;
+      }
+    } catch {}
+  }
+
+  // 3. Check memoryCache fallback
   const cached = getCachedItem<UserProgress>(PROGRESS_KEY);
   if (cached) {
     const updated = updateStreak({ ...cached });
@@ -125,29 +192,9 @@ export async function loadProgressAsync(): Promise<UserProgress> {
     return updated;
   }
 
-  try {
-    const stored = await getItem<UserProgress>(PROGRESS_KEY);
-    if (!stored) {
-      const def = createDefaultProgress();
-      setCachedItem(PROGRESS_KEY, def);
-      return def;
-    }
-
-    const data: UserProgress = {
-      ...createDefaultProgress(),
-      ...stored,
-      rowMastery: { ...stored.rowMastery },
-      completedWordIds: [...(stored.completedWordIds || [])],
-      completedLessonIds: [...(stored.completedLessonIds || [])],
-      challengeHistory: [...(stored.challengeHistory || [])],
-    };
-
-    const withStreak = updateStreak(data);
-    setCachedItem(PROGRESS_KEY, withStreak);
-    return withStreak;
-  } catch {
-    return createDefaultProgress();
-  }
+  const def = createDefaultProgress();
+  setCachedItem(PROGRESS_KEY, def);
+  return def;
 }
 
 /**
@@ -155,11 +202,16 @@ export async function loadProgressAsync(): Promise<UserProgress> {
  */
 export async function saveProgressAsync(progress: UserProgress): Promise<void> {
   setCachedItem(PROGRESS_KEY, progress);
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+    } catch {}
+  }
   await setItem(PROGRESS_KEY, progress);
 }
 
 // =======================================================================
-// Synchronous Fast-Path APIs (Write-Through Cache)
+// Synchronous Fast-Path APIs (Write-Through Cache + LocalStorage Sync)
 // Used throughout UI components for zero-latency keystroke responsiveness.
 // =======================================================================
 
@@ -168,12 +220,31 @@ export function loadSettings(): UserSettings {
   if (cached) {
     return { ...DEFAULT_SETTINGS, ...cached, theme: 'dark' };
   }
+
+  // Fallback to localStorage for synchronous instant load on page refresh (0ms)
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const raw = localStorage.getItem(SETTINGS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const finalSettings: UserSettings = { ...DEFAULT_SETTINGS, ...parsed, theme: 'dark' };
+        setCachedItem(SETTINGS_KEY, finalSettings);
+        return finalSettings;
+      }
+    } catch {}
+  }
+
   return { ...DEFAULT_SETTINGS };
 }
 
 export function saveSettings(settings: UserSettings): void {
   const payload = { ...settings, theme: 'dark' as const };
   setCachedItem(SETTINGS_KEY, payload);
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
+    } catch {}
+  }
   setItem(SETTINGS_KEY, payload).catch((err) => {
     console.warn('[Storage] Error persisting settings to IndexedDB:', err);
   });
@@ -186,13 +257,30 @@ export function loadProgress(): UserProgress {
     setCachedItem(PROGRESS_KEY, updated);
     return updated;
   }
-  const def = createDefaultProgress();
-  setCachedItem(PROGRESS_KEY, def);
-  return def;
+
+  // Fallback to localStorage for synchronous instant load on page refresh (0ms)
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      const raw = localStorage.getItem(PROGRESS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const data = updateStreak({ ...createDefaultProgress(), ...parsed });
+        setCachedItem(PROGRESS_KEY, data);
+        return data;
+      }
+    } catch {}
+  }
+
+  return createDefaultProgress();
 }
 
 export function saveProgress(progress: UserProgress): void {
   setCachedItem(PROGRESS_KEY, progress);
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+    } catch {}
+  }
   setItem(PROGRESS_KEY, progress).catch((err) => {
     console.warn('[Storage] Error persisting progress to IndexedDB:', err);
   });
